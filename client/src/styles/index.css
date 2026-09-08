@@ -107,15 +107,17 @@ p, span, label, div {
 /* Tablet (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .app-container {
-    width: min(100% - 32px, 960px);
-    padding: 0 20px;
+    width: 100%;
+    max-width: 960px;
+    padding: 0 16px;
   }
 }
 
 /* Desktop (1024px - 1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .app-container {
-    width: min(100% - 40px, 1080px);
+    width: 100%;
+    max-width: 1200px;
     padding: 0 20px;
   }
 }
@@ -123,7 +125,8 @@ p, span, label, div {
 /* Desktop (1280px - 1439px) */
 @media (min-width: 1280px) and (max-width: 1439px) {
   .app-container {
-    width: min(100% - 48px, 1220px);
+    width: 100%;
+    max-width: 1320px;
     padding: 0 24px;
   }
 }
@@ -131,7 +134,8 @@ p, span, label, div {
 /* Large Desktop (1440px - 1919px) */
 @media (min-width: 1440px) and (max-width: 1919px) {
   .app-container {
-    width: min(100% - 64px, 1280px);
+    width: 100%;
+    max-width: 1400px;
     padding: 0 28px;
   }
 }
@@ -139,7 +143,8 @@ p, span, label, div {
 /* Ultra Wide Desktop (1920px+) */
 @media (min-width: 1920px) {
   .app-container {
-    width: min(100% - 80px, 1340px);
+    width: 100%;
+    max-width: 1440px;
     padding: 0 32px;
   }
 }
@@ -614,9 +619,103 @@ p, span, label, div {
   animation: liveDotPulse 1.5s infinite ease-in-out;
 }
 
+/* ===================================================
+   RESPONSIVE UTILITIES (Mobile, Tablet, Desktop)
+   =================================================== */
 
+/* Responsive Card Grids */
+.grid-responsive-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--grid-gap-mobile);
+}
 
-/* Mobile Responsive Excellence Utilities */
+@media (min-width: 768px) {
+  .grid-responsive-cards {
+    gap: var(--grid-gap-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive-cards {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--grid-gap-desktop);
+  }
+}
+
+.grid-responsive-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--grid-gap-mobile);
+}
+
+@media (min-width: 640px) {
+  .grid-responsive-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--grid-gap-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--grid-gap-desktop);
+  }
+}
+
+.grid-responsive-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--grid-gap-mobile);
+}
+
+@media (min-width: 768px) {
+  .grid-responsive-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--grid-gap-desktop);
+  }
+}
+
+/* Responsive Modal Container Utility */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 3vw, 24px);
+  box-sizing: border-box;
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.modal-container {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: min(94vw, 560px);
+  max-height: min(90vh, 860px);
+  border-radius: clamp(20px, 4vw, 28px);
+  box-shadow: 0 25px 60px -15px rgba(136, 19, 55, 0.35);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+.modal-container-lg {
+  max-width: min(94vw, 760px);
+}
+
+.modal-container-xl {
+  max-width: min(94vw, 920px);
+}
+
+/* Touch targets and form controls */
 @media (max-width: 767px) {
   .card-luxury {
     border-radius: clamp(16px, 4vw, 24px) !important;
@@ -626,4 +725,25 @@ p, span, label, div {
     padding-left: 2px !important;
     padding-right: 2px !important;
   }
+
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS safari */
+  }
+
+  button, a {
+    min-height: 38px;
+  }
 }
+
+/* Prevent image distortion across all devices */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Safe area padding helper */
+.safe-padding-bottom {
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+

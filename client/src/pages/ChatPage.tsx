@@ -50,11 +50,13 @@ export const ChatPage: React.FC = () => {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        height: '100vh',
+        height: '100dvh',
+        maxHeight: '100dvh',
         background: '#FDF2F4',
         backgroundImage: heartWallpaper,
         backgroundRepeat: 'repeat',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}
     >
       {/* Top Header: Back arrow, Avatar + Online status, Name, Phone & Video icons */}

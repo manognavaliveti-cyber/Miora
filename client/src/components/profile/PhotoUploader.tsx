@@ -158,10 +158,10 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             className="card-white"
             style={{
               width: '100%',
-              maxWidth: '380px',
+              maxWidth: 'min(94vw, 420px)',
               maxHeight: '90vh',
               overflowY: 'auto',
-              padding: 'clamp(16px, 4vw, 20px)',
+              padding: 'clamp(16px, 4vw, 22px)',
               display: 'flex',
               flexDirection: 'column',
               gap: '16px'

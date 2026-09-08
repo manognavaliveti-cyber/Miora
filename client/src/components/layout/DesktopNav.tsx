@@ -114,14 +114,15 @@ export const DesktopNav: React.FC = () => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '4px',
+          gap: 'clamp(2px, 0.4vw, 6px)',
           background: 'var(--surface-white)',
           padding: '4px',
           borderRadius: 'var(--radius-pill)',
           boxShadow: 'var(--shadow-xs)',
           border: '1.5px solid var(--border-subtle)',
           height: '42px',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          flexShrink: 0
         }}
       >
         {tabs.map((tab) => {
@@ -133,8 +134,8 @@ export const DesktopNav: React.FC = () => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                padding: '7px 14px',
+                gap: 'clamp(3px, 0.4vw, 6px)',
+                padding: '6px clamp(8px, 0.85vw, 14px)',
                 borderRadius: 'var(--radius-pill)',
                 border: 'none',
                 background: isActive ? 'var(--primary-gradient)' : 'transparent',
@@ -142,11 +143,12 @@ export const DesktopNav: React.FC = () => {
                 cursor: 'pointer',
                 fontFamily: 'var(--font-primary)',
                 fontWeight: isActive ? 700 : 600,
-                fontSize: '0.86rem',
+                fontSize: 'clamp(0.78rem, 0.85vw, 0.86rem)',
                 transition: 'all var(--transition-fast)',
                 position: 'relative',
                 boxShadow: isActive ? '0 4px 14px rgba(238, 56, 101, 0.32)' : 'none',
-                height: '34px'
+                height: '34px',
+                whiteSpace: 'nowrap'
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
@@ -163,7 +165,8 @@ export const DesktopNav: React.FC = () => {
             >
               {React.cloneElement(tab.icon as React.ReactElement, {
                 fill: isActive ? '#FFFFFF' : 'none',
-                color: isActive ? '#FFFFFF' : 'currentColor'
+                color: isActive ? '#FFFFFF' : 'currentColor',
+                size: 15
               })}
               <span>{tab.label}</span>
 
@@ -172,9 +175,9 @@ export const DesktopNav: React.FC = () => {
                   style={{
                     background: isActive ? 'var(--gold-champagne)' : 'var(--primary-gradient)',
                     color: isActive ? '#1F161A' : '#FFFFFF',
-                    fontSize: '0.66rem',
+                    fontSize: '0.65rem',
                     fontWeight: 800,
-                    padding: '2px 6px',
+                    padding: '2px 5px',
                     borderRadius: 'var(--radius-pill)'
                   }}
                 >
@@ -187,7 +190,7 @@ export const DesktopNav: React.FC = () => {
       </nav>
 
       {/* Right Controls: Search, Create, Coins Pill, Notifications, Settings, Profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(4px, 0.6vw, 8px)', flexShrink: 0 }}>
         {/* Global Search Button */}
         <button
           onClick={openSearchModal}

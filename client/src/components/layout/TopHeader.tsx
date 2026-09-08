@@ -132,57 +132,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       </div>
 
       {/* Right side: Notifications Bell + Filter or Settings */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '70px', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(3px, 1vw, 6px)', justifyContent: 'flex-end', flexShrink: 0 }}>
         {/* Global Search Button */}
         <button
           onClick={openSearchModal}
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            background: 'var(--surface-white)',
-            border: '1px solid var(--border-subtle)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-secondary)',
-            cursor: 'pointer',
-            boxShadow: 'var(--shadow-xs)'
-          }}
-          title="Search people & posts"
-          aria-label="Search"
-        >
-          <Search size={16} />
-        </button>
-
-        {/* Create Post/Story Button (Quick access) */}
-        <button
-          onClick={openCreateSheet}
-          style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            background: 'var(--primary-gradient)',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#FFFFFF',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(238, 56, 101, 0.3)'
-          }}
-          title="Create post, story or status"
-          aria-label="Create"
-        >
-          <Plus size={18} strokeWidth={2.5} />
-        </button>
-
-        {/* Notifications */}
-        <button
-          onClick={openNotifDrawer}
-          style={{
-            width: '36px',
-            height: '36px',
+            width: 'clamp(32px, 8.5vw, 36px)',
+            height: 'clamp(32px, 8.5vw, 36px)',
             borderRadius: '50%',
             background: 'var(--surface-white)',
             border: '1px solid var(--border-subtle)',
@@ -192,18 +148,65 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             color: 'var(--text-secondary)',
             cursor: 'pointer',
             boxShadow: 'var(--shadow-xs)',
-            position: 'relative'
+            flexShrink: 0
+          }}
+          title="Search people & posts"
+          aria-label="Search"
+        >
+          <Search size={15} />
+        </button>
+
+        {/* Create Post/Story Button (Quick access) */}
+        <button
+          onClick={openCreateSheet}
+          style={{
+            width: 'clamp(32px, 8.5vw, 36px)',
+            height: 'clamp(32px, 8.5vw, 36px)',
+            borderRadius: '50%',
+            background: 'var(--primary-gradient)',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(238, 56, 101, 0.3)',
+            flexShrink: 0
+          }}
+          title="Create post, story or status"
+          aria-label="Create"
+        >
+          <Plus size={17} strokeWidth={2.5} />
+        </button>
+
+        {/* Notifications */}
+        <button
+          onClick={openNotifDrawer}
+          style={{
+            width: 'clamp(32px, 8.5vw, 36px)',
+            height: 'clamp(32px, 8.5vw, 36px)',
+            borderRadius: '50%',
+            background: 'var(--surface-white)',
+            border: '1px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            position: 'relative',
+            flexShrink: 0
           }}
           title="Notifications"
           aria-label="Notifications"
         >
-          <Bell size={16} />
+          <Bell size={15} />
           {unreadNotifsCount > 0 && (
             <span
               style={{
                 position: 'absolute',
-                top: '6px',
-                right: '6px',
+                top: '5px',
+                right: '5px',
                 width: '7px',
                 height: '7px',
                 borderRadius: '50%',
@@ -219,8 +222,8 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <button
             onClick={() => setCurrentView('dating-preferences')}
             style={{
-              width: '36px',
-              height: '36px',
+              width: 'clamp(32px, 8.5vw, 36px)',
+              height: 'clamp(32px, 8.5vw, 36px)',
               borderRadius: '50%',
               background: 'var(--surface-white)',
               border: '1px solid var(--border-gold)',
@@ -229,12 +232,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               justifyContent: 'center',
               color: 'var(--berry-primary)',
               cursor: 'pointer',
-              boxShadow: 'var(--shadow-xs)'
+              boxShadow: 'var(--shadow-xs)',
+              flexShrink: 0
             }}
             title="Dating Preferences"
             aria-label="Dating Preferences"
           >
-            <SlidersHorizontal size={15} />
+            <SlidersHorizontal size={14} />
           </button>
         )}
 
@@ -243,8 +247,8 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <button
             onClick={() => setCurrentView('settings')}
             style={{
-              width: '36px',
-              height: '36px',
+              width: 'clamp(32px, 8.5vw, 36px)',
+              height: 'clamp(32px, 8.5vw, 36px)',
               borderRadius: '50%',
               background: 'var(--surface-white)',
               border: '1px solid var(--border-subtle)',
@@ -253,12 +257,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               justifyContent: 'center',
               color: 'var(--text-secondary)',
               cursor: 'pointer',
-              boxShadow: 'var(--shadow-xs)'
+              boxShadow: 'var(--shadow-xs)',
+              flexShrink: 0
             }}
             title="Settings & Privacy"
             aria-label="Settings"
           >
-            <Settings size={15} />
+            <Settings size={14} />
           </button>
         )}
       </div>

@@ -94,4 +94,20 @@
   --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-smooth: 500ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Responsive Layout & Container Tokens */
+  --header-height-mobile: 58px;
+  --header-height-desktop: 68px;
+  --bottom-nav-height: 64px;
+  --container-max-desktop: 1360px;
+  --container-max-widescreen: 1480px;
+  --container-max-readable: 880px;
+  --container-max-form: 680px;
+  --page-padding-mobile: clamp(12px, 3.5vw, 16px);
+  --page-padding-tablet: clamp(18px, 3vw, 24px);
+  --page-padding-desktop: clamp(24px, 2.5vw, 36px);
+  --grid-gap-mobile: 12px;
+  --grid-gap-tablet: 18px;
+  --grid-gap-desktop: 24px;
 }
+
