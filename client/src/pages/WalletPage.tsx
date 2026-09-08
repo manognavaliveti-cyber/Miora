@@ -558,27 +558,48 @@ export const WalletPage: React.FC = () => {
                 )}
 
                 <div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 700 }}>
-                    {pkg.tagline}
-                  </div>
-                  <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '6px' }}>
-                    ₹{pkg.priceInr}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '1.4rem' }}>{pkg.icon || '🪙'}</span>
+                      <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                        {pkg.name || 'Coin Pack'}
+                      </span>
+                    </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+                    ₹{pkg.priceInr.toLocaleString()}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px' }}>
                     <Coins size={20} color="var(--gold-deep)" />
                     <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {pkg.coins} Coins
+                      {pkg.coins.toLocaleString()} Coins
                     </span>
                   </div>
 
                   {pkg.bonusCoins > 0 ? (
-                    <div style={{ color: 'var(--gold-deep)', fontWeight: 800, fontSize: '0.82rem', marginTop: '4px' }}>
-                      +{pkg.bonusCoins} Bonus Coins Free ✨
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        background: 'var(--gold-gradient-subtle)',
+                        border: '1px solid var(--border-gold)',
+                        color: 'var(--gold-deep)',
+                        fontWeight: 800,
+                        fontSize: '0.78rem',
+                        padding: '3px 8px',
+                        borderRadius: 'var(--radius-pill)',
+                        marginTop: '8px'
+                      }}
+                    >
+                      <Sparkles size={12} />
+                      <span>+{pkg.bonusCoins.toLocaleString()} Bonus Free</span>
                     </div>
                   ) : (
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                      Standard Package
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+                      — Standard Base Pack
                     </div>
                   )}
                 </div>
@@ -600,7 +621,7 @@ export const WalletPage: React.FC = () => {
                     transition: 'all var(--transition-fast)'
                   }}
                 >
-                  Buy Now • ₹{pkg.priceInr}
+                  Buy Now • ₹{pkg.priceInr.toLocaleString()}
                 </button>
               </div>
             ))}

@@ -3,6 +3,8 @@
 
 export interface RechargePackage {
   id: string;
+  name?: string;
+  icon?: string;
   priceInr: number;
   coins: number;
   bonusCoins: number;
@@ -241,33 +243,60 @@ export const MIORA_PRICING = {
   rechargePackages: [
     {
       id: 'coins_100',
-      priceInr: 49,
+      name: 'Starter',
+      icon: '🌱',
+      priceInr: 99,
       coins: 100,
       bonusCoins: 0,
-      tagline: 'Starter Pack'
+      tagline: '🌱 Starter Pack'
     },
     {
-      id: 'coins_250',
-      priceInr: 99,
-      coins: 250,
-      bonusCoins: 25,
+      id: 'coins_350',
+      name: 'Popular',
+      icon: '💕',
+      priceInr: 299,
+      coins: 350,
+      bonusCoins: 50,
       popular: true,
-      tagline: 'Most Popular'
+      tagline: '💕 Popular Pack'
     },
     {
-      id: 'coins_600',
-      priceInr: 199,
-      coins: 600,
-      bonusCoins: 80,
-      tagline: 'Romance Sparks'
+      id: 'coins_750',
+      name: 'Value Pack',
+      icon: '🔥',
+      priceInr: 499,
+      coins: 750,
+      bonusCoins: 150,
+      popular: true,
+      tagline: '🔥 Value Pack'
     },
     {
       id: 'coins_1500',
-      priceInr: 399,
+      name: 'Premium',
+      icon: '💎',
+      priceInr: 899,
       coins: 1500,
-      bonusCoins: 250,
+      bonusCoins: 400,
+      tagline: '💎 Premium Pack'
+    },
+    {
+      id: 'coins_3500',
+      name: 'VIP Pack',
+      icon: '👑',
+      priceInr: 1799,
+      coins: 3500,
+      bonusCoins: 1000,
+      tagline: '👑 VIP Royalty Pack'
+    },
+    {
+      id: 'coins_7500',
+      name: 'Ultimate',
+      icon: '🏆',
+      priceInr: 3499,
+      coins: 7500,
+      bonusCoins: 2500,
       bestValue: true,
-      tagline: 'VIP True Love'
+      tagline: '🏆 Ultimate Romance Pack'
     }
   ] as RechargePackage[],
 

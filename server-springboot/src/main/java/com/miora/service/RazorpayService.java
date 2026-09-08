@@ -46,38 +46,55 @@ public class RazorpayService {
     public static class CoinPackage {
         private final String id;
         private final int coins;
+        private final int bonusCoins;
         private final int priceInr; // In Indian Rupees
         private final String name;
+        private final String icon;
+        private final boolean popular;
+        private final boolean bestValue;
 
-        public CoinPackage(String id, int coins, int priceInr, String name) {
+        public CoinPackage(String id, int coins, int bonusCoins, int priceInr, String name, String icon, boolean popular, boolean bestValue) {
             this.id = id;
             this.coins = coins;
+            this.bonusCoins = bonusCoins;
             this.priceInr = priceInr;
             this.name = name;
+            this.icon = icon;
+            this.popular = popular;
+            this.bestValue = bestValue;
         }
 
         public String getId() { return id; }
         public int getCoins() { return coins; }
+        public int getBonusCoins() { return bonusCoins; }
+        public int getTotalCoins() { return coins + bonusCoins; }
         public int getPriceInr() { return priceInr; }
         public int getAmountPaise() { return priceInr * 100; }
         public String getName() { return name; }
+        public String getIcon() { return icon; }
+        public boolean isPopular() { return popular; }
+        public boolean isBestValue() { return bestValue; }
     }
 
     private static final Map<String, CoinPackage> OFFICIAL_PACKAGES = new LinkedHashMap<>();
 
     static {
         // Standard MIORA Coin Packages
-        OFFICIAL_PACKAGES.put("coins_100", new CoinPackage("coins_100", 100, 49, "100 MIORA Coins"));
-        OFFICIAL_PACKAGES.put("coins_250", new CoinPackage("coins_250", 250, 99, "250 MIORA Coins"));
-        OFFICIAL_PACKAGES.put("coins_600", new CoinPackage("coins_600", 600, 199, "600 MIORA Coins"));
-        OFFICIAL_PACKAGES.put("coins_1500", new CoinPackage("coins_1500", 1500, 399, "1500 MIORA Coins"));
+        OFFICIAL_PACKAGES.put("coins_100", new CoinPackage("coins_100", 100, 0, 99, "Starter", "🌱", false, false));
+        OFFICIAL_PACKAGES.put("coins_350", new CoinPackage("coins_350", 350, 50, 299, "Popular", "💕", true, false));
+        OFFICIAL_PACKAGES.put("coins_750", new CoinPackage("coins_750", 750, 150, 499, "Value Pack", "🔥", true, false));
+        OFFICIAL_PACKAGES.put("coins_1500", new CoinPackage("coins_1500", 1500, 400, 899, "Premium", "💎", false, false));
+        OFFICIAL_PACKAGES.put("coins_3500", new CoinPackage("coins_3500", 3500, 1000, 1799, "VIP Pack", "👑", false, false));
+        OFFICIAL_PACKAGES.put("coins_7500", new CoinPackage("coins_7500", 7500, 2500, 3499, "Ultimate", "🏆", false, true));
 
-        // Existing legacy UI packages support
-        OFFICIAL_PACKAGES.put("pkg_12", new CoinPackage("pkg_12", 100, 12, "Quick Start Pack"));
-        OFFICIAL_PACKAGES.put("pkg_29", new CoinPackage("pkg_29", 270, 29, "Most Popular Pack"));
-        OFFICIAL_PACKAGES.put("pkg_59", new CoinPackage("pkg_59", 600, 59, "Great Value Pack"));
-        OFFICIAL_PACKAGES.put("pkg_99", new CoinPackage("pkg_99", 1120, 99, "Romance Pack"));
-        OFFICIAL_PACKAGES.put("pkg_199", new CoinPackage("pkg_199", 2500, 199, "VIP Lover Pack"));
+        // Legacy compatibility aliases
+        OFFICIAL_PACKAGES.put("coins_250", new CoinPackage("coins_250", 250, 25, 99, "Popular (Legacy)", "💕", false, false));
+        OFFICIAL_PACKAGES.put("coins_600", new CoinPackage("coins_600", 600, 80, 199, "Romance (Legacy)", "🔥", false, false));
+        OFFICIAL_PACKAGES.put("pkg_12", new CoinPackage("pkg_12", 100, 0, 12, "Quick Start Pack", "🌱", false, false));
+        OFFICIAL_PACKAGES.put("pkg_29", new CoinPackage("pkg_29", 270, 0, 29, "Most Popular Pack", "💕", false, false));
+        OFFICIAL_PACKAGES.put("pkg_59", new CoinPackage("pkg_59", 600, 0, 59, "Great Value Pack", "🔥", false, false));
+        OFFICIAL_PACKAGES.put("pkg_99", new CoinPackage("pkg_99", 1120, 0, 99, "Romance Pack", "💎", false, false));
+        OFFICIAL_PACKAGES.put("pkg_199", new CoinPackage("pkg_199", 2500, 0, 199, "VIP Lover Pack", "👑", false, false));
     }
 
     public RazorpayService(FirestoreService firestoreService, ObjectMapper objectMapper) {
@@ -230,9 +247,10 @@ public class RazorpayService {
         }
 
         // 3. ATOMIC COIN CREDITING
+        int coinsToCredit = pkg.getTotalCoins();
         User user = firestoreService.getUser(userId);
         int currentBalance = user != null ? user.getCoinBalance() : 0;
-        int newBalance = currentBalance + pkg.getCoins();
+        int newBalance = currentBalance + coinsToCredit;
 
         if (user != null) {
             user.setCoinBalance(newBalance);
@@ -240,15 +258,16 @@ public class RazorpayService {
         }
 
         // 4. RECORD COMPREHENSIVE TRANSACTION RECORD
+        String desc = "Purchased " + pkg.getName() + " (" + pkg.getCoins() + (pkg.getBonusCoins() > 0 ? " + " + pkg.getBonusCoins() + " Bonus" : "") + " Coins for ₹" + pkg.getPriceInr() + ")";
         CoinTransaction tx = CoinTransaction.builder()
                 .id("tx_" + razorpayPaymentId)
                 .userId(userId)
                 .type("PURCHASE")
-                .amount(pkg.getCoins())
-                .coins(pkg.getCoins())
+                .amount(coinsToCredit)
+                .coins(coinsToCredit)
                 .amountInr(pkg.getPriceInr())
                 .currency("INR")
-                .description("Purchased " + pkg.getCoins() + " MIORA Coins (₹" + pkg.getPriceInr() + ")")
+                .description(desc)
                 .timestamp("Just now")
                 .createdAt(Instant.now().toString())
                 .category("purchase")
@@ -263,14 +282,14 @@ public class RazorpayService {
         processedPaymentIds.add(razorpayPaymentId);
         processedOrderIds.add(razorpayOrderId);
 
-        log.info("SUCCESS: Credited {} coins to user {}. New Balance: {} (Tx: {})",
-                pkg.getCoins(), userId, newBalance, tx.getId());
+        log.info("SUCCESS: Credited {} total coins to user {}. New Balance: {} (Tx: {})",
+                coinsToCredit, userId, newBalance, tx.getId());
 
         return PaymentVerificationResponse.builder()
                 .success(true)
-                .message("Payment verified successfully! " + pkg.getCoins() + " MIORA Coins have been credited.")
+                .message("Payment verified successfully! " + coinsToCredit + " MIORA Coins have been credited.")
                 .newBalance(newBalance)
-                .coinsAdded(pkg.getCoins())
+                .coinsAdded(coinsToCredit)
                 .razorpayOrderId(razorpayOrderId)
                 .razorpayPaymentId(razorpayPaymentId)
                 .transaction(tx)

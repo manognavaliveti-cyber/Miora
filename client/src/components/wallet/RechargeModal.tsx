@@ -204,25 +204,26 @@ export const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose })
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div
                         style={{
-                          width: '42px',
-                          height: '42px',
+                          width: '44px',
+                          height: '44px',
                           borderRadius: '14px',
                           background: isSelected ? 'var(--primary-gradient)' : 'var(--bg-soft-blush)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: isSelected ? '#FFFFFF' : 'var(--berry-primary)'
+                          fontSize: '1.4rem',
+                          boxShadow: isSelected ? '0 4px 12px rgba(238, 56, 101, 0.3)' : 'none'
                         }}
                       >
-                        <Coins size={22} />
+                        {pkg.icon || '🪙'}
                       </div>
 
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                            {pkg.coins} Coins
+                            {pkg.name} • {pkg.coins.toLocaleString()} Coins
                           </span>
-                          {pkg.bonusCoins > 0 && (
+                          {pkg.bonusCoins > 0 ? (
                             <span
                               style={{
                                 background: 'var(--gold-gradient-subtle)',
@@ -234,8 +235,10 @@ export const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose })
                                 borderRadius: 'var(--radius-pill)'
                               }}
                             >
-                              +{pkg.bonusCoins} Bonus
+                              +{pkg.bonusCoins.toLocaleString()} Bonus
                             </span>
+                          ) : (
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>—</span>
                           )}
                         </div>
                         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{pkg.tagline}</span>
@@ -244,7 +247,7 @@ export const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose })
 
                     <div style={{ textAlign: 'right' }}>
                       <span style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--text-primary)' }}>
-                        ₹{pkg.priceInr}
+                        ₹{pkg.priceInr.toLocaleString()}
                       </span>
                     </div>
                   </div>
