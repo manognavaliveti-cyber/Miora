@@ -652,15 +652,35 @@ public class FirestoreService {
     // ==========================================
     public User subscribeUser(String userId, String planId, String paymentMethod) {
         User user = getUser(userId);
-        boolean isPlatinum = "yearly".equalsIgnoreCase(planId);
+        boolean isVip = "vip".equalsIgnoreCase(planId) || "yearly".equalsIgnoreCase(planId);
         user.setIsPremium(true);
-        user.setSubscriptionTier(isPlatinum ? "platinum" : "gold");
+        user.setSubscriptionTier(isVip ? "vip" : "gold");
         user.setSubscriptionPlanId(planId);
-        user.setSubscriptionExpiresAt(Instant.now().plus(isPlatinum ? 365 : "quarterly".equalsIgnoreCase(planId) ? 90 : 30, java.time.temporal.ChronoUnit.DAYS).toString());
+        user.setSubscriptionExpiresAt(Instant.now().plus(30, java.time.temporal.ChronoUnit.DAYS).toString());
         user.setDailySwipesRemaining(9999);
-        user.setSuperLikesRemaining((user.getSuperLikesRemaining() != null ? user.getSuperLikesRemaining() : 0) + (isPlatinum ? 30 : 15));
-        user.setBoostsCount((user.getBoostsCount() != null ? user.getBoostsCount() : 0) + (isPlatinum ? 12 : 3));
-        user.setSpotlightsCount((user.getSpotlightsCount() != null ? user.getSpotlightsCount() : 0) + (isPlatinum ? 4 : 1));
+
+        // Grant bonus coins: +500 for Gold, +1500 for VIP
+        int bonusCoins = isVip ? 1500 : 500;
+        int currentBalance = user.getCoinBalance() != null ? user.getCoinBalance() : 0;
+        user.setCoinBalance(currentBalance + bonusCoins);
+
+        // Super Likes and Boost allocations
+        user.setSuperLikesRemaining((user.getSuperLikesRemaining() != null ? user.getSuperLikesRemaining() : 0) + (isVip ? 30 : 15));
+        user.setBoostsCount((user.getBoostsCount() != null ? user.getBoostsCount() : 0) + (isVip ? 5 : 2));
+        user.setSpotlightsCount((user.getSpotlightsCount() != null ? user.getSpotlightsCount() : 0) + (isVip ? 2 : 0));
+
+        // Ledger transaction record
+        addTransaction(CoinTransaction.builder()
+                .id("tx_" + UUID.randomUUID().toString().substring(0, 8))
+                .userId(user.getId())
+                .type("earned")
+                .amount(bonusCoins)
+                .title((isVip ? "VIP" : "Gold") + " Subscription Welcome Bonus")
+                .description("Bonus coins credited upon " + (isVip ? "VIP" : "Gold") + " subscription activation")
+                .timestamp("Just now")
+                .status("completed")
+                .build());
+
         return saveUser(user);
     }
 

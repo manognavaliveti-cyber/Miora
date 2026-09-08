@@ -42,7 +42,7 @@ export const BoostModal: React.FC = () => {
       if (currentUser.boostsCount > 0) {
         await activateBoost();
       } else {
-        const cost = MIORA_PRICING.powerUps.boost.singleCoins;
+        const cost = MIORA_PRICING.powerUps.boost.packages[0].coinPrice;
         if (currentUser.coinBalance >= cost) {
           const ok = spendCoins(cost, '30-Min Profile Boost activation');
           if (ok) await activateBoost();
@@ -325,7 +325,7 @@ export const BoostModal: React.FC = () => {
                     }}
                   >
                     <Rocket size={15} />
-                    {currentUser.boostsCount > 0 ? 'Activate Now' : 'Buy & Boost (50 🪙)'}
+                    {currentUser.boostsCount > 0 ? 'Activate Now' : 'Buy & Boost (100 🪙)'}
                   </Button>
                 )}
               </div>
@@ -333,7 +333,7 @@ export const BoostModal: React.FC = () => {
               {/* Package bundles */}
               <div>
                 <label style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                  Boost Bundles:
+                  Boost Duration Packs:
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '8px' }}>
                   {MIORA_PRICING.powerUps.boost.packages.map((pkg) => (
@@ -341,17 +341,17 @@ export const BoostModal: React.FC = () => {
                       key={pkg.id}
                       onClick={() => handleBuyPackage(pkg)}
                       style={{
-                        border: '1.5px solid var(--border-subtle)',
+                        border: pkg.popular ? '2px solid #EA580C' : '1.5px solid var(--border-subtle)',
                         borderRadius: '16px',
-                        padding: '12px 8px',
+                        padding: '14px 8px',
                         textAlign: 'center',
                         cursor: 'pointer',
-                        background: '#FFFFFF',
+                        background: pkg.popular ? '#FFF7ED' : '#FFFFFF',
                         transition: 'all var(--transition-fast)',
                         position: 'relative'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#EA580C')}
-                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
                     >
                       {pkg.popular && (
                         <div
@@ -365,19 +365,39 @@ export const BoostModal: React.FC = () => {
                             fontSize: '0.62rem',
                             fontWeight: 900,
                             padding: '1px 6px',
-                            borderRadius: 'var(--radius-pill)'
+                            borderRadius: 'var(--radius-pill)',
+                            whiteSpace: 'nowrap'
                           }}
                         >
                           POPULAR
                         </div>
                       )}
-                      <div style={{ fontSize: '0.95rem', fontWeight: 900, color: 'var(--text-primary)' }}>
-                        {pkg.count} Boost{pkg.count > 1 ? 's' : ''}
+                      {pkg.bestValue && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '-8px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: 'var(--gold-gradient)',
+                            color: '#1C1217',
+                            fontSize: '0.62rem',
+                            fontWeight: 900,
+                            padding: '1px 6px',
+                            borderRadius: 'var(--radius-pill)',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          BEST VALUE
+                        </div>
+                      )}
+                      <div style={{ fontSize: '1rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                        {pkg.durationHours ? `${pkg.durationHours} Hours` : `${pkg.durationMinutes || 30} Mins`}
                       </div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', margin: '4px 0' }}>
-                        ₹{pkg.priceInr} / {pkg.coinPrice} 🪙
+                      <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#EA580C', margin: '4px 0' }}>
+                        🪙 {pkg.coinPrice} Coins
                       </div>
-                      <div style={{ fontSize: '0.68rem', color: '#EA580C', fontWeight: 700 }}>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
                         {pkg.tagline}
                       </div>
                     </div>
@@ -521,24 +541,63 @@ export const BoostModal: React.FC = () => {
                       key={pkg.id}
                       onClick={() => handleBuyPackage(pkg)}
                       style={{
-                        border: '1.5px solid var(--border-subtle)',
+                        border: pkg.popular ? '2px solid #EAB308' : '1.5px solid var(--border-subtle)',
                         borderRadius: '16px',
-                        padding: '12px 8px',
+                        padding: '14px 8px',
                         textAlign: 'center',
                         cursor: 'pointer',
-                        background: '#FFFFFF',
-                        transition: 'all var(--transition-fast)'
+                        background: pkg.popular ? '#FEFCE8' : '#FFFFFF',
+                        transition: 'all var(--transition-fast)',
+                        position: 'relative'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#EAB308')}
-                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
                     >
-                      <div style={{ fontSize: '0.95rem', fontWeight: 900, color: 'var(--text-primary)' }}>
-                        {pkg.count} ⭐
+                      {pkg.popular && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '-8px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: '#EAB308',
+                            color: '#1C1217',
+                            fontSize: '0.62rem',
+                            fontWeight: 900,
+                            padding: '1px 6px',
+                            borderRadius: 'var(--radius-pill)',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          POPULAR
+                        </div>
+                      )}
+                      {pkg.bestValue && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '-8px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: 'var(--gold-gradient)',
+                            color: '#1C1217',
+                            fontSize: '0.62rem',
+                            fontWeight: 900,
+                            padding: '1px 6px',
+                            borderRadius: 'var(--radius-pill)',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          BEST VALUE
+                        </div>
+                      )}
+                      <div style={{ fontSize: '1rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                        {pkg.count} ⭐ {pkg.count === 1 ? 'Super Like' : 'Super Likes'}
                       </div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', margin: '4px 0' }}>
-                        ₹{pkg.priceInr} / {pkg.coinPrice} 🪙
+                      <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#CA8A04', margin: '4px 0' }}>
+                        🪙 {pkg.coinPrice} Coins
                       </div>
-                      <div style={{ fontSize: '0.68rem', color: '#CA8A04', fontWeight: 700 }}>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
                         {pkg.tagline}
                       </div>
                     </div>

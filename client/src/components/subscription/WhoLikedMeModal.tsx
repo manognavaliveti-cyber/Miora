@@ -21,6 +21,7 @@ export const WhoLikedMeModal: React.FC = () => {
     whoLikedMeProfiles,
     currentUser,
     openUpgradeModal,
+    unlockWhoLikedMeProfiles,
     handleLike,
     openProfileDetail
   } = useApp();
@@ -135,63 +136,138 @@ export const WhoLikedMeModal: React.FC = () => {
           </p>
         </div>
 
-        {/* Free Plan Upgrade Teaser Header */}
+        {/* Free Plan Upgrade & Coin Unlock Teaser */}
         {!isPremium && (
           <div
             style={{
               margin: '16px 20px 0 20px',
-              background: 'linear-gradient(135deg, #FFF1F2 0%, #FEFCE8 100%)',
-              border: '1.5px solid var(--border-gold)',
-              borderRadius: '20px',
-              padding: '16px',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '12px',
-              flexWrap: 'wrap'
+              flexDirection: 'column',
+              gap: '12px'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div
-                style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  background: 'var(--primary-gradient)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#FFFFFF',
-                  flexShrink: 0
-                }}
-              >
-                <Crown size={20} />
-              </div>
-              <div>
-                <div style={{ fontSize: '0.92rem', fontWeight: 900, color: 'var(--berry-primary)' }}>
-                  Unlock All {whoLikedMeProfiles.length} Secret Admirers
-                </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  See crystal clear photos, read bios, and match with 100% success rate.
-                </div>
-              </div>
-            </div>
-
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                closeWhoLikedMeModal();
-                openUpgradeModal();
-              }}
+            {/* VIP / Gold banner */}
+            <div
               style={{
-                boxShadow: 'var(--shadow-berry-glow)',
-                fontWeight: 800,
-                fontSize: '0.82rem'
+                background: 'linear-gradient(135deg, #FFF1F2 0%, #FEFCE8 100%)',
+                border: '1.5px solid var(--border-gold)',
+                borderRadius: '20px',
+                padding: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                flexWrap: 'wrap'
               }}
             >
-              <Sparkles size={14} /> Reveal Now
-            </Button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '50%',
+                    background: 'var(--primary-gradient)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FFFFFF',
+                    flexShrink: 0
+                  }}
+                >
+                  <Crown size={20} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 900, color: 'var(--berry-primary)' }}>
+                    Unlock All {whoLikedMeProfiles.length} Secret Admirers
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    Get Gold (₹499/mo + 500 Coins) for unlimited unblurred admirers.
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  closeWhoLikedMeModal();
+                  openUpgradeModal();
+                }}
+                style={{
+                  boxShadow: 'var(--shadow-berry-glow)',
+                  fontWeight: 800,
+                  fontSize: '0.82rem'
+                }}
+              >
+                <Sparkles size={14} /> Get Gold Plan
+              </Button>
+            </div>
+
+            {/* Instant Coin Unlock Cards */}
+            <div
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '18px',
+                padding: '12px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '10px',
+                flexWrap: 'wrap'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Zap size={16} color="var(--gold-deep)" />
+                <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                  Or Unlock with Coins:
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => unlockWhoLikedMeProfiles(10, 100)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1.5px solid var(--border-gold)',
+                    background: '#FFFDF0',
+                    color: 'var(--gold-deep)',
+                    fontSize: '0.76rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    boxShadow: '0 2px 6px rgba(202, 138, 4, 0.15)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <Eye size={12} /> Unlock 10 (100 🪙)
+                </button>
+
+                <button
+                  onClick={() => unlockWhoLikedMeProfiles(50, 350)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1.5px solid var(--berry-primary)',
+                    background: 'var(--primary-gradient)',
+                    color: '#FFFFFF',
+                    fontSize: '0.76rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    boxShadow: 'var(--shadow-berry-glow)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <Star size={12} fill="#FFFFFF" /> Unlock 50 (350 🪙 • Save 30%)
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

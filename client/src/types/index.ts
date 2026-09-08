@@ -32,7 +32,7 @@ export type MainTab =
   | 'wallet'
   | 'profile';
 
-export type SubscriptionTier = 'free' | 'gold' | 'platinum';
+export type SubscriptionTier = 'free' | 'gold' | 'vip' | 'platinum';
 
 export interface Profile {
   id: string;
@@ -133,7 +133,7 @@ export interface CurrentUser {
   // Monetization & Tiers
   isPremium?: boolean;
   subscriptionTier: SubscriptionTier;
-  subscriptionPlanId?: 'monthly' | 'quarterly' | 'yearly';
+  subscriptionPlanId?: string;
   subscriptionExpiresAt?: string;
   
   // Swipes & Limits

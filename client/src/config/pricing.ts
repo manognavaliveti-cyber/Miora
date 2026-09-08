@@ -13,14 +13,36 @@ export interface RechargePackage {
   tagline?: string;
 }
 
+export interface CallMinutePackage {
+  id: string;
+  type: 'audio' | 'video';
+  minutes: number;
+  coins: number;
+  savingsPercent?: number;
+  popular?: boolean;
+  bestValue?: boolean;
+  tagline?: string;
+}
+
+export interface WhoLikedMeUnlockPackage {
+  id: string;
+  profilesCount: number;
+  coinPrice: number;
+  popular?: boolean;
+  tagline: string;
+}
+
 export interface SubscriptionPlanDef {
-  id: 'monthly' | 'quarterly' | 'yearly';
+  id: 'gold' | 'vip' | 'monthly' | 'quarterly' | 'yearly';
+  tier: 'free' | 'gold' | 'vip';
   name: string;
   billingPeriod: '1 Month' | '3 Months' | '1 Year';
   priceInr: number;
   pricePerMonthInr: number;
   coinPrice: number;
+  bonusCoins: number;
   discountPercent?: number;
+  callDiscountPercent?: number;
   popular?: boolean;
   bestValue?: boolean;
   badge?: string;
@@ -32,9 +54,12 @@ export interface PowerUpPackage {
   name: string;
   type: 'boost' | 'spotlight' | 'superlike';
   count: number;
-  priceInr: number;
+  durationMinutes?: number;
+  durationHours?: number;
+  priceInr?: number;
   coinPrice: number;
   popular?: boolean;
+  bestValue?: boolean;
   tagline: string;
 }
 
@@ -67,103 +92,151 @@ export const MIORA_PRICING = {
     freeWhoLikedMeBlurredCount: 12 // teaser count
   },
 
-  // 2. Subscriptions (Monthly, Quarterly, Yearly)
+  // 2. Subscriptions (FREE, GOLD ₹499/mo + 500 Coins, VIP ₹999/mo + 1500 Coins)
   subscriptionPlans: [
     {
-      id: 'monthly',
-      name: 'MIORA Gold Monthly',
+      id: 'gold',
+      tier: 'gold',
+      name: 'MIORA Gold',
       billingPeriod: '1 Month',
-      priceInr: 299,
-      pricePerMonthInr: 299,
-      coinPrice: 450,
-      badge: 'Flexible',
-      features: [
-        'Unlimited Daily Swipes & Likes',
-        'See Who Liked You (Unblurred Full Profiles)',
-        '5 Free Super Likes every day',
-        '1 Free 30-min Boost per month',
-        'All Advanced Lifestyle & Verified Filters',
-        'Rewind last swipe anytime'
-      ]
-    },
-    {
-      id: 'quarterly',
-      name: 'MIORA Gold Quarterly',
-      billingPeriod: '3 Months',
-      priceInr: 699,
-      pricePerMonthInr: 233,
-      coinPrice: 1050,
-      discountPercent: 22,
+      priceInr: 499,
+      pricePerMonthInr: 499,
+      coinPrice: 650,
+      bonusCoins: 500,
       popular: true,
-      badge: 'Most Popular (Save 22%)',
+      badge: 'Most Popular • +500 Coins 🪙',
       features: [
-        'Everything in Monthly',
-        'Save 22% on monthly rate',
-        '3 Free Boosts included',
-        'Priority Match Queue placement',
-        'Direct DM without waiting for match (1/week)',
-        'VIP Golden Badge on your profile'
+        'Unlimited Daily Likes & Swipes',
+        'See Who Liked You (Full Unblurred Profiles)',
+        '5 Free Super Likes every day',
+        'Advanced Lifestyle & Verified Filters',
+        '+500 Bonus MIORA Coins included',
+        'Rewind accidental left-swipes anytime'
       ]
     },
     {
-      id: 'yearly',
-      name: 'MIORA VIP Platinum Yearly',
-      billingPeriod: '1 Year',
-      priceInr: 1999,
-      pricePerMonthInr: 166,
-      coinPrice: 3000,
-      discountPercent: 44,
+      id: 'vip',
+      tier: 'vip',
+      name: 'MIORA VIP Royalty',
+      billingPeriod: '1 Month',
+      priceInr: 999,
+      pricePerMonthInr: 999,
+      coinPrice: 1350,
+      bonusCoins: 1500,
+      callDiscountPercent: 20,
       bestValue: true,
-      badge: 'Best Value (Save 44%)',
+      badge: 'Best Value • +1,500 Coins 👑',
       features: [
-        'Everything in Quarterly',
-        'Maximum 44% Savings (Only ₹166/month)',
-        '12 Free Profile Boosts + 4 Spotlights',
-        'Unlimited Super Likes & Rewinds',
-        'Incognito / Invisible Browsing Mode',
-        'Crown Platinum VIP Profile Frame',
-        'Dedicated 24/7 Priority Support'
+        'Everything included in Gold',
+        'Free Profile Boosts included',
+        'Priority Matching in Discover Queue',
+        '20% Video & Audio Call Coin Discounts',
+        '+1,500 Bonus MIORA Coins included',
+        'VIP Golden Crown Frame & Profile Aura',
+        '24/7 Dedicated Concierge Support'
       ]
     }
   ] as SubscriptionPlanDef[],
 
-  // 3. Power-Ups (Boost, Spotlight, Super Like Packs)
+  // 3. Audio & Video Call Minutes Pricing
+  calls: {
+    audio: [
+      { id: 'call_audio_1', type: 'audio', minutes: 1, coins: 20, tagline: '1 min quick vibe check' },
+      { id: 'call_audio_5', type: 'audio', minutes: 5, coins: 90, savingsPercent: 10, tagline: '5 mins • Save 10%' },
+      { id: 'call_audio_10', type: 'audio', minutes: 10, coins: 160, savingsPercent: 20, popular: true, tagline: '10 mins • Most Popular' },
+      { id: 'call_audio_30', type: 'audio', minutes: 30, coins: 450, savingsPercent: 25, tagline: '30 mins • Save 25%' },
+      { id: 'call_audio_60', type: 'audio', minutes: 60, coins: 800, savingsPercent: 33, bestValue: true, tagline: '60 mins • Best Value' }
+    ] as CallMinutePackage[],
+    video: [
+      { id: 'call_video_1', type: 'video', minutes: 1, coins: 40, tagline: '1 min video preview' },
+      { id: 'call_video_5', type: 'video', minutes: 5, coins: 180, savingsPercent: 10, tagline: '5 mins • Save 10%' },
+      { id: 'call_video_10', type: 'video', minutes: 10, coins: 330, savingsPercent: 17, popular: true, tagline: '10 mins • Most Popular' },
+      { id: 'call_video_30', type: 'video', minutes: 30, coins: 900, savingsPercent: 25, tagline: '30 mins • Save 25%' },
+      { id: 'call_video_60', type: 'video', minutes: 60, coins: 1600, savingsPercent: 33, bestValue: true, tagline: '60 mins • Best Value' }
+    ] as CallMinutePackage[]
+  },
+
+  // 4. Extra Revenue Features: Super Likes, Boosts & Who Liked Me
   powerUps: {
-    boost: {
-      durationMinutes: 30,
-      visibilityMultiplier: '10x',
-      singleCoins: 50,
-      singleInr: 29,
+    superLikes: {
       packages: [
         {
-          id: 'boost_1',
-          name: '1 Profile Boost',
-          type: 'boost',
+          id: 'superlike_1',
+          name: '1 Super Like',
+          type: 'superlike',
           count: 1,
-          priceInr: 29,
-          coinPrice: 50,
-          tagline: '30 mins of 10x visibility'
+          coinPrice: 30,
+          tagline: 'Stand out with 3x more visibility'
         },
         {
-          id: 'boost_5',
-          name: '5 Profile Boosts',
-          type: 'boost',
+          id: 'superlike_5',
+          name: '5 Super Likes',
+          type: 'superlike',
           count: 5,
-          priceInr: 119,
-          coinPrice: 200,
+          coinPrice: 120,
           popular: true,
-          tagline: 'Save 20% • Best for weekends'
+          tagline: 'Save 20% • Most Popular'
         },
         {
-          id: 'boost_10',
-          name: '10 Profile Boosts',
-          type: 'boost',
-          count: 10,
-          priceInr: 199,
-          coinPrice: 350,
-          tagline: 'Save 30% • Ultimate romance pack'
+          id: 'superlike_15',
+          name: '15 Super Likes',
+          type: 'superlike',
+          count: 15,
+          coinPrice: 300,
+          bestValue: true,
+          tagline: 'Save 33% • Best Value Bundle'
         }
       ] as PowerUpPackage[]
+    },
+    boost: {
+      packages: [
+        {
+          id: 'boost_30m',
+          name: '30 Minutes Boost',
+          type: 'boost',
+          count: 1,
+          durationMinutes: 30,
+          coinPrice: 100,
+          tagline: '10x visibility for 30 minutes'
+        },
+        {
+          id: 'boost_2h',
+          name: '2 Hours Boost',
+          type: 'boost',
+          count: 1,
+          durationHours: 2,
+          coinPrice: 250,
+          popular: true,
+          tagline: 'Peak evening visibility • Most Popular'
+        },
+        {
+          id: 'boost_24h',
+          name: '24 Hours Boost',
+          type: 'boost',
+          count: 1,
+          durationHours: 24,
+          coinPrice: 600,
+          bestValue: true,
+          tagline: 'All-day 10x visibility • Best Value'
+        }
+      ] as PowerUpPackage[]
+    },
+    whoLikedMe: {
+      packages: [
+        {
+          id: 'wlm_10',
+          profilesCount: 10,
+          coinPrice: 100,
+          popular: true,
+          tagline: 'Unlock 10 Secret Admirers'
+        },
+        {
+          id: 'wlm_50',
+          profilesCount: 50,
+          coinPrice: 350,
+          tagline: 'Unlock 50 Secret Admirers (Save 30%)'
+        }
+      ] as WhoLikedMeUnlockPackage[]
     },
     spotlight: {
       durationHours: 24,
@@ -190,48 +263,7 @@ export const MIORA_PRICING = {
           tagline: '3 Days of top banner placement'
         }
       ] as PowerUpPackage[]
-    },
-    superLikes: {
-      packages: [
-        {
-          id: 'superlike_5',
-          name: '5 Super Likes',
-          type: 'superlike',
-          count: 5,
-          priceInr: 29,
-          coinPrice: 40,
-          tagline: 'Stand out 3x more'
-        },
-        {
-          id: 'superlike_15',
-          name: '15 Super Likes',
-          type: 'superlike',
-          count: 15,
-          priceInr: 69,
-          coinPrice: 100,
-          popular: true,
-          tagline: 'Most Popular choice'
-        },
-        {
-          id: 'superlike_30',
-          name: '30 Super Likes',
-          type: 'superlike',
-          count: 30,
-          priceInr: 119,
-          coinPrice: 180,
-          tagline: 'Best value super-like bundle'
-        }
-      ] as PowerUpPackage[]
     }
-  },
-
-  // 4. Talk Time Monetization
-  talkTime: {
-    inrPer20Minutes: 14,
-    coinsPer10Minutes: 50,
-    coinsPer20Minutes: 100,
-    defaultFreeMinutes: 3,
-    warningThresholdSeconds: 120
   },
 
   // 4b. Profile Verification Check

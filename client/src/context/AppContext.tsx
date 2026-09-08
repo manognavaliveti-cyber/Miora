@@ -100,7 +100,7 @@ interface AppContextType {
   toggleMute: () => void;
   toggleCamera: () => void;
   switchCamera: () => void;
-  extendTalkTimeWithCoins: () => boolean;
+  extendTalkTimeWithCoins: (minutes?: number, coinCost?: number, type?: 'audio' | 'video') => boolean;
   extendTalkTimeWithInr: (inrAmount: number, minutes: number) => Promise<boolean>;
   isTalkTimeModalOpen: boolean;
   openTalkTimeModal: () => void;
@@ -240,11 +240,12 @@ interface AppContextType {
   spotlightProfiles: Profile[];
   advancedFilters: AdvancedFilterCriteria;
   setAdvancedFilters: (filters: AdvancedFilterCriteria) => void;
-  subscribeToPlan: (planId: 'monthly' | 'quarterly' | 'yearly', paymentMethod: 'inr' | 'coins') => Promise<void>;
+  subscribeToPlan: (planId: string, paymentMethod: 'inr' | 'coins') => Promise<void>;
   activateBoost: () => Promise<void>;
   activateSpotlight: () => Promise<void>;
-  buyPowerUp: (pkg: PowerUpPackage) => Promise<void>;
+  buyPowerUp: (pkg: PowerUpPackage) => Promise<boolean>;
   useSuperLike: (profileId: string) => Promise<void>;
+  unlockWhoLikedMeProfiles: (count: number, coinPrice: number) => boolean;
   isBoostActive: boolean;
   boostTimeRemainingFormatted: string;
   directGuestLogin: () => void;
@@ -503,12 +504,45 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const openFilterModal = () => setIsFilterModalOpen(true);
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
-  const subscribeToPlan = async (planId: 'monthly' | 'quarterly' | 'yearly', paymentMethod: 'inr' | 'coins') => {
+  const subscribeToPlan = async (planId: string, paymentMethod: 'inr' | 'coins') => {
     try {
       setIsLoading(true);
-      const updatedUser = await apiService.subscribe(planId, paymentMethod);
-      setCurrentUser(updatedUser);
-      showToast(`🎉 Welcome to MIORA VIP! Unlimited Swipes & Perks Unlocked! 👑`);
+      const isVip = planId === 'vip' || planId === 'yearly';
+      const tier: SubscriptionTier = isVip ? 'vip' : 'gold';
+      const bonusCoins = isVip ? 1500 : 500;
+
+      let updatedUser: CurrentUser;
+      try {
+        updatedUser = await apiService.subscribe(planId, paymentMethod);
+      } catch {
+        updatedUser = {
+          ...currentUser,
+          isPremium: true,
+          subscriptionTier: tier,
+          subscriptionPlanId: planId,
+          dailySwipesRemaining: 9999,
+          superLikesRemaining: (currentUser.superLikesRemaining || 0) + (isVip ? 30 : 15),
+          boostsCount: (currentUser.boostsCount || 0) + (isVip ? 5 : 2),
+          coinBalance: currentUser.coinBalance + bonusCoins
+        };
+      }
+
+      // Record bonus transaction
+      spendCoins(-bonusCoins, `🎉 ${tier.toUpperCase()} Subscription Bonus (+${bonusCoins.toLocaleString()} Coins)`);
+
+      setCurrentUser((prev) => ({
+        ...prev,
+        ...updatedUser,
+        isPremium: true,
+        subscriptionTier: tier,
+        subscriptionPlanId: planId,
+        dailySwipesRemaining: 9999,
+        superLikesRemaining: (prev.superLikesRemaining || 0) + (isVip ? 30 : 15),
+        boostsCount: (prev.boostsCount || 0) + (isVip ? 5 : 2),
+        coinBalance: prev.coinBalance + bonusCoins
+      }));
+
+      showToast(`🎉 Welcome to MIORA ${tier.toUpperCase()}! +${bonusCoins.toLocaleString()} Bonus Coins & VIP Perks Unlocked! 👑`);
       closeUpgradeModal();
     } catch (e: any) {
       showToast(`Subscription failed: ${e?.message || 'Please try again'}`);
@@ -521,7 +555,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       const updated = await apiService.activateBoost();
       setCurrentUser(updated);
-      showToast('🚀 30-Minute Profile Boost Activated! You are now getting 10x visibility.');
+      showToast('🚀 Profile Boost Activated! You are now getting 10x visibility.');
       closeBoostModal();
     } catch (e: any) {
       showToast(e?.message || 'Failed to activate boost');
@@ -539,21 +573,62 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const buyPowerUp = async (pkg: PowerUpPackage) => {
+  const buyPowerUp = async (pkg: PowerUpPackage): Promise<boolean> => {
     try {
-      if (pkg.type === 'boost') {
-        setCurrentUser(prev => ({ ...prev, boostsCount: (prev.boostsCount || 0) + pkg.count }));
-        showToast(`Added ${pkg.count} Boost${pkg.count > 1 ? 's' : ''} to inventory! 🚀`);
-      } else if (pkg.type === 'spotlight') {
-        setCurrentUser(prev => ({ ...prev, spotlightsCount: (prev.spotlightsCount || 0) + pkg.count }));
-        showToast(`Added ${pkg.count} Spotlight${pkg.count > 1 ? 's' : ''} to inventory! 🌟`);
-      } else if (pkg.type === 'superlike') {
-        setCurrentUser(prev => ({ ...prev, superLikesRemaining: (prev.superLikesRemaining || 0) + pkg.count }));
-        showToast(`Refilled ${pkg.count} Super Likes! ⭐`);
+      const cost = pkg.coinPrice;
+      if (currentUser.coinBalance < cost) {
+        showToast(`Need ${cost} Coins for this pack. Recharge your wallet! 💰`);
+        return false;
       }
+
+      spendCoins(cost, `Purchased ${pkg.name}`);
+
+      if (pkg.type === 'boost') {
+        const durationHours = pkg.durationHours || (pkg.durationMinutes ? pkg.durationMinutes / 60 : 0.5);
+        const activeUntil = new Date(Date.now() + durationHours * 3600 * 1000).toISOString();
+        setCurrentUser((prev) => ({
+          ...prev,
+          boostsCount: (prev.boostsCount || 0) + pkg.count,
+          boostActiveUntil: activeUntil
+        }));
+        showToast(`Activated ${pkg.name}! 🚀 10x visibility active.`);
+        closeBoostModal();
+      } else if (pkg.type === 'superlike') {
+        setCurrentUser((prev) => ({
+          ...prev,
+          superLikesRemaining: (prev.superLikesRemaining || 0) + pkg.count
+        }));
+        showToast(`Refilled ${pkg.count} Super Likes! ⭐`);
+        closeBoostModal();
+      } else if (pkg.type === 'spotlight') {
+        const activeUntil = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
+        setCurrentUser((prev) => ({
+          ...prev,
+          spotlightsCount: (prev.spotlightsCount || 0) + pkg.count,
+          spotlightActiveUntil: activeUntil
+        }));
+        showToast(`Activated 24h Spotlight! 🌟 Pinned to top Discover.`);
+        closeBoostModal();
+      }
+      return true;
     } catch (e: any) {
       showToast('Failed to purchase powerup');
+      return false;
     }
+  };
+
+  const unlockWhoLikedMeProfiles = (count: number, coinPrice: number): boolean => {
+    if (currentUser.coinBalance < coinPrice) {
+      showToast(`Need ${coinPrice} Coins to unlock ${count} admirers. Recharge your wallet! 💰`);
+      return false;
+    }
+
+    spendCoins(coinPrice, `Unlocked ${count} Secret Admirers (Who Liked Me)`);
+    setWhoLikedMeProfiles((prev) =>
+      prev.map((p, idx) => (idx < count ? { ...p, unlocked: true } : p))
+    );
+    showToast(`Unlocked ${count} secret admirers! Check them out ✨`);
+    return true;
   };
 
   const useSuperLike = async (profileId: string) => {
@@ -636,7 +711,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           talkTimeSecondsRemaining: newRemaining
         }));
 
-        const isLowTime = newRemaining <= MIORA_PRICING.talkTime.warningThresholdSeconds;
+        const isLowTime = newRemaining <= 60;
         if (isLowTime && !prev.isWarningLowTime && newRemaining > 0) {
           showToast('⚠️ Low talk time! Add talk time or use coins to keep speaking.');
         }
@@ -1052,24 +1127,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const openTalkTimeModal = () => setIsTalkTimeModalOpen(true);
   const closeTalkTimeModal = () => setIsTalkTimeModalOpen(false);
 
-  const extendTalkTimeWithCoins = (): boolean => {
-    const cost = MIORA_PRICING.talkTime.coinsPer10Minutes;
-    if (currentUser.coinBalance < cost) {
-      showToast(`Need ${cost} Coins to extend 10 minutes. Recharge your wallet!`);
+  const extendTalkTimeWithCoins = (minutes: number = 10, coinCost?: number, type: 'audio' | 'video' = 'audio'): boolean => {
+    let finalCost = coinCost !== undefined ? coinCost : (type === 'video' ? 330 : 160);
+    // Apply 20% discount if VIP
+    if (currentUser.subscriptionTier === 'vip') {
+      finalCost = Math.round(finalCost * 0.8);
+    }
+
+    if (currentUser.coinBalance < finalCost) {
+      showToast(`Need ${finalCost} Coins to purchase ${minutes} mins. Recharge your wallet! 💰`);
       return false;
     }
 
-    spendCoins(cost, 'Extended Talk Time (+10 mins)', activeCall?.partner.name);
+    const addedSeconds = minutes * 60;
+    spendCoins(finalCost, `Purchased ${minutes} mins ${type === 'video' ? '📹 Video' : '🎙️ Audio'} Time`, activeCall?.partner.name);
     setCurrentUser((u) => ({
       ...u,
-      talkTimeSecondsRemaining: u.talkTimeSecondsRemaining + 600
+      talkTimeSecondsRemaining: u.talkTimeSecondsRemaining + addedSeconds
     }));
 
     if (activeCall) {
-      setActiveCall((c) => (c ? { ...c, remainingTalkTimeSeconds: c.remainingTalkTimeSeconds + 600 } : null));
+      setActiveCall((c) => (c ? { ...c, remainingTalkTimeSeconds: c.remainingTalkTimeSeconds + addedSeconds } : null));
     }
 
-    showToast('Talk time extended by +10 minutes! 🎉');
+    showToast(`Talk time extended by +${minutes} minutes! 🎉`);
     closeTalkTimeModal();
     return true;
   };
@@ -1981,6 +2062,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         activateSpotlight,
         buyPowerUp,
         useSuperLike,
+        unlockWhoLikedMeProfiles,
         isBoostActive,
         boostTimeRemainingFormatted,
 

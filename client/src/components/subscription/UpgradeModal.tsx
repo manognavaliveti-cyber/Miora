@@ -26,14 +26,14 @@ export const UpgradeModal: React.FC = () => {
     isLoading
   } = useApp();
 
-  const [selectedPlanId, setSelectedPlanId] = useState<'monthly' | 'quarterly' | 'yearly'>('quarterly');
+  const [selectedPlanId, setSelectedPlanId] = useState<'gold' | 'vip' | 'monthly' | 'quarterly' | 'yearly'>('gold');
   const [paymentMethod, setPaymentMethod] = useState<'inr' | 'coins'>('inr');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   if (!isUpgradeModalOpen) return null;
 
   const plans = MIORA_PRICING.subscriptionPlans;
-  const currentPlan = plans.find((p) => p.id === selectedPlanId) || plans[1];
+  const currentPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
 
   const handleUpgrade = async () => {
     setIsProcessing(true);
@@ -46,15 +46,6 @@ export const UpgradeModal: React.FC = () => {
       setIsProcessing(false);
     }
   };
-
-  const featureList = [
-    { icon: <Zap size={18} color="#F59E0B" />, title: 'Unlimited Likes & Swipes', desc: 'No daily limits or cooldown timers' },
-    { icon: <Eye size={18} color="#EC4899" />, title: 'See Who Liked You', desc: 'Unblur all secret admirers with 1-tap match' },
-    { icon: <Star size={18} color="#EAB308" />, title: '5 Daily Super Likes', desc: 'Stand out 3x more in top match stacks' },
-    { icon: <Flame size={18} color="#EF4444" />, title: 'Free Monthly Boosts', desc: 'Get 10x visibility during peak hours' },
-    { icon: <SlidersHorizontal size={18} color="#8B5CF6" />, title: 'Advanced Lifestyle Filters', desc: 'Filter by intent, zodiac, habits & verified only' },
-    { icon: <ShieldCheck size={18} color="#10B981" />, title: 'VIP Golden Crown Badge', desc: 'Luxury badge on your profile and stories' }
-  ];
 
   return (
     <div
@@ -79,7 +70,7 @@ export const UpgradeModal: React.FC = () => {
         style={{
           background: 'linear-gradient(180deg, #FFFFFF 0%, #FFFDFD 100%)',
           width: '100%',
-          maxWidth: '560px',
+          maxWidth: '580px',
           maxHeight: '90vh',
           borderRadius: '28px',
           boxShadow: '0 25px 60px -15px rgba(136, 19, 55, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.3)',
@@ -94,7 +85,7 @@ export const UpgradeModal: React.FC = () => {
         <div
           style={{
             background: 'linear-gradient(135deg, #4C0519 0%, #881337 50%, #BE123C 100%)',
-            padding: '32px 24px 24px 24px',
+            padding: '30px 24px 22px 24px',
             color: '#FFFFFF',
             position: 'relative',
             textAlign: 'center',
@@ -128,11 +119,11 @@ export const UpgradeModal: React.FC = () => {
           {/* Crown Icon */}
           <div
             style={{
-              width: '64px',
-              height: '64px',
+              width: '60px',
+              height: '60px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, #FDE68A 0%, #D4AF37 50%, #92400E 100%)',
-              margin: '0 auto 14px auto',
+              margin: '0 auto 12px auto',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -140,7 +131,7 @@ export const UpgradeModal: React.FC = () => {
               border: '2px solid #FFFFFF'
             }}
           >
-            <Crown size={32} color="#4C0519" />
+            <Crown size={30} color="#4C0519" />
           </div>
 
           <span
@@ -157,7 +148,7 @@ export const UpgradeModal: React.FC = () => {
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               color: '#FDE68A',
-              marginBottom: '8px'
+              marginBottom: '6px'
             }}
           >
             <Sparkles size={12} /> Unlock Full Romance Potential
@@ -173,15 +164,15 @@ export const UpgradeModal: React.FC = () => {
               color: '#FFFFFF'
             }}
           >
-            Upgrade to MIORA VIP
+            Choose Your MIORA Plan
           </h2>
-          <p style={{ fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0 }}>
-            Match faster, see secret admirers, and enjoy unlimited meaningful connections.
+          <p style={{ fontSize: '0.86rem', color: 'rgba(255, 255, 255, 0.88)', margin: 0 }}>
+            Unlimited likes, secret admirers, call discounts, and instant bonus coins.
           </p>
         </div>
 
         {/* Content Body */}
-        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Plan Selector Grid */}
           <div>
             <label
@@ -195,100 +186,110 @@ export const UpgradeModal: React.FC = () => {
                 marginBottom: '10px'
               }}
             >
-              Choose Your VIP Membership:
+              Select Membership Tier:
             </label>
 
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '10px'
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '12px'
               }}
             >
               {plans.map((plan) => {
                 const isSelected = selectedPlanId === plan.id;
+                const isVip = plan.id === 'vip';
                 return (
                   <div
                     key={plan.id}
                     onClick={() => setSelectedPlanId(plan.id)}
                     style={{
                       border: isSelected
-                        ? '2px solid var(--berry-primary)'
+                        ? (isVip ? '2px solid #CA8A04' : '2px solid var(--berry-primary)')
                         : '1.5px solid var(--border-subtle)',
                       background: isSelected
-                        ? 'linear-gradient(180deg, #FFF1F2 0%, #FFFFFF 100%)'
+                        ? (isVip ? 'linear-gradient(180deg, #FEFCE8 0%, #FFFFFF 100%)' : 'linear-gradient(180deg, #FFF1F2 0%, #FFFFFF 100%)')
                         : '#FFFFFF',
-                      borderRadius: '18px',
-                      padding: '14px 10px',
+                      borderRadius: '20px',
+                      padding: '16px 14px',
                       textAlign: 'center',
                       cursor: 'pointer',
                       position: 'relative',
                       boxShadow: isSelected
-                        ? '0 10px 25px rgba(136, 19, 55, 0.12)'
+                        ? (isVip ? '0 12px 28px rgba(202, 138, 4, 0.2)' : '0 12px 28px rgba(136, 19, 55, 0.15)')
                         : 'var(--shadow-sm)',
                       transition: 'all var(--transition-fast)',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
-                      minHeight: '120px'
+                      minHeight: '140px'
                     }}
                   >
                     {/* Badge */}
-                    {plan.discountPercent && (
+                    {plan.badge && (
                       <div
                         style={{
                           position: 'absolute',
                           top: '-10px',
                           left: '50%',
                           transform: 'translateX(-50%)',
-                          background: plan.bestValue
-                            ? 'linear-gradient(135deg, #D4AF37 0%, #92400E 100%)'
+                          background: isVip
+                            ? 'linear-gradient(135deg, #CA8A04 0%, #92400E 100%)'
                             : 'var(--primary-gradient)',
                           color: '#FFFFFF',
-                          fontSize: '0.65rem',
+                          fontSize: '0.66rem',
                           fontWeight: 900,
-                          padding: '2px 8px',
+                          padding: '2px 10px',
                           borderRadius: 'var(--radius-pill)',
                           whiteSpace: 'nowrap',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                         }}
                       >
-                        {plan.bestValue ? 'BEST VALUE' : `SAVE ${plan.discountPercent}%`}
+                        {plan.badge}
                       </div>
                     )}
 
                     <div>
                       <div
                         style={{
-                          fontSize: '0.85rem',
-                          fontWeight: 800,
-                          color: isSelected ? 'var(--berry-primary)' : 'var(--text-primary)',
-                          marginTop: plan.discountPercent ? '4px' : '0'
+                          fontSize: '1rem',
+                          fontWeight: 900,
+                          color: isSelected ? (isVip ? '#854D0E' : 'var(--berry-primary)') : 'var(--text-primary)',
+                          marginTop: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px'
                         }}
                       >
-                        {plan.billingPeriod}
+                        {isVip && <Crown size={16} color="#CA8A04" />}
+                        {plan.name}
                       </div>
                       <div
                         style={{
-                          fontSize: '1.25rem',
+                          fontSize: '1.4rem',
                           fontWeight: 900,
                           color: 'var(--text-primary)',
                           margin: '4px 0'
                         }}
                       >
-                        ₹{plan.pricePerMonthInr}
-                        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-secondary)' }}>/mo</span>
+                        ₹{plan.priceInr}
+                        <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--text-secondary)' }}>/month</span>
                       </div>
                     </div>
 
                     <div
                       style={{
-                        fontSize: '0.72rem',
-                        color: isSelected ? 'var(--berry-primary)' : 'var(--text-tertiary)',
-                        fontWeight: 700
+                        fontSize: '0.78rem',
+                        color: isVip ? '#B45309' : 'var(--berry-primary)',
+                        fontWeight: 800,
+                        background: isVip ? 'rgba(253, 230, 138, 0.35)' : 'rgba(255, 228, 230, 0.6)',
+                        padding: '4px 8px',
+                        borderRadius: 'var(--radius-pill)',
+                        marginTop: '6px'
                       }}
                     >
-                      Total ₹{plan.priceInr}
+                      +{plan.bonusCoins.toLocaleString()} Bonus Coins 🪙
                     </div>
                   </div>
                 );
@@ -326,7 +327,7 @@ export const UpgradeModal: React.FC = () => {
                   transition: 'all var(--transition-fast)'
                 }}
               >
-                ₹ INR Card/UPI
+                ₹ INR UPI/Cards
               </button>
               <button
                 onClick={() => setPaymentMethod('coins')}
@@ -374,29 +375,24 @@ export const UpgradeModal: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {featureList.map((feat, i) => (
+              {currentPlan.features.map((feat, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div
                     style={{
-                      width: '28px',
-                      height: '28px',
+                      width: '24px',
+                      height: '24px',
                       borderRadius: '50%',
-                      background: 'rgba(136, 19, 55, 0.06)',
+                      background: 'rgba(16, 185, 129, 0.12)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0
                     }}
                   >
-                    {feat.icon}
+                    <Check size={14} color="#10B981" />
                   </div>
-                  <div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {feat.title}
-                    </div>
-                    <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
-                      {feat.desc}
-                    </div>
+                  <div style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    {feat}
                   </div>
                 </div>
               ))}
@@ -420,12 +416,12 @@ export const UpgradeModal: React.FC = () => {
             >
               <Crown size={20} />
               {paymentMethod === 'coins'
-                ? `Activate for ${currentPlan.coinPrice} Coins`
-                : `Get VIP for ₹${currentPlan.priceInr} (${currentPlan.billingPeriod})`}
+                ? `Activate ${currentPlan.name} for ${currentPlan.coinPrice} Coins`
+                : `Get ${currentPlan.name} for ₹${currentPlan.priceInr}/month`}
             </Button>
 
             <p style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', textAlign: 'center', margin: 0 }}>
-              Cancel anytime. Instant activation with 100% money-back romance guarantee.
+              Includes +{currentPlan.bonusCoins.toLocaleString()} bonus coins credited instantly. Cancel anytime.
             </p>
           </div>
         </div>
@@ -433,3 +429,4 @@ export const UpgradeModal: React.FC = () => {
     </div>
   );
 };
+
