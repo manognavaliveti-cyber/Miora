@@ -1,0 +1,97 @@
+:root {
+  /* Brand Luxury Palette: Soft Pink, Blush, Rose Petal & Champagne Gold */
+  --bg-warm-ivory: #FFF5F7;
+  --bg-cream: #FCEDF2;
+  --bg-soft-blush: #FDE8EE;
+  --bg-blush-subtle: #FDF2F5;
+  --bg-rose-gray: #F7E4EB;
+
+  /* Surfaces & Glass */
+  --surface-white: #FFFFFF;
+  --surface-cream: #FFF8FA;
+  --surface-glass: rgba(255, 255, 255, 0.92);
+  --surface-glass-subtle: rgba(255, 255, 255, 0.78);
+  --surface-glass-border: rgba(244, 63, 94, 0.12);
+
+  /* Deep Berry, Romantic Rose & Coral Pinks */
+  --wine-dark: #3F0515;
+  --wine-rich: #4C0519;
+  --wine-deep: #701A31;
+  --berry-deep: #701A31;
+  --berry-primary: #BE123C;
+  --berry-raspberry: #E11D48;
+  --berry-bright: #F43F5E;
+  --rose-soft: #FB7185;
+  --rose-dusty: #FDA4AF;
+  --rose-petal: #FECDD3;
+  --rose-blush: #FCE7EC;
+
+  /* Champagne / Gold Accents */
+  --gold-light: #FDF3D6;
+  --gold-champagne: #D4AF37;
+  --gold-antique: #C5A059;
+  --gold-deep: #9A7B2C;
+  --gold-gradient: linear-gradient(135deg, #F9E7B4 0%, #D4AF37 50%, #B89230 100%);
+  --gold-gradient-subtle: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(244, 63, 94, 0.06) 100%);
+
+  /* Primary Gradients */
+  --primary-gradient: linear-gradient(135deg, #EE3865 0%, #F43F5E 50%, #BE123C 100%);
+  --primary-gradient-hover: linear-gradient(135deg, #F43F5E 0%, #E11D48 50%, #9F1239 100%);
+  --primary-gradient-subtle: linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(251, 113, 133, 0.04) 100%);
+  --ambient-bg-gradient: radial-gradient(circle at 18% 12%, #FFF8FA 0%, #FDEEF3 45%, #FADBE5 100%);
+
+  /* Action Button Accents */
+  --action-pass: #64748B;
+  --action-pass-hover: #E11D48;
+  --action-superlike: #D4AF37;
+  --action-superlike-hover: #F3D382;
+  --action-like: #EE3865;
+  --action-like-hover: #F43F5E;
+
+  /* Text Typography Colors */
+  --text-primary: #1F161A;
+  --text-secondary: #5C4751;
+  --text-muted: #8F7B85;
+  --text-white: #FFFFFF;
+  --text-gold: #B89230;
+  --text-berry: #BE123C;
+
+  /* Borders */
+  --border-subtle: rgba(244, 63, 94, 0.12);
+  --border-light: rgba(244, 63, 94, 0.18);
+  --border-gold: rgba(212, 175, 55, 0.35);
+  --border-focus: #EE3865;
+
+  /* Multi-Layered Soft Romantic Shadows */
+  --shadow-xs: 0 2px 6px rgba(225, 29, 72, 0.03);
+  --shadow-sm: 0 4px 14px rgba(225, 29, 72, 0.06);
+  --shadow-md: 0 10px 30px rgba(225, 29, 72, 0.08);
+  --shadow-lg: 0 18px 48px rgba(225, 29, 72, 0.12);
+  --shadow-float: 0 24px 60px rgba(225, 29, 72, 0.16);
+  --shadow-berry-glow: 0 10px 30px rgba(238, 56, 101, 0.32);
+  --shadow-gold-glow: 0 8px 24px rgba(212, 175, 55, 0.28);
+  --shadow-magenta-glow: 0 10px 28px rgba(244, 63, 94, 0.35);
+
+  /* Border Radii */
+  --radius-xs: 8px;
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --radius-pill: 9999px;
+
+  /* Typography Fonts - Unified Global Manrope System */
+  --font-primary: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-main: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Micro-interactions & Springs */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}

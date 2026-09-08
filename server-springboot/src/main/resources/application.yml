@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: miora-backend
+  main:
+    banner-mode: console
+
+firebase:
+  project-id: ${FIREBASE_PROJECT_ID:miora-ea6a7}
+  service-account-path: ${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}
+  # When true or auto, allows development testing even without live Firebase service account credentials
+  dev-fallback-enabled: ${FIREBASE_DEV_FALLBACK:true}
+
+cors:
+  allowed-origins:
+    - "http://localhost:5173"
+    - "http://localhost:5174"
+    - "http://localhost:5175"
+    - "http://localhost:3000"
+    - "http://127.0.0.1:5173"
+    - "http://127.0.0.1:5174"
+    - "http://127.0.0.1:5175"
+
+logging:
+  level:
+    root: INFO
+    com.miora: DEBUG
+    org.springframework.security: INFO

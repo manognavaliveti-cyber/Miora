@@ -1,0 +1,19 @@
+{
+  "name": "miora",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MIORA - Meet. Match. Belong. Dating Application MVP",
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"magenta,cyan\" \"npm run server\" \"npm run client\"",
+    "client": "npm --prefix client run dev",
+    "server": "npm --prefix server run dev",
+    "build": "npm --prefix server run build && npm --prefix client run build",
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "firebase": "^12.18.0"
+  }
+}
