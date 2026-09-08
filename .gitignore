@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production builds
+dist/
+build/
+target/
+*.war
+*.jar
+
+# Local Environment & Secrets - CRITICAL: NEVER COMMIT
+.env
+.env.*
+.env.local
+.env.*.local
+**/.env
+**/.env.*
+*.secret
+*.pem
+*.key
+*.p12
+*.crt
+*service-account*.json
+firebase-service-account*.json
+google-services*.json
+GoogleService-Info*.plist
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories & OS files
+.vscode/
+.idea/
+*.iws
+*.iml
+*.ipr
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db

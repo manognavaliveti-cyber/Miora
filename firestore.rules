@@ -1,0 +1,156 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Helper to verify sensitive fields are not modified directly by client
+    function isNotModifying(field) {
+      return !(field in request.resource.data) ||
+             (resource != null && request.resource.data[field] == resource.data[field]);
+    }
+
+    // ==========================================
+    // 1. USERS COLLECTION
+    // ==========================================
+    match /users/{userId} {
+      // Authenticated users can view other profiles
+      allow read: if isAuthenticated();
+
+      // User can create their own profile document
+      allow create: if isOwner(userId)
+                    && request.resource.data.coinBalance <= 500
+                    && request.resource.data.isPremium == false;
+
+      // User can update their own profile, but CANNOT modify coins, premium status or gifts
+      allow update: if isOwner(userId)
+                    && isNotModifying('coinBalance')
+                    && isNotModifying('isPremium')
+                    && isNotModifying('talkTimeSecondsRemaining')
+                    && isNotModifying('receivedGifts');
+
+      // Only backend Admin SDK can delete users
+      allow delete: if false;
+    }
+
+    // ==========================================
+    // 2. PROFILES (DISCOVER FEED)
+    // ==========================================
+    match /profiles/{profileId} {
+      allow read: if isAuthenticated();
+      // Managed by Spring Boot backend Admin SDK
+      allow write: if false;
+    }
+
+    // ==========================================
+    // 3. MATCHES
+    // ==========================================
+    match /matches/{matchId} {
+      allow read: if isAuthenticated();
+      // Match generation is handled by Spring Boot Admin SDK
+      allow write: if false;
+    }
+
+    // ==========================================
+    // 4. CHAT MESSAGES
+    // ==========================================
+    match /messages/{messageId} {
+      allow read: if isAuthenticated();
+      // User can only send messages as themselves
+      allow create: if isAuthenticated()
+                    && request.resource.data.senderId == request.auth.uid
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 2000;
+      // Chat messages cannot be edited/deleted directly from client
+      allow update, delete: if false;
+    }
+
+    // ==========================================
+    // 5. FEED POSTS
+    // ==========================================
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.content.size() > 0
+                    && request.resource.data.content.size() <= 1000;
+      // Only post author can edit or delete their own post
+      allow update, delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    // ==========================================
+    // 6. STATUS STORIES
+    // ==========================================
+    match /stories/{storyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+                    && request.resource.data.authorId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+      allow update: if false;
+    }
+
+    // ==========================================
+    // 7. STATUS NOTES (EPHEMERAL 24H)
+    // ==========================================
+    match /status_notes/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    // ==========================================
+    // 8. FOLLOW SYSTEM
+    // ==========================================
+    match /follows/{followId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.followerId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.followerId == request.auth.uid;
+      allow update: if false;
+    }
+
+    // ==========================================
+    // 9. WALLET & TRANSACTIONS (CRITICAL SECURITY)
+    // ==========================================
+    match /transactions/{txId} {
+      // User can view only their own transaction history
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      // Client is NEVER allowed to write transactions (Admin SDK only)
+      allow write: if false;
+    }
+
+    match /wallets/{walletId} {
+      allow read: if isOwner(walletId);
+      allow write: if false;
+    }
+
+    // ==========================================
+    // 10. SAFETY REPORTS & MODERATION
+    // ==========================================
+    match /safety_reports/{reportId} {
+      // Users can submit reports with their own UID
+      allow create: if isAuthenticated() && request.resource.data.reporterId == request.auth.uid;
+      // Regular users cannot read or modify reports
+      allow read, update, delete: if false;
+    }
+
+    // ==========================================
+    // 11. BLOCKS
+    // ==========================================
+    match /blocks/{blockId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // ==========================================
+    // DEFAULT CATCH-ALL DENY
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
