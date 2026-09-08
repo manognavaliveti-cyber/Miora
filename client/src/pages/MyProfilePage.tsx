@@ -25,7 +25,10 @@ import {
   ArrowRight,
   CreditCard,
   Clock,
-  Zap
+  Zap,
+  Crown,
+  Rocket,
+  Star
 } from 'lucide-react';
 import { PostCard } from '../components/feed/PostCard';
 
@@ -40,6 +43,8 @@ export const MyProfilePage: React.FC = () => {
     openFollowersModal,
     openStatusNoteModal,
     openCreatePostModal,
+    openUpgradeModal,
+    openBoostModal,
     showToast
   } = useApp();
 
@@ -275,6 +280,109 @@ export const MyProfilePage: React.FC = () => {
             </span>
             <span style={{ fontSize: '0.72rem', color: '#6B7280', fontWeight: 700 }}>Thought</span>
           </div>
+        </div>
+      </div>
+
+      {/* VIP Membership & Power-Ups Status Card */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #4C0519 0%, #881337 50%, #BE123C 100%)',
+          borderRadius: '24px',
+          padding: '20px 24px',
+          color: '#FFFFFF',
+          marginBottom: '20px',
+          boxShadow: '0 12px 30px -5px rgba(136, 19, 55, 0.28)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 16px rgba(212, 175, 55, 0.45)',
+              flexShrink: 0
+            }}
+          >
+            <Crown size={26} color="#4C0519" />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#FFFFFF' }}>
+                {currentUser.isPremium ? 'MIORA VIP Member 👑' : 'Free Explorer'}
+              </span>
+              <span
+                style={{
+                  background: 'rgba(253, 230, 138, 0.25)',
+                  color: '#FDE68A',
+                  border: '1px solid rgba(253, 230, 138, 0.5)',
+                  fontSize: '0.68rem',
+                  fontWeight: 900,
+                  padding: '2px 8px',
+                  borderRadius: 'var(--radius-pill)'
+                }}
+              >
+                {currentUser.subscriptionTier?.toUpperCase() || 'FREE'}
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', marginTop: '6px', fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+              <span>🚀 <strong>{currentUser.boostsCount || 0}</strong> Boosts</span>
+              <span>🌟 <strong>{currentUser.spotlightsCount || 0}</strong> Spotlights</span>
+              <span>⭐ <strong>{currentUser.superLikesRemaining || 0}</strong> Super Likes</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            onClick={openBoostModal}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#FFFFFF',
+              padding: '8px 16px',
+              borderRadius: 'var(--radius-pill)',
+              fontWeight: 800,
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <Rocket size={14} /> Boost
+          </button>
+
+          <button
+            onClick={openUpgradeModal}
+            style={{
+              background: 'linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%)',
+              border: 'none',
+              color: '#4C0519',
+              padding: '8px 16px',
+              borderRadius: 'var(--radius-pill)',
+              fontWeight: 900,
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <Crown size={14} /> {currentUser.isPremium ? 'Manage VIP' : 'Upgrade VIP'}
+          </button>
         </div>
       </div>
 

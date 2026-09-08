@@ -20,12 +20,15 @@ import {
   RoomComment,
   FeedPost,
   StatusStory,
-  NotificationItem
+  NotificationItem,
+  WhoLikedMeProfile,
+  AdvancedFilterCriteria,
+  SubscriptionTier
 } from '../types';
 import { apiService } from '../services/api';
 import { authService } from '../services/authService';
 import { paymentService } from '../services/payment';
-import { MIORA_PRICING } from '../config/pricing';
+import { MIORA_PRICING, SubscriptionPlanDef, PowerUpPackage } from '../config/pricing';
 import {
   INITIAL_CURRENT_USER,
   INITIAL_PROFILES,
@@ -37,6 +40,8 @@ import {
   INITIAL_FEED_POSTS,
   INITIAL_STATUS_STORIES,
   INITIAL_NOTIFICATIONS,
+  INITIAL_WHO_LIKED_ME,
+  INITIAL_SPOTLIGHT_PROFILES,
   SMART_AUTO_REPLIES
 } from '../data/mockData';
 
@@ -218,6 +223,30 @@ interface AppContextType {
   // Verification Check with 60 Coins & Guest Direct Login
   unlockedVerificationIds: string[];
   verifyProfileWithCoins: (profileId: string, profileName: string) => boolean;
+  // Monetization, Subscriptions & Power-Ups
+  isUpgradeModalOpen: boolean;
+  openUpgradeModal: () => void;
+  closeUpgradeModal: () => void;
+  isBoostModalOpen: boolean;
+  openBoostModal: () => void;
+  closeBoostModal: () => void;
+  isWhoLikedMeModalOpen: boolean;
+  openWhoLikedMeModal: () => void;
+  closeWhoLikedMeModal: () => void;
+  isFilterModalOpen: boolean;
+  openFilterModal: () => void;
+  closeFilterModal: () => void;
+  whoLikedMeProfiles: WhoLikedMeProfile[];
+  spotlightProfiles: Profile[];
+  advancedFilters: AdvancedFilterCriteria;
+  setAdvancedFilters: (filters: AdvancedFilterCriteria) => void;
+  subscribeToPlan: (planId: 'monthly' | 'quarterly' | 'yearly', paymentMethod: 'inr' | 'coins') => Promise<void>;
+  activateBoost: () => Promise<void>;
+  activateSpotlight: () => Promise<void>;
+  buyPowerUp: (pkg: PowerUpPackage) => Promise<void>;
+  useSuperLike: (profileId: string) => Promise<void>;
+  isBoostActive: boolean;
+  boostTimeRemainingFormatted: string;
   directGuestLogin: () => void;
 
   // Misc
@@ -419,6 +448,122 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [commentTargetPost, setCommentTargetPost] = useState<FeedPost | null>(null);
   const [isEditPostModalOpen, setIsEditPostModalOpen] = useState<boolean>(false);
   const [editTargetPost, setEditTargetPost] = useState<FeedPost | null>(null);
+
+  // Monetization & Power-Ups State
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState<boolean>(false);
+  const [isBoostModalOpen, setIsBoostModalOpen] = useState<boolean>(false);
+  const [isWhoLikedMeModalOpen, setIsWhoLikedMeModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+
+  const [whoLikedMeProfiles, setWhoLikedMeProfiles] = useState<WhoLikedMeProfile[]>(INITIAL_WHO_LIKED_ME);
+  const [spotlightProfiles, setSpotlightProfiles] = useState<Profile[]>(INITIAL_SPOTLIGHT_PROFILES);
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilterCriteria>({
+    minAge: 18,
+    maxAge: 35,
+    maxDistanceKm: 50,
+    verifiedOnly: false,
+    minCompatibility: 70
+  });
+
+  const [boostSecondsLeft, setBoostSecondsLeft] = useState<number>(0);
+
+  // Live timer for active boost
+  useEffect(() => {
+    if (!currentUser.boostActiveUntil) {
+      setBoostSecondsLeft(0);
+      return;
+    }
+    const updateTime = () => {
+      const remainingMs = new Date(currentUser.boostActiveUntil!).getTime() - Date.now();
+      if (remainingMs <= 0) {
+        setBoostSecondsLeft(0);
+      } else {
+        setBoostSecondsLeft(Math.floor(remainingMs / 1000));
+      }
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, [currentUser.boostActiveUntil]);
+
+  const isBoostActive = boostSecondsLeft > 0;
+  const boostMins = Math.floor(boostSecondsLeft / 60);
+  const boostSecs = boostSecondsLeft % 60;
+  const boostTimeRemainingFormatted = `${boostMins}:${boostSecs < 10 ? '0' : ''}${boostSecs}`;
+
+  const openUpgradeModal = () => setIsUpgradeModalOpen(true);
+  const closeUpgradeModal = () => setIsUpgradeModalOpen(false);
+
+  const openBoostModal = () => setIsBoostModalOpen(true);
+  const closeBoostModal = () => setIsBoostModalOpen(false);
+
+  const openWhoLikedMeModal = () => setIsWhoLikedMeModalOpen(true);
+  const closeWhoLikedMeModal = () => setIsWhoLikedMeModalOpen(false);
+
+  const openFilterModal = () => setIsFilterModalOpen(true);
+  const closeFilterModal = () => setIsFilterModalOpen(false);
+
+  const subscribeToPlan = async (planId: 'monthly' | 'quarterly' | 'yearly', paymentMethod: 'inr' | 'coins') => {
+    try {
+      setIsLoading(true);
+      const updatedUser = await apiService.subscribe(planId, paymentMethod);
+      setCurrentUser(updatedUser);
+      showToast(`🎉 Welcome to MIORA VIP! Unlimited Swipes & Perks Unlocked! 👑`);
+      closeUpgradeModal();
+    } catch (e: any) {
+      showToast(`Subscription failed: ${e?.message || 'Please try again'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const activateBoost = async () => {
+    try {
+      const updated = await apiService.activateBoost();
+      setCurrentUser(updated);
+      showToast('🚀 30-Minute Profile Boost Activated! You are now getting 10x visibility.');
+      closeBoostModal();
+    } catch (e: any) {
+      showToast(e?.message || 'Failed to activate boost');
+    }
+  };
+
+  const activateSpotlight = async () => {
+    try {
+      const updated = await apiService.activateSpotlight();
+      setCurrentUser(updated);
+      showToast('🌟 24-Hour Profile Spotlight Activated! Pinned to top Discover carousel.');
+      closeBoostModal();
+    } catch (e: any) {
+      showToast(e?.message || 'Failed to activate spotlight');
+    }
+  };
+
+  const buyPowerUp = async (pkg: PowerUpPackage) => {
+    try {
+      if (pkg.type === 'boost') {
+        setCurrentUser(prev => ({ ...prev, boostsCount: (prev.boostsCount || 0) + pkg.count }));
+        showToast(`Added ${pkg.count} Boost${pkg.count > 1 ? 's' : ''} to inventory! 🚀`);
+      } else if (pkg.type === 'spotlight') {
+        setCurrentUser(prev => ({ ...prev, spotlightsCount: (prev.spotlightsCount || 0) + pkg.count }));
+        showToast(`Added ${pkg.count} Spotlight${pkg.count > 1 ? 's' : ''} to inventory! 🌟`);
+      } else if (pkg.type === 'superlike') {
+        setCurrentUser(prev => ({ ...prev, superLikesRemaining: (prev.superLikesRemaining || 0) + pkg.count }));
+        showToast(`Refilled ${pkg.count} Super Likes! ⭐`);
+      }
+    } catch (e: any) {
+      showToast('Failed to purchase powerup');
+    }
+  };
+
+  const useSuperLike = async (profileId: string) => {
+    if ((currentUser.superLikesRemaining || 0) <= 0 && !currentUser.isPremium) {
+      showToast('Out of Super Likes! Refill or upgrade to VIP ⭐');
+      openBoostModal();
+      return;
+    }
+    await handleLike(profileId, true);
+  };
 
   // Notifications
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
@@ -652,10 +797,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Swiping & Matching
   const handleLike = async (profileId: string, isSuperLike = false) => {
+    // 1. Check free swipe limits
+    if (!currentUser.isPremium && (currentUser.dailySwipesRemaining ?? 20) <= 0) {
+      showToast('Daily swipe limit reached! Upgrade to MIORA Gold for Unlimited Swipes 🚀');
+      openUpgradeModal();
+      return;
+    }
+
+    // 2. Check super like limits
+    if (isSuperLike && !currentUser.isPremium && (currentUser.superLikesRemaining ?? 1) <= 0) {
+      showToast('Out of Super Likes! Get more or upgrade to VIP ⭐');
+      openBoostModal();
+      return;
+    }
+
     const target = profiles.find((p) => p.id === profileId);
     if (!target) return;
 
     setProfiles((prev) => prev.filter((p) => p.id !== profileId));
+
+    // Decrement swipe counter if not premium
+    if (!currentUser.isPremium) {
+      setCurrentUser((prev) => ({
+        ...prev,
+        dailySwipesRemaining: Math.max(0, (prev.dailySwipesRemaining ?? 20) - 1),
+        superLikesRemaining: isSuperLike ? Math.max(0, (prev.superLikesRemaining ?? 1) - 1) : prev.superLikesRemaining
+      }));
+    }
 
     try {
       const res = await apiService.likeProfile(profileId, isSuperLike);
@@ -688,7 +856,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const handlePass = async (profileId: string) => {
+    // Check free swipe limits
+    if (!currentUser.isPremium && (currentUser.dailySwipesRemaining ?? 20) <= 0) {
+      showToast('Daily swipe limit reached! Upgrade to MIORA Gold for Unlimited Swipes 🚀');
+      openUpgradeModal();
+      return;
+    }
+
     setProfiles((prev) => prev.filter((p) => p.id !== profileId));
+
+    if (!currentUser.isPremium) {
+      setCurrentUser((prev) => ({
+        ...prev,
+        dailySwipesRemaining: Math.max(0, (prev.dailySwipesRemaining ?? 20) - 1)
+      }));
+    }
+
     try {
       await apiService.passProfile(profileId);
     } catch (e) {
@@ -1775,6 +1958,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         unlockedVerificationIds,
         verifyProfileWithCoins,
         directGuestLogin,
+
+        // Monetization, Subscriptions & Power-Ups
+        isUpgradeModalOpen,
+        openUpgradeModal,
+        closeUpgradeModal,
+        isBoostModalOpen,
+        openBoostModal,
+        closeBoostModal,
+        isWhoLikedMeModalOpen,
+        openWhoLikedMeModal,
+        closeWhoLikedMeModal,
+        isFilterModalOpen,
+        openFilterModal,
+        closeFilterModal,
+        whoLikedMeProfiles,
+        spotlightProfiles,
+        advancedFilters,
+        setAdvancedFilters,
+        subscribeToPlan,
+        activateBoost,
+        activateSpotlight,
+        buyPowerUp,
+        useSuperLike,
+        isBoostActive,
+        boostTimeRemainingFormatted,
+
         showToast,
         refreshData
       }}

@@ -15,7 +15,10 @@ import {
   ShieldCheck,
   Zap,
   Flame,
-  Award
+  Award,
+  Crown,
+  Rocket,
+  Star
 } from 'lucide-react';
 import { RechargeModal } from '../components/wallet/RechargeModal';
 import { MIORA_PRICING } from '../config/pricing';
@@ -27,7 +30,9 @@ export const WalletPage: React.FC = () => {
     earnCoinsTask,
     openTalkTimeModal,
     setCurrentView,
-    navigateToTab
+    navigateToTab,
+    openUpgradeModal,
+    openBoostModal
   } = useApp();
 
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
@@ -332,6 +337,107 @@ export const WalletPage: React.FC = () => {
               </span>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* VIP Membership & Power-Ups Showcase */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #4C0519 0%, #881337 50%, #BE123C 100%)',
+          borderRadius: '24px',
+          padding: '24px',
+          color: '#FFFFFF',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '16px',
+          boxShadow: '0 15px 35px -5px rgba(136, 19, 55, 0.3)',
+          marginBottom: '8px',
+          flexWrap: 'wrap'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div
+            style={{
+              width: '54px',
+              height: '54px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)',
+              flexShrink: 0
+            }}
+          >
+            <Crown size={28} color="#4C0519" />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+                {currentUser.isPremium ? 'MIORA VIP Active 👑' : 'MIORA VIP Membership'}
+              </h3>
+              <span
+                style={{
+                  background: 'rgba(253, 230, 138, 0.25)',
+                  color: '#FDE68A',
+                  border: '1px solid rgba(253, 230, 138, 0.5)',
+                  fontSize: '0.68rem',
+                  fontWeight: 900,
+                  padding: '2px 8px',
+                  borderRadius: 'var(--radius-pill)'
+                }}
+              >
+                {currentUser.subscriptionTier?.toUpperCase() || 'FREE'}
+              </span>
+            </div>
+            <p style={{ fontSize: '0.84rem', color: 'rgba(255, 255, 255, 0.88)', margin: '4px 0 0 0' }}>
+              {currentUser.isPremium
+                ? 'Unlimited Swipes, Unblurred Admirers, and 5 Daily Super Likes active'
+                : 'Get Unlimited Swipes, reveal secret admirers, and boost your matches'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={openBoostModal}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#FFFFFF',
+              padding: '10px 18px',
+              borderRadius: 'var(--radius-pill)',
+              fontWeight: 800,
+              fontSize: '0.84rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Rocket size={15} /> Power-Ups
+          </button>
+
+          <button
+            onClick={openUpgradeModal}
+            style={{
+              background: 'linear-gradient(135deg, #FDE68A 0%, #D4AF37 100%)',
+              border: 'none',
+              color: '#4C0519',
+              padding: '10px 20px',
+              borderRadius: 'var(--radius-pill)',
+              fontWeight: 900,
+              fontSize: '0.84rem',
+              cursor: 'pointer',
+              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Crown size={16} /> {currentUser.isPremium ? 'Manage VIP' : 'Upgrade to VIP'}
+          </button>
         </div>
       </div>
 

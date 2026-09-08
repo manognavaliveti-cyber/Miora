@@ -11,6 +11,31 @@ export interface RechargePackage {
   tagline?: string;
 }
 
+export interface SubscriptionPlanDef {
+  id: 'monthly' | 'quarterly' | 'yearly';
+  name: string;
+  billingPeriod: '1 Month' | '3 Months' | '1 Year';
+  priceInr: number;
+  pricePerMonthInr: number;
+  coinPrice: number;
+  discountPercent?: number;
+  popular?: boolean;
+  bestValue?: boolean;
+  badge?: string;
+  features: string[];
+}
+
+export interface PowerUpPackage {
+  id: string;
+  name: string;
+  type: 'boost' | 'spotlight' | 'superlike';
+  count: number;
+  priceInr: number;
+  coinPrice: number;
+  popular?: boolean;
+  tagline: string;
+}
+
 export interface VirtualGiftDef {
   id: string;
   name: string;
@@ -32,21 +57,187 @@ export interface EarnCoinTask {
 }
 
 export const MIORA_PRICING = {
-  // 1. Talk Time Monetization
+  // 1. Swiping Limits & Free Tier Limits
+  limits: {
+    freeDailySwipes: 20, // 20 swipes per 24 hours for free users
+    freeSuperLikesPerWeek: 1, // 1 free super like / week for free users
+    premiumDailySuperLikes: 5, // 5 free super likes / day for premium
+    freeWhoLikedMeBlurredCount: 12 // teaser count
+  },
+
+  // 2. Subscriptions (Monthly, Quarterly, Yearly)
+  subscriptionPlans: [
+    {
+      id: 'monthly',
+      name: 'MIORA Gold Monthly',
+      billingPeriod: '1 Month',
+      priceInr: 299,
+      pricePerMonthInr: 299,
+      coinPrice: 450,
+      badge: 'Flexible',
+      features: [
+        'Unlimited Daily Swipes & Likes',
+        'See Who Liked You (Unblurred Full Profiles)',
+        '5 Free Super Likes every day',
+        '1 Free 30-min Boost per month',
+        'All Advanced Lifestyle & Verified Filters',
+        'Rewind last swipe anytime'
+      ]
+    },
+    {
+      id: 'quarterly',
+      name: 'MIORA Gold Quarterly',
+      billingPeriod: '3 Months',
+      priceInr: 699,
+      pricePerMonthInr: 233,
+      coinPrice: 1050,
+      discountPercent: 22,
+      popular: true,
+      badge: 'Most Popular (Save 22%)',
+      features: [
+        'Everything in Monthly',
+        'Save 22% on monthly rate',
+        '3 Free Boosts included',
+        'Priority Match Queue placement',
+        'Direct DM without waiting for match (1/week)',
+        'VIP Golden Badge on your profile'
+      ]
+    },
+    {
+      id: 'yearly',
+      name: 'MIORA VIP Platinum Yearly',
+      billingPeriod: '1 Year',
+      priceInr: 1999,
+      pricePerMonthInr: 166,
+      coinPrice: 3000,
+      discountPercent: 44,
+      bestValue: true,
+      badge: 'Best Value (Save 44%)',
+      features: [
+        'Everything in Quarterly',
+        'Maximum 44% Savings (Only ₹166/month)',
+        '12 Free Profile Boosts + 4 Spotlights',
+        'Unlimited Super Likes & Rewinds',
+        'Incognito / Invisible Browsing Mode',
+        'Crown Platinum VIP Profile Frame',
+        'Dedicated 24/7 Priority Support'
+      ]
+    }
+  ] as SubscriptionPlanDef[],
+
+  // 3. Power-Ups (Boost, Spotlight, Super Like Packs)
+  powerUps: {
+    boost: {
+      durationMinutes: 30,
+      visibilityMultiplier: '10x',
+      singleCoins: 50,
+      singleInr: 29,
+      packages: [
+        {
+          id: 'boost_1',
+          name: '1 Profile Boost',
+          type: 'boost',
+          count: 1,
+          priceInr: 29,
+          coinPrice: 50,
+          tagline: '30 mins of 10x visibility'
+        },
+        {
+          id: 'boost_5',
+          name: '5 Profile Boosts',
+          type: 'boost',
+          count: 5,
+          priceInr: 119,
+          coinPrice: 200,
+          popular: true,
+          tagline: 'Save 20% • Best for weekends'
+        },
+        {
+          id: 'boost_10',
+          name: '10 Profile Boosts',
+          type: 'boost',
+          count: 10,
+          priceInr: 199,
+          coinPrice: 350,
+          tagline: 'Save 30% • Ultimate romance pack'
+        }
+      ] as PowerUpPackage[]
+    },
+    spotlight: {
+      durationHours: 24,
+      singleCoins: 100,
+      singleInr: 49,
+      packages: [
+        {
+          id: 'spotlight_1',
+          name: '1 Profile Spotlight',
+          type: 'spotlight',
+          count: 1,
+          priceInr: 49,
+          coinPrice: 100,
+          tagline: '24h featured Discover banner'
+        },
+        {
+          id: 'spotlight_3',
+          name: '3 Profile Spotlights',
+          type: 'spotlight',
+          count: 3,
+          priceInr: 119,
+          coinPrice: 240,
+          popular: true,
+          tagline: '3 Days of top banner placement'
+        }
+      ] as PowerUpPackage[]
+    },
+    superLikes: {
+      packages: [
+        {
+          id: 'superlike_5',
+          name: '5 Super Likes',
+          type: 'superlike',
+          count: 5,
+          priceInr: 29,
+          coinPrice: 40,
+          tagline: 'Stand out 3x more'
+        },
+        {
+          id: 'superlike_15',
+          name: '15 Super Likes',
+          type: 'superlike',
+          count: 15,
+          priceInr: 69,
+          coinPrice: 100,
+          popular: true,
+          tagline: 'Most Popular choice'
+        },
+        {
+          id: 'superlike_30',
+          name: '30 Super Likes',
+          type: 'superlike',
+          count: 30,
+          priceInr: 119,
+          coinPrice: 180,
+          tagline: 'Best value super-like bundle'
+        }
+      ] as PowerUpPackage[]
+    }
+  },
+
+  // 4. Talk Time Monetization
   talkTime: {
-    inrPer20Minutes: 14, // ₹14 for 20 minutes
-    coinsPer10Minutes: 50, // 50 coins for 10 minutes extension
-    coinsPer20Minutes: 100, // 100 coins for 20 minutes
-    defaultFreeMinutes: 3, // 3 minutes trial per new match
-    warningThresholdSeconds: 120 // Warn user when 2 minutes left
+    inrPer20Minutes: 14,
+    coinsPer10Minutes: 50,
+    coinsPer20Minutes: 100,
+    defaultFreeMinutes: 3,
+    warningThresholdSeconds: 120
   },
 
-  // 1b. Profile Verification Check
+  // 4b. Profile Verification Check
   verificationCheck: {
-    coins: 60 // 60 coins to unlock & inspect profile verification certificate
+    coins: 60
   },
 
-  // 2. Official Recharge Packages (Razorpay)
+  // 5. Official Recharge Packages (Razorpay)
   rechargePackages: [
     {
       id: 'coins_100',
@@ -80,7 +271,7 @@ export const MIORA_PRICING = {
     }
   ] as RechargePackage[],
 
-  // 3. Virtual Gifts Catalog
+  // 6. Virtual Gifts Catalog
   gifts: [
     {
       id: 'gift_rose',
@@ -174,17 +365,17 @@ export const MIORA_PRICING = {
     }
   ] as VirtualGiftDef[],
 
-  // 4. MIORA Play (Couple Games) Pricing
+  // 7. MIORA Play (Couple Games) Pricing
   games: {
     freeBasicQuestions: true,
-    premiumQuestionsCoins: 20, // 20 coins to unlock premium questions
-    premiumGamePackInr: 9, // ₹9 premium game pack
-    gameWinRewardCoins: 15, // +15 coins upon completing a couple game
+    premiumQuestionsCoins: 20,
+    premiumGamePackInr: 9,
+    gameWinRewardCoins: 15,
     dailyCheckinRewardCoins: 10,
     profileCompletionRewardCoins: 20
   },
 
-  // 5. Earn Coins Tasks
+  // 8. Earn Coins Tasks
   earnTasks: [
     {
       id: 'task_daily',

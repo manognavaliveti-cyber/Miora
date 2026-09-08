@@ -32,6 +32,8 @@ export type MainTab =
   | 'wallet'
   | 'profile';
 
+export type SubscriptionTier = 'free' | 'gold' | 'platinum';
+
 export interface Profile {
   id: string;
   name: string;
@@ -47,6 +49,7 @@ export interface Profile {
   occupation?: string;
   education?: string;
   height?: string;
+  relationshipIntent?: 'Long-term' | 'Marriage' | 'Casual dating' | 'New friends' | 'Open to anything';
   lifestyle?: {
     drinking?: string;
     smoking?: string;
@@ -55,9 +58,13 @@ export interface Profile {
   };
   matchedInterests?: string[];
   likedByCurrentUser?: boolean;
-  receivedGifts?: Record<string, number>; // e.g. { gift_heart: 24, gift_rose: 12, gift_diamond: 3 }
+  superLikedByCurrentUser?: boolean;
+  receivedGifts?: Record<string, number>;
   gamesPlayedCount?: number;
   verified?: boolean;
+  isSpotlighted?: boolean;
+  isBoosted?: boolean;
+  boostBadge?: string;
 }
 
 export interface UserPreferences {
@@ -70,6 +77,30 @@ export interface UserPreferences {
   location: string;
   allowAudioCalls?: 'all' | 'matches' | 'nobody';
   allowVideoCalls?: 'all' | 'matches' | 'nobody';
+}
+
+export interface AdvancedFilterCriteria {
+  minAge: number;
+  maxAge: number;
+  maxDistanceKm: number;
+  verifiedOnly: boolean;
+  minCompatibility: number;
+  relationshipIntent?: string;
+  drinking?: string;
+  smoking?: string;
+  workout?: string;
+  zodiac?: string;
+  education?: string;
+}
+
+export interface WhoLikedMeProfile {
+  id: string;
+  profileId: string;
+  profile: Profile;
+  likedAt: string;
+  isSuperLike: boolean;
+  matchScore: number;
+  isBlurred?: boolean;
 }
 
 export interface CurrentUser {
@@ -87,6 +118,7 @@ export interface CurrentUser {
   preferences: UserPreferences;
   occupation?: string;
   education?: string;
+  relationshipIntent?: 'Long-term' | 'Marriage' | 'Casual dating' | 'New friends' | 'Open to anything';
   lifestyle?: {
     drinking?: string;
     smoking?: string;
@@ -97,7 +129,25 @@ export interface CurrentUser {
   talkTimeSecondsRemaining: number;
   receivedGifts: Record<string, number>;
   gamesWonCount: number;
+  
+  // Monetization & Tiers
   isPremium?: boolean;
+  subscriptionTier: SubscriptionTier;
+  subscriptionPlanId?: 'monthly' | 'quarterly' | 'yearly';
+  subscriptionExpiresAt?: string;
+  
+  // Swipes & Limits
+  dailySwipesRemaining: number;
+  dailySwipesMax: number;
+  dailySwipesResetAt?: string;
+  superLikesRemaining: number;
+  
+  // Power-Ups Inventory & Active Timers
+  boostsCount: number;
+  spotlightsCount: number;
+  boostActiveUntil?: string; // ISO string
+  spotlightActiveUntil?: string; // ISO string
+
   termsAccepted?: boolean;
   termsVersion?: string;
   termsAcceptedAt?: string;
@@ -111,9 +161,10 @@ export interface Match {
   lastMessage?: string;
   lastMessageTime?: string;
   unreadCount: number;
+  isSuperMatch?: boolean;
 }
 
-export type MessageType = 'text' | 'gift' | 'heart-crowned' | 'call-log' | 'game-invite' | 'image';
+export type MessageType = 'text' | 'gift' | 'heart-crowned' | 'call-log' | 'game-invite' | 'image' | 'super-like';
 
 export interface Message {
   id: string;
@@ -191,7 +242,11 @@ export type TransactionType =
   | 'game_reward'
   | 'daily_checkin'
   | 'profile_reward'
-  | 'premium_game_unlock';
+  | 'premium_game_unlock'
+  | 'subscription_upgrade'
+  | 'boost_purchase'
+  | 'spotlight_purchase'
+  | 'superlike_purchase';
 
 export interface CoinTransaction {
   id: string;
@@ -229,7 +284,7 @@ export interface GiftAnimationEvent {
 export interface GameQuestion {
   id: string;
   text: string;
-  options?: string[]; // for multi-choice / Would You Rather
+  options?: string[];
   isPremium?: boolean;
   category?: string;
 }
@@ -339,8 +394,8 @@ export interface StatusStory {
   authorPhoto?: string;
   text: string;
   mediaUrl?: string;
-  createdAt: string; // ISO string
-  expiresAt?: string; // ISO string
+  createdAt: string;
+  expiresAt?: string;
   viewed?: boolean;
   isViewed?: boolean;
   isMine?: boolean;
@@ -393,6 +448,9 @@ export interface SearchResults {
 export type NotificationType =
   | 'match'
   | 'message'
+  | 'super_like'
+  | 'boost_activated'
+  | 'subscription_active'
   | 'call_missed'
   | 'call_incoming'
   | 'gift_received'
@@ -417,4 +475,3 @@ export interface NotificationItem {
   linkTab?: MainTab;
   metadata?: any;
 }
-

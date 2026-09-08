@@ -52,9 +52,10 @@ public class FirestoreService {
     // USER METHODS
     // ==========================================
     public User getUser(String userId) {
+        String effectiveId = (userId != null && !userId.trim().isEmpty()) ? userId : "user_me";
         if (isFirestoreAvailable()) {
             try {
-                DocumentSnapshot doc = firestore.collection("users").document(userId).get().get();
+                DocumentSnapshot doc = firestore.collection("users").document(effectiveId).get().get();
                 if (doc.exists()) {
                     return doc.toObject(User.class);
                 }
@@ -62,7 +63,7 @@ public class FirestoreService {
                 log.warn("Error fetching user from Firestore: {}", e.getMessage());
             }
         }
-        return userCache.computeIfAbsent(userId, id -> createDefaultUser(id, "dev@miora.app", "Alex"));
+        return userCache.computeIfAbsent(effectiveId, id -> createDefaultUser(id, "dev@miora.app", "Alex"));
     }
 
     public User saveUser(User user) {
@@ -387,7 +388,7 @@ public class FirestoreService {
 
     private User createDefaultUser(String id, String email, String name) {
         return User.builder()
-                .id(id)
+                .id(id != null ? id : "user_me")
                 .name(name != null ? name : "Alex Rivera")
                 .email(email != null ? email : "alex@miora.app")
                 .age(24)
@@ -413,6 +414,12 @@ public class FirestoreService {
                 .coinBalance(350)
                 .talkTimeSecondsRemaining(480)
                 .isPremium(false)
+                .subscriptionTier("free")
+                .dailySwipesRemaining(20)
+                .dailySwipesMax(20)
+                .superLikesRemaining(1)
+                .boostsCount(1)
+                .spotlightsCount(0)
                 .build();
     }
 
@@ -639,4 +646,55 @@ public class FirestoreService {
                 .build();
         followCache.add(f1);
     }
+
+    // ==========================================
+    // MONETIZATION & SUBSCRIPTIONS
+    // ==========================================
+    public User subscribeUser(String userId, String planId, String paymentMethod) {
+        User user = getUser(userId);
+        boolean isPlatinum = "yearly".equalsIgnoreCase(planId);
+        user.setIsPremium(true);
+        user.setSubscriptionTier(isPlatinum ? "platinum" : "gold");
+        user.setSubscriptionPlanId(planId);
+        user.setSubscriptionExpiresAt(Instant.now().plus(isPlatinum ? 365 : "quarterly".equalsIgnoreCase(planId) ? 90 : 30, java.time.temporal.ChronoUnit.DAYS).toString());
+        user.setDailySwipesRemaining(9999);
+        user.setSuperLikesRemaining((user.getSuperLikesRemaining() != null ? user.getSuperLikesRemaining() : 0) + (isPlatinum ? 30 : 15));
+        user.setBoostsCount((user.getBoostsCount() != null ? user.getBoostsCount() : 0) + (isPlatinum ? 12 : 3));
+        user.setSpotlightsCount((user.getSpotlightsCount() != null ? user.getSpotlightsCount() : 0) + (isPlatinum ? 4 : 1));
+        return saveUser(user);
+    }
+
+    public User boostUser(String userId) {
+        User user = getUser(userId);
+        int boosts = user.getBoostsCount() != null ? user.getBoostsCount() : 1;
+        user.setBoostsCount(Math.max(0, boosts - 1));
+        user.setBoostActiveUntil(Instant.now().plus(30, java.time.temporal.ChronoUnit.MINUTES).toString());
+        return saveUser(user);
+    }
+
+    public User spotlightUser(String userId) {
+        User user = getUser(userId);
+        int spotlights = user.getSpotlightsCount() != null ? user.getSpotlightsCount() : 1;
+        user.setSpotlightsCount(Math.max(0, spotlights - 1));
+        user.setSpotlightActiveUntil(Instant.now().plus(24, java.time.temporal.ChronoUnit.HOURS).toString());
+        return saveUser(user);
+    }
+
+    public List<Map<String, Object>> getWhoLikedMe(String userId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        List<Profile> profs = getProfiles();
+        for (int i = 0; i < Math.min(profs.size(), 5); i++) {
+            Profile p = profs.get(i);
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", "wlm_" + (i + 1));
+            item.put("profileId", p.getId());
+            item.put("profile", p);
+            item.put("likedAt", (i * 2 + 1) + " hours ago");
+            item.put("isSuperLike", i % 2 == 0);
+            item.put("matchScore", p.getCompatibility() != null ? p.getCompatibility() : 88);
+            result.add(item);
+        }
+        return result;
+    }
 }
+

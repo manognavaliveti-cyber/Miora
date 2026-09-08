@@ -8,7 +8,8 @@ import {
   ReportPayload,
   FeedPost,
   StatusStory,
-  CoinTransaction
+  CoinTransaction,
+  WhoLikedMeProfile
 } from '../types';
 import {
   INITIAL_CURRENT_USER,
@@ -17,7 +18,8 @@ import {
   INITIAL_MESSAGES,
   INITIAL_FEED_POSTS,
   INITIAL_STATUS_STORIES,
-  INITIAL_TRANSACTIONS
+  INITIAL_TRANSACTIONS,
+  INITIAL_WHO_LIKED_ME
 } from '../data/mockData';
 import { authService } from './authService';
 
@@ -727,6 +729,71 @@ class ApiService {
         p => p.content.toLowerCase().includes(q) || (p.tags && p.tags.some(t => t.toLowerCase().includes(q)))
       );
       return { profiles, posts };
+    }
+  }
+
+  // 12. Subscriptions & Power-Ups
+  async getWhoLikedMe(): Promise<WhoLikedMeProfile[]> {
+    try {
+      return await this.fetchApi<WhoLikedMeProfile[]>('/likes/who-liked-me');
+    } catch {
+      return getLocal<WhoLikedMeProfile[]>('miora_who_liked_me', INITIAL_WHO_LIKED_ME);
+    }
+  }
+
+  async subscribe(planId: string, paymentMethod: 'inr' | 'coins'): Promise<CurrentUser> {
+    try {
+      return await this.fetchApi<CurrentUser>('/subscription/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ planId, paymentMethod })
+      });
+    } catch {
+      const user = getLocal<CurrentUser>(STORAGE_KEYS.USER, INITIAL_CURRENT_USER);
+      const isGold = planId === 'monthly' || planId === 'quarterly';
+      const isPlatinum = planId === 'yearly';
+      const updated: CurrentUser = {
+        ...user,
+        isPremium: true,
+        subscriptionTier: isPlatinum ? 'platinum' : 'gold',
+        subscriptionPlanId: planId as any,
+        subscriptionExpiresAt: new Date(Date.now() + (planId === 'yearly' ? 365 : planId === 'quarterly' ? 90 : 30) * 24 * 60 * 60 * 1000).toISOString(),
+        dailySwipesRemaining: 9999,
+        superLikesRemaining: (user.superLikesRemaining || 0) + (isPlatinum ? 30 : 15),
+        boostsCount: (user.boostsCount || 0) + (isPlatinum ? 12 : 3),
+        spotlightsCount: (user.spotlightsCount || 0) + (isPlatinum ? 4 : 1)
+      };
+      setLocal(STORAGE_KEYS.USER, updated);
+      return updated;
+    }
+  }
+
+  async activateBoost(): Promise<CurrentUser> {
+    try {
+      return await this.fetchApi<CurrentUser>('/powerups/boost', { method: 'POST' });
+    } catch {
+      const user = getLocal<CurrentUser>(STORAGE_KEYS.USER, INITIAL_CURRENT_USER);
+      const updated: CurrentUser = {
+        ...user,
+        boostsCount: Math.max(0, (user.boostsCount || 1) - 1),
+        boostActiveUntil: new Date(Date.now() + 30 * 60 * 1000).toISOString()
+      };
+      setLocal(STORAGE_KEYS.USER, updated);
+      return updated;
+    }
+  }
+
+  async activateSpotlight(): Promise<CurrentUser> {
+    try {
+      return await this.fetchApi<CurrentUser>('/powerups/spotlight', { method: 'POST' });
+    } catch {
+      const user = getLocal<CurrentUser>(STORAGE_KEYS.USER, INITIAL_CURRENT_USER);
+      const updated: CurrentUser = {
+        ...user,
+        spotlightsCount: Math.max(0, (user.spotlightsCount || 1) - 1),
+        spotlightActiveUntil: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      };
+      setLocal(STORAGE_KEYS.USER, updated);
+      return updated;
     }
   }
 

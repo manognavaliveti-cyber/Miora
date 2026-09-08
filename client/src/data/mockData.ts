@@ -9,7 +9,8 @@ import {
   LiveRoom,
   FeedPost,
   StatusStory,
-  NotificationItem
+  NotificationItem,
+  WhoLikedMeProfile
 } from '../types';
 import { MIORA_PRICING } from '../config/pricing';
 
@@ -63,8 +64,17 @@ export const INITIAL_CURRENT_USER: CurrentUser = {
     allowAudioCalls: 'matches',
     allowVideoCalls: 'matches'
   },
+  occupation: 'Lead Product Designer',
+  education: 'NID Ahmedabad',
+  relationshipIntent: 'Long-term',
+  lifestyle: {
+    drinking: 'Socially',
+    smoking: 'Never',
+    workout: 'Active / Gym',
+    zodiac: 'Taurus'
+  },
   coinBalance: 250,
-  talkTimeSecondsRemaining: 1112, // ~18:32 remaining
+  talkTimeSecondsRemaining: 1112,
   receivedGifts: {
     gift_heart: 24,
     gift_rose: 12,
@@ -73,7 +83,13 @@ export const INITIAL_CURRENT_USER: CurrentUser = {
     gift_sparkle: 8
   },
   gamesWonCount: 6,
-  isPremium: false
+  isPremium: false,
+  subscriptionTier: 'free',
+  dailySwipesRemaining: 18,
+  dailySwipesMax: 20,
+  superLikesRemaining: 1,
+  boostsCount: 1,
+  spotlightsCount: 0
 };
 
 export const INITIAL_PROFILES: Profile[] = [
@@ -996,3 +1012,70 @@ export const SMART_AUTO_REPLIES: string[] = [
   "That sounds super fun! We should definitely check that out sometime! ✨",
   "Oh wow, I've always wanted to try that! Tell me more 😊"
 ];
+
+export const INITIAL_WHO_LIKED_ME: WhoLikedMeProfile[] = [
+  {
+    id: 'wlm_1',
+    profileId: 'prof_1',
+    profile: INITIAL_PROFILES[0],
+    likedAt: '15 mins ago',
+    isSuperLike: true,
+    matchScore: 96,
+    isBlurred: true
+  },
+  {
+    id: 'wlm_2',
+    profileId: 'prof_2',
+    profile: INITIAL_PROFILES[1],
+    likedAt: '1 hour ago',
+    isSuperLike: false,
+    matchScore: 92,
+    isBlurred: true
+  },
+  {
+    id: 'wlm_3',
+    profileId: 'prof_3',
+    profile: INITIAL_PROFILES[2],
+    likedAt: '3 hours ago',
+    isSuperLike: false,
+    matchScore: 88,
+    isBlurred: true
+  },
+  {
+    id: 'wlm_4',
+    profileId: 'prof_4',
+    profile: INITIAL_PROFILES[3],
+    likedAt: '5 hours ago',
+    isSuperLike: true,
+    matchScore: 94,
+    isBlurred: true
+  },
+  {
+    id: 'wlm_5',
+    profileId: 'prof_5',
+    profile: INITIAL_PROFILES[4],
+    likedAt: 'Yesterday',
+    isSuperLike: false,
+    matchScore: 85,
+    isBlurred: true
+  }
+];
+
+export const INITIAL_SPOTLIGHT_PROFILES: Profile[] = [
+  {
+    ...INITIAL_PROFILES[0],
+    isSpotlighted: true,
+    boostBadge: '🌟 Spotlight'
+  },
+  {
+    ...INITIAL_PROFILES[1],
+    isSpotlighted: true,
+    boostBadge: '✨ VIP Gold'
+  },
+  {
+    ...INITIAL_PROFILES[3],
+    isSpotlighted: true,
+    boostBadge: '🔥 Trending'
+  }
+];
+

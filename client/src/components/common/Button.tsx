@@ -4,6 +4,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'glass' | 'gold';
   size?: 'sm' | 'md' | 'lg' | 'icon';
   fullWidth?: boolean;
+  loading?: boolean;
   children: ReactNode;
 }
 
@@ -11,8 +12,10 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
+  loading = false,
   className = '',
   children,
+  disabled,
   ...props
 }) => {
   const getStyles = (): React.CSSProperties => {

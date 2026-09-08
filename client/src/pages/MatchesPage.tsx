@@ -1,10 +1,31 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, Heart, MessageCircle, Flame, ArrowRight, User, ShieldCheck } from 'lucide-react';
+import {
+  Sparkles,
+  Heart,
+  MessageCircle,
+  Flame,
+  ArrowRight,
+  User,
+  ShieldCheck,
+  Crown,
+  Eye,
+  Lock,
+  Star
+} from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const MatchesPage: React.FC = () => {
-  const { matches, openChatWithMatch, openProfileDetail, setCurrentView } = useApp();
+  const {
+    matches,
+    openChatWithMatch,
+    openProfileDetail,
+    setCurrentView,
+    whoLikedMeProfiles,
+    openWhoLikedMeModal,
+    openUpgradeModal,
+    currentUser
+  } = useApp();
 
   return (
     <div
@@ -13,7 +34,7 @@ export const MatchesPage: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         padding: '8px 0 40px 0',
-        gap: '32px',
+        gap: '24px',
         width: '100%',
         margin: '0 auto',
         animation: 'fadeIn 0.25s ease-out forwards'
@@ -34,6 +55,118 @@ export const MatchesPage: React.FC = () => {
         >
           Your Connections <span style={{ color: 'var(--berry-primary)' }}>♥</span>
         </h1>
+      </div>
+
+      {/* WHO LIKED YOU / SECRET ADMIRERS GOLDEN BANNER */}
+      <div
+        onClick={openWhoLikedMeModal}
+        style={{
+          background: 'linear-gradient(135deg, #4C0519 0%, #881337 50%, #BE123C 100%)',
+          borderRadius: '24px',
+          padding: '20px 24px',
+          color: '#FFFFFF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          boxShadow: '0 15px 35px -5px rgba(136, 19, 55, 0.35)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'transform var(--transition-fast)'
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', zIndex: 2 }}>
+          {/* Overlapping Blurred Avatars */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {whoLikedMeProfiles.slice(0, 3).map((w, idx) => (
+              <div
+                key={w.id}
+                style={{
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '50%',
+                  border: '2px solid #FFFFFF',
+                  overflow: 'hidden',
+                  marginLeft: idx === 0 ? '0' : '-16px',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
+                  position: 'relative',
+                  background: '#0F172A'
+                }}
+              >
+                <img
+                  src={w.profile.photos[0] || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80'}
+                  alt="Admirer"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: currentUser.isPremium ? 'none' : 'blur(5px) brightness(0.8)'
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#FFFFFF' }}>
+                {whoLikedMeProfiles.length} People Liked You
+              </span>
+              <span
+                style={{
+                  background: 'rgba(253, 230, 138, 0.25)',
+                  color: '#FDE68A',
+                  border: '1px solid rgba(253, 230, 138, 0.5)',
+                  fontSize: '0.68rem',
+                  fontWeight: 900,
+                  padding: '2px 8px',
+                  borderRadius: 'var(--radius-pill)'
+                }}
+              >
+                {currentUser.isPremium ? 'UNLOCKED VIP' : 'SECRET'}
+              </span>
+            </div>
+            <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.85)', margin: '2px 0 0 0' }}>
+              {currentUser.isPremium
+                ? 'Tap to view profiles and match instantly with one click'
+                : 'See who swiped right on your profile before they disappear'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 2 }}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (currentUser.isPremium) {
+                openWhoLikedMeModal();
+              } else {
+                openUpgradeModal();
+              }
+            }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.4)',
+              color: '#FFFFFF',
+              fontWeight: 800,
+              fontSize: '0.82rem'
+            }}
+          >
+            {currentUser.isPremium ? (
+              <>
+                <Eye size={14} /> View All
+              </>
+            ) : (
+              <>
+                <Crown size={14} color="#FDE68A" /> Reveal (Gold)
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Recent Match Story Avatars */}

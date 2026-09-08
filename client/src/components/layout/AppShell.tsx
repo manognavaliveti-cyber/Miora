@@ -22,6 +22,10 @@ import { FollowersModal } from '../profile/FollowersModal';
 import { SharePostModal } from '../feed/SharePostModal';
 import { EditPostModal } from '../feed/EditPostModal';
 import { CommentSheet } from '../feed/CommentSheet';
+import { UpgradeModal } from '../subscription/UpgradeModal';
+import { BoostModal } from '../subscription/BoostModal';
+import { WhoLikedMeModal } from '../subscription/WhoLikedMeModal';
+import { AdvancedFilterModal } from '../discover/AdvancedFilterModal';
 
 interface AppShellProps {
   children: ReactNode;
@@ -161,6 +165,12 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <SharePostModal />
         <EditPostModal />
         <CommentSheet />
+
+        {/* Monetization & Subscriptions Modals */}
+        <UpgradeModal />
+        <BoostModal />
+        <WhoLikedMeModal />
+        <AdvancedFilterModal />
       </div>
     </div>
   );

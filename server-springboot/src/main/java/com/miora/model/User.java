@@ -33,6 +33,7 @@ public class User {
     private UserPreferences preferences = new UserPreferences();
     private String occupation;
     private String education;
+    private String relationshipIntent; // Long-term, Marriage, Casual dating, New friends, Open to anything
     @Builder.Default
     private Map<String, String> lifestyle = new HashMap<>();
     @Builder.Default
@@ -43,8 +44,31 @@ public class User {
     private Map<String, Integer> receivedGifts = new HashMap<>();
     @Builder.Default
     private Integer gamesWonCount = 4;
+    
+    // Monetization & Subscription Tiers
     @Builder.Default
     private Boolean isPremium = false;
+    @Builder.Default
+    private String subscriptionTier = "free"; // free, gold, platinum
+    private String subscriptionPlanId; // monthly, quarterly, yearly
+    private String subscriptionExpiresAt;
+
+    // Swipes & Limits
+    @Builder.Default
+    private Integer dailySwipesRemaining = 20;
+    @Builder.Default
+    private Integer dailySwipesMax = 20;
+    @Builder.Default
+    private Integer superLikesRemaining = 1;
+
+    // Power-Ups Inventory & Timers
+    @Builder.Default
+    private Integer boostsCount = 1;
+    @Builder.Default
+    private Integer spotlightsCount = 0;
+    private String boostActiveUntil;
+    private String spotlightActiveUntil;
+
     @Builder.Default
     private Boolean termsAccepted = true;
     @Builder.Default

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SwipeCard } from '../components/discover/SwipeCard';
 import { ActionButtons } from '../components/discover/ActionButtons';
+import { SpotlightCarousel } from '../components/discover/SpotlightCarousel';
 import { Button } from '../components/common/Button';
 import {
   Sparkles,
@@ -20,7 +21,12 @@ import {
   CheckCircle2,
   MessageCircle,
   User,
-  ArrowRight
+  ArrowRight,
+  Crown,
+  Rocket,
+  Eye,
+  Star,
+  Zap
 } from 'lucide-react';
 
 export const DiscoverPage: React.FC = () => {
@@ -35,7 +41,16 @@ export const DiscoverPage: React.FC = () => {
     setCurrentView,
     refreshData,
     currentUser,
-    updateUserPreferences
+    updateUserPreferences,
+    spotlightProfiles,
+    whoLikedMeProfiles,
+    advancedFilters,
+    openUpgradeModal,
+    openBoostModal,
+    openWhoLikedMeModal,
+    openFilterModal,
+    isBoostActive,
+    boostTimeRemainingFormatted
   } = useApp();
 
   const [selectedGender, setSelectedGender] = useState<string>(currentUser.preferences.interestedIn || 'all');
@@ -56,8 +71,21 @@ export const DiscoverPage: React.FC = () => {
     updateUserPreferences({ interestedIn: gender as any });
   };
 
-  const topProfile = profiles[0];
-  const nextProfile = profiles[1];
+  // Filter profiles by Advanced Criteria
+  const filteredProfiles = profiles.filter((p) => {
+    if (advancedFilters.verifiedOnly && !p.verified) return false;
+    if (p.age < advancedFilters.minAge || p.age > advancedFilters.maxAge) return false;
+    if (p.distanceKm > advancedFilters.maxDistanceKm) return false;
+    if (p.compatibility < advancedFilters.minCompatibility) return false;
+    if (advancedFilters.relationshipIntent && p.relationshipIntent && p.relationshipIntent !== advancedFilters.relationshipIntent) return false;
+    if (advancedFilters.zodiac && p.lifestyle?.zodiac && !p.lifestyle.zodiac.includes(advancedFilters.zodiac)) return false;
+    if (advancedFilters.drinking && p.lifestyle?.drinking && p.lifestyle.drinking !== advancedFilters.drinking) return false;
+    if (advancedFilters.workout && p.lifestyle?.workout && p.lifestyle.workout !== advancedFilters.workout) return false;
+    return true;
+  });
+
+  const topProfile = filteredProfiles[0] || profiles[0];
+  const nextProfile = filteredProfiles[1] || profiles[1];
 
   if (isLoading) {
     return (
@@ -204,6 +232,138 @@ export const DiscoverPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Monetization & Discovery Control Bar */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px',
+          marginBottom: '14px',
+          flexWrap: 'wrap'
+        }}
+      >
+        {/* Left: Swipes Limit Badge */}
+        <div
+          onClick={() => {
+            if (!currentUser.isPremium) openUpgradeModal();
+          }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 14px',
+            borderRadius: 'var(--radius-pill)',
+            background: currentUser.isPremium
+              ? 'linear-gradient(135deg, #FEFCE8 0%, #FFFDFD 100%)'
+              : (currentUser.dailySwipesRemaining ?? 20) <= 5
+              ? '#FFF1F2'
+              : '#F8FAFC',
+            border: currentUser.isPremium
+              ? '1.5px solid var(--border-gold)'
+              : (currentUser.dailySwipesRemaining ?? 20) <= 5
+              ? '1.5px solid #FDA4AF'
+              : '1px solid var(--border-subtle)',
+            cursor: currentUser.isPremium ? 'default' : 'pointer',
+            boxShadow: 'var(--shadow-xs)'
+          }}
+        >
+          {currentUser.isPremium ? (
+            <>
+              <Crown size={15} color="var(--gold-deep)" />
+              <span style={{ fontSize: '0.78rem', fontWeight: 900, color: 'var(--berry-primary)' }}>
+                Unlimited VIP Swipes
+              </span>
+            </>
+          ) : (
+            <>
+              <Flame size={15} color="#E11D48" />
+              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                {currentUser.dailySwipesRemaining ?? 20} Free Swipes Left
+              </span>
+              <span style={{ fontSize: '0.72rem', fontWeight: 900, color: 'var(--berry-primary)' }}>
+                • Upgrade
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Right: Quick Action Buttons (Boost, Who Liked You, Filters) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Active Boost / Boost Button */}
+          <button
+            onClick={openBoostModal}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-pill)',
+              background: isBoostActive
+                ? 'linear-gradient(135deg, #EA580C, #F97316)'
+                : '#FFFFFF',
+              color: isBoostActive ? '#FFFFFF' : '#EA580C',
+              border: isBoostActive ? 'none' : '1.5px solid #FDBA74',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: isBoostActive ? '0 0 12px rgba(234, 88, 12, 0.4)' : 'var(--shadow-xs)',
+              animation: isBoostActive ? 'pulse 1.8s infinite' : 'none'
+            }}
+          >
+            <Rocket size={14} />
+            <span>{isBoostActive ? `Boost (${boostTimeRemainingFormatted})` : 'Boost Profile'}</span>
+          </button>
+
+          {/* Secret Admirers */}
+          <button
+            onClick={openWhoLikedMeModal}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-pill)',
+              background: '#FFFFFF',
+              color: 'var(--berry-primary)',
+              border: '1.5px solid var(--border-gold)',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-xs)'
+            }}
+          >
+            <Eye size={14} color="var(--gold-deep)" />
+            <span>Admirers ({whoLikedMeProfiles.length})</span>
+          </button>
+
+          {/* Advanced Filters */}
+          <button
+            onClick={openFilterModal}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-pill)',
+              background: '#FFFFFF',
+              color: 'var(--text-primary)',
+              border: '1.5px solid var(--border-subtle)',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-xs)'
+            }}
+          >
+            <SlidersHorizontal size={14} />
+            <span>Filters</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Spotlight & VIP Carousel */}
+      <SpotlightCarousel spotlightProfiles={spotlightProfiles} />
 
       {/* Top Spark Moments Matches Carousel */}
       {matches.length > 0 && (
@@ -627,13 +787,16 @@ export const DiscoverPage: React.FC = () => {
               />
             </div>
 
-            {/* Action Buttons (Pass, Super Like, Like, Rewind) */}
+            {/* Action Buttons (Pass, Super Like, Like, Rewind, Boost) */}
             <div style={{ width: '100%', marginTop: '10px' }}>
               <ActionButtons
                 onPass={() => handlePass(topProfile.id)}
                 onSuperLike={() => handleLike(topProfile.id, true)}
                 onLike={() => handleLike(topProfile.id, false)}
                 onRewind={() => refreshData()}
+                onBoost={openBoostModal}
+                isBoostActive={isBoostActive}
+                superLikesCount={currentUser.superLikesRemaining}
               />
             </div>
           </div>
