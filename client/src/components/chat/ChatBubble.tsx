@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Message } from '../../types';
+import { Play, Pause, Zap, Sparkles, Volume2, Mic } from 'lucide-react';
 
 interface ChatBubbleProps {
   message: Message;
@@ -9,7 +10,9 @@ interface ChatBubbleProps {
 }
 
 export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl }) => {
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const msgType = message.type || 'text';
+  const isPriority = msgType === 'priority' || message.metadata?.isPriority;
 
   // 0. PHOTO / IMAGE MESSAGE BUBBLE (Instagram & Snapchat Style)
   if (msgType === 'image' || message.metadata?.imageUrl) {
@@ -438,7 +441,227 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl
     );
   }
 
-  // 3. REGULAR OUTGOING BUBBLE (Right / Coral Pink)
+  // 3. VOICE MESSAGE BUBBLE (WhatsApp / iMessage Style)
+  if (msgType === 'voice' || message.metadata?.audioUrl || message.metadata?.audioDurationSec) {
+    const duration = message.metadata?.audioDurationSec || 14;
+    const durStr = `0:${String(duration).padStart(2, '0')}`;
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: '8px',
+          justifyContent: isMe ? 'flex-end' : 'flex-start',
+          marginBottom: '16px',
+          animation: 'fadeIn 0.25s ease-out forwards'
+        }}
+      >
+        {!isMe && avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '1.5px solid #FFFFFF',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              flexShrink: 0
+            }}
+          />
+        )}
+
+        <div
+          style={{
+            maxWidth: '82%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: isMe ? 'flex-end' : 'flex-start',
+            gap: '4px'
+          }}
+        >
+          <div
+            style={{
+              padding: '12px 18px',
+              borderRadius: isMe ? '24px 24px 6px 24px' : '24px 24px 24px 6px',
+              background: isMe
+                ? 'linear-gradient(135deg, #BE123C 0%, #E11D48 50%, #FB7185 100%)'
+                : 'linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%)',
+              color: isMe ? '#FFFFFF' : 'var(--text-primary)',
+              boxShadow: isMe ? '0 6px 20px rgba(190, 18, 60, 0.32)' : '0 4px 16px rgba(0,0,0,0.06)',
+              border: isMe ? '1.5px solid rgba(255,255,255,0.2)' : '1.5px solid var(--border-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              minWidth: '220px'
+            }}
+          >
+            {/* Play / Pause Circular Button */}
+            <button
+              type="button"
+              onClick={() => setIsPlayingAudio(!isPlayingAudio)}
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                background: isMe ? '#FFFFFF' : 'var(--primary-gradient)',
+                color: isMe ? 'var(--berry-primary)' : '#FFFFFF',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                flexShrink: 0,
+                transition: 'transform 0.15s ease'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            >
+              {isPlayingAudio ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" style={{ marginLeft: '2px' }} />}
+            </button>
+
+            {/* Sound Wave Bars Simulation */}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '3px', height: '28px' }}>
+              {[40, 75, 55, 90, 30, 85, 60, 100, 45, 70, 95, 35, 65, 80, 50].map((h, i) => (
+                <div
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: isPlayingAudio ? `${Math.max(20, (h + (i % 3) * 15) % 100)}%` : `${h}%`,
+                    background: isMe ? 'rgba(255, 255, 255, 0.85)' : 'rgba(225, 29, 72, 0.65)',
+                    borderRadius: '4px',
+                    transition: 'height 0.2s ease'
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Duration Tag */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 800, fontFamily: 'monospace' }}>
+                {isPlayingAudio ? '▶ 0:08' : durStr}
+              </span>
+              <span style={{ fontSize: '0.65rem', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Mic size={10} /> Voice
+              </span>
+            </div>
+          </div>
+
+          <span style={{ fontSize: '0.72rem', color: '#9CA3AF', padding: '0 4px', fontWeight: 500 }}>
+            {message.timestamp}
+          </span>
+        </div>
+
+        {isMe && avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '1.5px solid #FFFFFF',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              flexShrink: 0
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // 4. SPECIAL FEATURE / ICEBREAKER CARD BUBBLE
+  if (msgType === 'special-feature' || message.metadata?.featureName) {
+    const featName = message.metadata?.featureName || 'Romantic Spark';
+    const featEmoji = message.metadata?.featureEmoji || '✨';
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: '8px',
+          justifyContent: isMe ? 'flex-end' : 'flex-start',
+          marginBottom: '16px',
+          animation: 'fadeIn 0.25s ease-out forwards'
+        }}
+      >
+        {!isMe && avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '1.5px solid #FFFFFF',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              flexShrink: 0
+            }}
+          />
+        )}
+
+        <div
+          style={{
+            maxWidth: '85%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: isMe ? 'flex-end' : 'flex-start',
+            gap: '4px'
+          }}
+        >
+          <div
+            style={{
+              padding: '16px 20px',
+              borderRadius: '24px',
+              background: 'linear-gradient(135deg, #FFF8FA 0%, #FDF2F5 100%)',
+              border: '1.5px solid var(--border-gold)',
+              boxShadow: '0 8px 24px rgba(212, 175, 55, 0.22)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '1.2rem' }}>{featEmoji}</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold-deep)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                {featName} (Special Chat Feature)
+              </span>
+            </div>
+            <p style={{ fontSize: '0.94rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.45 }}>
+              {message.text}
+            </p>
+          </div>
+
+          <span style={{ fontSize: '0.72rem', color: '#9CA3AF', padding: '0 4px', fontWeight: 500 }}>
+            {message.timestamp}
+          </span>
+        </div>
+
+        {isMe && avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '1.5px solid #FFFFFF',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              flexShrink: 0
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // 5. REGULAR OUTGOING BUBBLE (Right / Coral Pink or Gold Priority)
   if (isMe) {
     return (
       <div
@@ -460,17 +683,26 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl
             gap: '4px'
           }}
         >
-          {/* Coral-Pink Rounded Outgoing Bubble */}
+          {isPriority && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', fontWeight: 800, color: 'var(--gold-deep)', background: 'var(--gold-light)', padding: '2px 8px', borderRadius: '12px', border: '1px solid var(--border-gold)' }}>
+              <Zap size={11} fill="var(--gold-deep)" />
+              <span>Priority Delivery ⚡</span>
+            </div>
+          )}
+
           <div
             style={{
               padding: '14px 20px',
               borderRadius: '24px 24px 6px 24px',
-              background: 'linear-gradient(135deg, #FB7185 0%, #F43F5E 100%)',
+              background: isPriority
+                ? 'linear-gradient(135deg, #D4AF37 0%, #BE123C 50%, #F43F5E 100%)'
+                : 'linear-gradient(135deg, #FB7185 0%, #F43F5E 100%)',
               color: '#FFFFFF',
               fontSize: '0.96rem',
               fontWeight: 600,
               lineHeight: 1.45,
-              boxShadow: '0 6px 18px rgba(244, 63, 94, 0.28)',
+              boxShadow: isPriority ? '0 8px 24px rgba(212, 175, 55, 0.4)' : '0 6px 18px rgba(244, 63, 94, 0.28)',
+              border: isPriority ? '1.5px solid #FDF3D6' : 'none',
               whiteSpace: 'pre-line',
               fontFamily: 'var(--font-sans)'
             }}
@@ -509,7 +741,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl
     );
   }
 
-  // 4. REGULAR INCOMING BUBBLE (Left / Clean White)
+  // 6. REGULAR INCOMING BUBBLE (Left / Clean White)
   return (
     <div
       style={{
@@ -546,7 +778,13 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl
           gap: '4px'
         }}
       >
-        {/* White Rounded Incoming Bubble */}
+        {isPriority && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', fontWeight: 800, color: 'var(--gold-deep)', background: 'var(--gold-light)', padding: '2px 8px', borderRadius: '12px', border: '1px solid var(--border-gold)' }}>
+            <Zap size={11} fill="var(--gold-deep)" />
+            <span>Priority Message ⚡</span>
+          </div>
+        )}
+
         <div
           style={{
             padding: '14px 20px',
@@ -557,6 +795,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMe, avatarUrl
             fontWeight: 500,
             lineHeight: 1.45,
             boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
+            border: isPriority ? '1.5px solid var(--border-gold)' : '1px solid transparent',
             whiteSpace: 'pre-line',
             fontFamily: 'var(--font-sans)'
           }}

@@ -164,7 +164,7 @@ export interface Match {
   isSuperMatch?: boolean;
 }
 
-export type MessageType = 'text' | 'gift' | 'heart-crowned' | 'call-log' | 'game-invite' | 'image' | 'super-like';
+export type MessageType = 'text' | 'gift' | 'heart-crowned' | 'call-log' | 'game-invite' | 'image' | 'super-like' | 'voice' | 'priority' | 'special-feature';
 
 export interface Message {
   id: string;
@@ -184,6 +184,11 @@ export interface Message {
     gameTitle?: string;
     imageUrl?: string;
     caption?: string;
+    isPriority?: boolean;
+    audioUrl?: string;
+    audioDurationSec?: number;
+    featureName?: string;
+    featureEmoji?: string;
   };
 }
 

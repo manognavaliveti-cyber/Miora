@@ -83,6 +83,15 @@ export interface EarnCoinTask {
   actionText: string;
 }
 
+export interface ChatPricingDef {
+  directMessageNonMatchCoins: number;
+  priorityMessageCoins: number;
+  sendPhotoCoins: number;
+  sendVoiceMessageCoins: number;
+  unlockSpecialFeatureCoins: number;
+  matchedTextChatFree: boolean;
+}
+
 export const MIORA_PRICING = {
   // 1. Swiping Limits & Free Tier Limits
   limits: {
@@ -91,6 +100,16 @@ export const MIORA_PRICING = {
     premiumDailySuperLikes: 5, // 5 free super likes / day for premium
     freeWhoLikedMeBlurredCount: 12 // teaser count
   },
+
+  // 1b. Chat Coins & Premium Messaging Actions
+  chat: {
+    directMessageNonMatchCoins: 10,
+    priorityMessageCoins: 25,
+    sendPhotoCoins: 15,
+    sendVoiceMessageCoins: 20,
+    unlockSpecialFeatureCoins: 30,
+    matchedTextChatFree: true
+  } as ChatPricingDef,
 
   // 2. Subscriptions (FREE, GOLD ₹499/mo + 500 Coins, VIP ₹999/mo + 1500 Coins)
   subscriptionPlans: [

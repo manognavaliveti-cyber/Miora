@@ -33,6 +33,7 @@ export const ProfileDetailsModal: React.FC = () => {
     coupleGames,
     verifyProfileWithCoins,
     unlockedVerificationIds,
+    startDirectMessage,
     currentUser
   } = useApp();
 
@@ -612,17 +613,41 @@ export const ProfileDetailsModal: React.FC = () => {
             <button
               onClick={() => {
                 closeProfileDetail();
+                startDirectMessage(activeProfile);
+              }}
+              style={{
+                flex: 1,
+                padding: '9px 10px',
+                borderRadius: 'var(--radius-pill)',
+                border: '1.5px solid var(--border-gold)',
+                background: 'var(--gold-gradient-subtle)',
+                color: 'var(--gold-deep)',
+                fontWeight: 800,
+                fontSize: '0.78rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4px'
+              }}
+            >
+              <span>💬 DM (10🪙)</span>
+            </button>
+
+            <button
+              onClick={() => {
+                closeProfileDetail();
                 startGameWithPartner(coupleGames[0], activeProfile);
               }}
               style={{
                 flex: 1,
-                padding: '9px 12px',
+                padding: '9px 10px',
                 borderRadius: 'var(--radius-pill)',
                 border: '1.5px solid var(--border-subtle)',
                 background: 'var(--bg-soft-blush)',
                 color: 'var(--berry-primary)',
                 fontWeight: 800,
-                fontSize: '0.8rem',
+                fontSize: '0.78rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',

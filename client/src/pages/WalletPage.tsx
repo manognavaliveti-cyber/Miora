@@ -626,6 +626,110 @@ export const WalletPage: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {/* Chat Coins & Premium Feature Usage Guide */}
+          <div
+            className="card-luxury"
+            style={{
+              marginTop: '32px',
+              padding: 'clamp(20px, 3.5vw, 28px)',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF8FA 100%)',
+              borderRadius: '24px',
+              border: '1.5px solid var(--border-gold)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <Sparkles size={20} color="var(--gold-deep)" />
+              <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                Coin Usage & Premium Features
+              </h4>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              {/* Chat Coins */}
+              <div style={{ padding: '16px', background: 'var(--surface-white)', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--berry-primary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+                  💬 Chat Coins (Free for Matched Text)
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Message Non-Match</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>10 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Send Photo in Chat</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>15 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Send Voice Message</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>20 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Priority Delivery</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>25 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Special Feature Unlock</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>30 Coins</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Audio & Video Calls */}
+              <div style={{ padding: '16px', background: 'var(--surface-white)', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--berry-primary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+                  🎙️ Audio & Video Calling
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Audio: 1 min / 5 mins</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>20 / 90 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Audio: 10 mins / 30 mins</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>160 / 450 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Video: 1 min / 5 mins</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>40 / 180 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Video: 10 mins / 30 mins</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>330 / 900 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Video: 60 mins</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>1,600 Coins</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Extra Revenue Features */}
+              <div style={{ padding: '16px', background: 'var(--surface-white)', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--berry-primary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+                  🔥 Power-Ups & Unlocks
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Super Likes (1 / 5 / 15)</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>30 / 120 / 300 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Profile Boost (30m / 2h / 24h)</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>100 / 250 / 600 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Who Liked Me (10 / 50 Profiles)</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>100 / 350 Coins</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Virtual Gifts</span>
+                    <strong style={{ color: 'var(--gold-deep)' }}>10 – 250 Coins</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

@@ -89,6 +89,7 @@ interface AppContextType {
   // Chat
   openChatWithMatch: (match: Match) => Promise<void>;
   sendChatMessage: (text: string, type?: MessageType, metadata?: any) => Promise<void>;
+  startDirectMessage: (profile: Profile) => void;
 
   // Calling (Audio & Video)
   activeCall: ActiveCall | null;
@@ -991,6 +992,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } catch {
       setCurrentChatMessages(INITIAL_MESSAGES[match.id] || []);
     }
+  };
+
+  const startDirectMessage = (profile: Profile) => {
+    // 1. Check if user is already a match
+    const existingMatch = matches.find((m) => m.profileId === profile.id || m.id === profile.id);
+    if (existingMatch) {
+      openChatWithMatch(existingMatch);
+      return;
+    }
+
+    // 2. Direct message to a non-match requires 10 coins
+    const cost = MIORA_PRICING.chat.directMessageNonMatchCoins;
+    if (currentUser.coinBalance < cost) {
+      showToast(`Direct message to a non-match requires ${cost} coins 💬`);
+      navigateToTab('wallet');
+      return;
+    }
+
+    const ok = spendCoins(cost, `Direct Message to ${profile.name} 💬`, profile.name);
+    if (!ok) {
+      navigateToTab('wallet');
+      return;
+    }
+
+    // Create a new match conversation
+    const newMatch: Match = {
+      id: `match_${profile.id}_${Date.now()}`,
+      profileId: profile.id,
+      profile,
+      matchedAt: new Date().toISOString(),
+      lastMessage: 'Started direct conversation 💬',
+      lastMessageTime: 'Just now',
+      unreadCount: 0
+    };
+
+    setMatches((prev) => [newMatch, ...prev]);
+    openChatWithMatch(newMatch);
+    showToast(`Direct message thread opened with ${profile.name}! -${cost} Coins 💬`);
   };
 
   const sendChatMessage = async (text: string, type: MessageType = 'text', metadata?: any) => {
@@ -1907,6 +1946,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         startChatFromMatch,
         openChatWithMatch,
         sendChatMessage,
+        startDirectMessage,
 
         // Calling
         activeCall,
