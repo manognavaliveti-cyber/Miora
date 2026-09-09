@@ -17,6 +17,7 @@ public class CoinTransaction {
     private Integer coins; // explicit coins field
     private Integer amountInr; // monetary price in INR
     private String currency; // INR
+    private String title;
     private String description;
     private String timestamp;
     private String createdAt;
