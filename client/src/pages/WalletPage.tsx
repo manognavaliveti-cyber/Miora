@@ -267,7 +267,7 @@ export const WalletPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border-subtle)' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Rate: ₹14 / 20 Mins</span>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Rate: 30 Mins / 450 Coins</span>
             <button
               onClick={openTalkTimeModal}
               style={{
