@@ -55,18 +55,8 @@ const AppContent: React.FC = () => {
       case 'wallet':
         return <WalletPage />;
       case 'chat-list':
-        return <ChatListPage />;
       case 'chat':
-        return (
-          <>
-            <div className="desktop-only" style={{ width: '100%' }}>
-              <ChatListPage />
-            </div>
-            <div className="mobile-only" style={{ width: '100%', height: '100%' }}>
-              <ChatPage />
-            </div>
-          </>
-        );
+        return <ChatListPage />;
       case 'my-profile':
         return <MyProfilePage />;
       case 'edit-profile':

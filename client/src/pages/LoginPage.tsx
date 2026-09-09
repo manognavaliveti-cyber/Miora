@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/common/Button';
-import { Input } from '../components/common/Input';
-import { Mail, Lock, Heart, Sparkles, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Sparkles, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
 import { MioraLogo } from '../components/common/MioraLogo';
 
 export const LoginPage: React.FC = () => {
@@ -41,56 +40,93 @@ export const LoginPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: 'clamp(16px, 4vw, 40px)',
-        animation: 'fadeIn 0.3s ease-out forwards'
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'radial-gradient(circle at 50% 30%, #FCE4E8 0%, #F8D8DC 60%, #F4CED3 100%)'
       }}
     >
+      {/* Background Floating Glass Orbs */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-10%',
+          left: '-5%',
+          width: '500px',
+          height: '500px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255, 182, 193, 0.4) 0%, rgba(216, 27, 96, 0.15) 70%, transparent 100%)',
+          filter: 'blur(80px)',
+          pointerEvents: 'none'
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '-10%',
+          right: '-5%',
+          width: '550px',
+          height: '550px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(253, 224, 230, 0.5) 0%, rgba(139, 30, 63, 0.12) 70%, transparent 100%)',
+          filter: 'blur(90px)',
+          pointerEvents: 'none'
+        }}
+      />
+
       <div
         style={{
           width: '100%',
-          maxWidth: '1240px',
+          maxWidth: '1160px',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: 'clamp(20px, 4vw, 56px)',
-          alignItems: 'center'
+          gap: 'clamp(24px, 4vw, 48px)',
+          alignItems: 'center',
+          zIndex: 10
         }}
       >
-        {/* LEFT COLUMN (Desktop Romantic Pink Visual Showcase) */}
+        {/* LEFT COLUMN (Frosted Glass Showcase Panel) */}
         <div
           className="desktop-only"
           style={{
             flexDirection: 'column',
             gap: '24px',
-            padding: 'clamp(24px, 3.5vw, 40px)',
-            background: 'linear-gradient(145deg, rgba(255, 230, 236, 0.7) 0%, rgba(254, 215, 226, 0.4) 100%)',
-            borderRadius: 'var(--radius-xl)',
-            border: '1.5px solid var(--border-subtle)',
-            backdropFilter: 'blur(16px)',
+            padding: 'clamp(32px, 4vw, 48px)',
+            background: 'rgba(255, 255, 255, 0.45)',
+            backdropFilter: 'blur(28px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+            borderRadius: '32px',
+            border: '1.5px solid rgba(255, 255, 255, 0.75)',
+            boxShadow: '0 20px 50px rgba(186, 73, 98, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.9)',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
-          {/* Back to Welcome */}
+          {/* Back Button */}
           <button
             onClick={() => setCurrentView('welcome')}
             style={{
               width: '42px',
               height: '42px',
               borderRadius: '50%',
-              background: 'var(--surface-white)',
-              border: '1px solid var(--border-subtle)',
+              background: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255, 255, 255, 0.9)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--text-primary)',
+              color: '#3A121A',
               cursor: 'pointer',
-              boxShadow: 'var(--shadow-xs)'
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+              transition: 'transform 0.2s ease'
             }}
             aria-label="Back to welcome"
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.06)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
             <ChevronLeft size={20} />
           </button>
 
-          {/* MIORA Brand Icon & Wordmark */}
+          {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <MioraLogo size={46} showTagline={true} showWordmark={true} vertical={false} />
           </div>
@@ -101,40 +137,61 @@ export const LoginPage: React.FC = () => {
                 fontFamily: 'var(--font-serif)',
                 fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
                 fontWeight: 800,
-                color: 'var(--text-primary)',
+                color: '#3A121A',
                 letterSpacing: '-0.025em',
                 lineHeight: 1.15
               }}
             >
               Where authentic hearts reconnect.
             </h1>
-            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', marginTop: '14px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '1.05rem', color: '#6B3845', marginTop: '14px', lineHeight: 1.6, fontWeight: 500 }}>
               Continue your meaningful conversations, review new mutual sparks, and explore curated daily chemistry.
             </p>
           </div>
 
-          {/* Social Proof & Quick Feature Pill */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '14px 20px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'rgba(255, 255, 255, 0.92)',
-              border: '1px solid var(--border-gold)',
-              boxShadow: 'var(--shadow-sm)',
-              width: 'fit-content'
-            }}
-          >
-            <Sparkles size={18} color="var(--gold-deep)" />
-            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--berry-primary)' }}>
-              100% Verified Members • Sincere Intentions Only ✨
-            </span>
+          {/* Glass Feature Badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '6px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '999px',
+                background: 'rgba(255, 255, 255, 0.65)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.85)',
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                color: '#8B1E3F'
+              }}
+            >
+              <ShieldCheck size={16} color="#8B1E3F" />
+              <span>100% Verified Profiles</span>
+            </div>
+
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '999px',
+                background: 'rgba(255, 255, 255, 0.65)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.85)',
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                color: '#8B1E3F'
+              }}
+            >
+              <Sparkles size={16} color="#D81B60" />
+              <span>Bespoke Vibe Matching</span>
+            </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN (Login Form Card) */}
+        {/* RIGHT COLUMN (Ultra-Modern Glassmorphic Login Form) */}
         <div
           style={{
             display: 'flex',
@@ -151,14 +208,14 @@ export const LoginPage: React.FC = () => {
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                background: 'var(--surface-white)',
-                border: '1px solid var(--border-subtle)',
+                background: 'rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.8)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--text-primary)',
-                cursor: 'pointer',
-                boxShadow: 'var(--shadow-xs)'
+                color: '#3A121A',
+                cursor: 'pointer'
               }}
               aria-label="Back to welcome"
             >
@@ -168,16 +225,18 @@ export const LoginPage: React.FC = () => {
             <div style={{ width: '38px' }} />
           </div>
 
+          {/* GLASSMORPHISM CARD */}
           <div
-            className="card-white"
             style={{
               width: '100%',
               maxWidth: '440px',
-              padding: 'clamp(24px, 4vw, 40px)',
-              borderRadius: '28px',
-              boxShadow: 'var(--shadow-lg)',
-              border: '1.5px solid var(--border-subtle)',
-              background: 'var(--surface-white)',
+              padding: 'clamp(28px, 4vw, 42px)',
+              borderRadius: '32px',
+              background: 'rgba(255, 255, 255, 0.65)',
+              backdropFilter: 'blur(32px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(180%)',
+              border: '1.5px solid rgba(255, 255, 255, 0.85)',
+              boxShadow: '0 24px 60px rgba(139, 30, 63, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.95)',
               boxSizing: 'border-box'
             }}
           >
@@ -185,52 +244,129 @@ export const LoginPage: React.FC = () => {
               <h2
                 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: '2rem',
+                  fontSize: '2.1rem',
                   fontWeight: 800,
-                  color: 'var(--text-primary)'
+                  color: '#3A121A',
+                  letterSpacing: '-0.02em',
+                  margin: 0
                 }}
               >
                 Sign In
               </h2>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+              <p style={{ fontSize: '0.92rem', color: '#6B3845', marginTop: '6px', fontWeight: 600 }}>
                 Enter your credentials to access your account.
               </p>
             </div>
 
             <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <Input
-                label="Email Address"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setError('');
-                }}
-                icon={<Mail size={18} />}
-              />
+              {/* Email Glass Input */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4A1724' }}>
+                  Email Address
+                </label>
+                <div
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div style={{ position: 'absolute', left: '16px', color: '#8B1E3F', display: 'flex' }}>
+                    <Mail size={18} />
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px 12px 46px',
+                      borderRadius: '16px',
+                      border: '1.5px solid rgba(255, 255, 255, 0.9)',
+                      background: 'rgba(255, 255, 255, 0.75)',
+                      backdropFilter: 'blur(12px)',
+                      fontSize: '0.92rem',
+                      fontWeight: 600,
+                      color: '#3A121A',
+                      outline: 'none',
+                      boxShadow: '0 2px 8px rgba(186, 73, 98, 0.05)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#8B1E3F';
+                      e.target.style.boxShadow = '0 0 16px rgba(139, 30, 63, 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.9)';
+                      e.target.style.boxShadow = '0 2px 8px rgba(186, 73, 98, 0.05)';
+                    }}
+                  />
+                </div>
+              </div>
 
-              <Input
-                label="Password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError('');
-                }}
-                icon={<Lock size={18} />}
-              />
+              {/* Password Glass Input */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4A1724' }}>
+                  Password
+                </label>
+                <div
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div style={{ position: 'absolute', left: '16px', color: '#8B1E3F', display: 'flex' }}>
+                    <Lock size={18} />
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError('');
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px 12px 46px',
+                      borderRadius: '16px',
+                      border: '1.5px solid rgba(255, 255, 255, 0.9)',
+                      background: 'rgba(255, 255, 255, 0.75)',
+                      backdropFilter: 'blur(12px)',
+                      fontSize: '0.92rem',
+                      fontWeight: 600,
+                      color: '#3A121A',
+                      outline: 'none',
+                      boxShadow: '0 2px 8px rgba(186, 73, 98, 0.05)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#8B1E3F';
+                      e.target.style.boxShadow = '0 0 16px rgba(139, 30, 63, 0.2)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.9)';
+                      e.target.style.boxShadow = '0 2px 8px rgba(186, 73, 98, 0.05)';
+                    }}
+                  />
+                </div>
+              </div>
 
               {error && (
                 <div
                   style={{
                     padding: '12px 16px',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#EF4444',
+                    borderRadius: '14px',
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#DC2626',
                     fontSize: '0.86rem',
-                    fontWeight: 600
+                    fontWeight: 700
                   }}
                 >
                   {error}
@@ -244,9 +380,9 @@ export const LoginPage: React.FC = () => {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: 'var(--berry-primary)',
+                    color: '#8B1E3F',
                     fontSize: '0.86rem',
-                    fontWeight: 700,
+                    fontWeight: 800,
                     cursor: 'pointer'
                   }}
                 >
@@ -254,39 +390,81 @@ export const LoginPage: React.FC = () => {
                 </button>
               </div>
 
-              <Button type="submit" variant="primary" size="lg" fullWidth disabled={isLoading}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </Button>
+              {/* Glossy Primary Sign In Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  borderRadius: '999px',
+                  background: 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)',
+                  border: '1.5px solid rgba(255, 255, 255, 0.3)',
+                  color: '#FFFFFF',
+                  fontSize: '0.98rem',
+                  fontWeight: 800,
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 8px 24px rgba(139, 30, 63, 0.35)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  opacity: isLoading ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(139, 30, 63, 0.48)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(139, 30, 63, 0.35)';
+                  }
+                }}
+              >
+                <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
+                <ArrowRight size={18} />
+              </button>
 
-              {/* Direct Instant 1-Click Access */}
+              {/* Glass Direct 1-Click Guest Login Button */}
               <button
                 type="button"
                 onClick={directGuestLogin}
                 style={{
                   width: '100%',
                   padding: '12px 18px',
-                  borderRadius: 'var(--radius-pill)',
-                  background: 'linear-gradient(135deg, rgba(254, 226, 232, 0.7) 0%, rgba(254, 205, 211, 0.4) 100%)',
-                  border: '1.5px dashed var(--berry-primary)',
-                  color: 'var(--berry-primary)',
+                  borderRadius: '999px',
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1.5px dashed #8B1E3F',
+                  color: '#8B1E3F',
                   fontWeight: 800,
-                  fontSize: '0.88rem',
+                  fontSize: '0.86rem',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  transition: 'all var(--transition-fast)'
+                  transition: 'all 0.2s ease'
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(254, 205, 211, 0.7)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'linear-gradient(135deg, rgba(254, 226, 232, 0.7) 0%, rgba(254, 205, 211, 0.4) 100%)')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                  e.currentTarget.style.transform = 'scale(1.01)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
               >
-                <Sparkles size={16} color="var(--berry-primary)" />
+                <Sparkles size={16} color="#8B1E3F" />
                 <span>Direct 1-Click Login • Explore Without Account</span>
               </button>
 
-              <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)' }}>
+              <div style={{ textAlign: 'center', marginTop: '8px' }}>
+                <p style={{ fontSize: '0.9rem', color: '#6B3845', fontWeight: 600 }}>
                   Don’t have an account?{' '}
                   <button
                     type="button"
@@ -294,7 +472,7 @@ export const LoginPage: React.FC = () => {
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: 'var(--berry-primary)',
+                      color: '#8B1E3F',
                       fontWeight: 800,
                       cursor: 'pointer'
                     }}
@@ -309,9 +487,10 @@ export const LoginPage: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px',
-                    marginTop: '18px',
+                    marginTop: '16px',
                     fontSize: '0.76rem',
-                    color: 'var(--text-muted)'
+                    color: '#7C4351',
+                    fontWeight: 600
                   }}
                 >
                   <button
@@ -320,7 +499,7 @@ export const LoginPage: React.FC = () => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--text-secondary)',
+                      color: '#7C4351',
                       cursor: 'pointer',
                       fontSize: 'inherit',
                       fontFamily: 'inherit',
@@ -336,7 +515,7 @@ export const LoginPage: React.FC = () => {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--text-secondary)',
+                      color: '#7C4351',
                       cursor: 'pointer',
                       fontSize: 'inherit',
                       fontFamily: 'inherit',
@@ -354,3 +533,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+

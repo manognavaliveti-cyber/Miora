@@ -450,8 +450,8 @@ export const MIORA_PRICING = {
     freeBasicQuestions: true,
     premiumQuestionsCoins: 20,
     premiumGamePackInr: 9,
-    gameWinRewardCoins: 15,
-    dailyCheckinRewardCoins: 10,
+    gameWinRewardCoins: 40,
+    dailyCheckinRewardCoins: 25,
     profileCompletionRewardCoins: 20
   },
 
@@ -460,10 +460,10 @@ export const MIORA_PRICING = {
     {
       id: 'task_daily',
       title: 'Daily Check-in',
-      rewardCoins: 10,
+      rewardCoins: 25,
       icon: '✨',
       description: 'Claim your daily romance bonus coins',
-      actionText: 'Claim +10'
+      actionText: 'Claim +25'
     },
     {
       id: 'task_profile',
@@ -476,26 +476,26 @@ export const MIORA_PRICING = {
     {
       id: 'task_play_game',
       title: 'Play a Couple Game',
-      rewardCoins: 15,
+      rewardCoins: 40,
       icon: '🎮',
       description: 'Play Would You Rather or Compatibility Quiz with a match',
-      actionText: 'Play & Earn +15'
+      actionText: 'Play & Earn +40'
     },
     {
       id: 'task_join_room',
       title: 'Join a Dating Room',
-      rewardCoins: 10,
+      rewardCoins: 30,
       icon: '🎙️',
       description: 'Listen and share dating advice in live rooms',
-      actionText: 'Join +10'
+      actionText: 'Join +30'
     },
     {
       id: 'task_post_feed',
       title: 'Post a Dating Thought',
-      rewardCoins: 10,
+      rewardCoins: 25,
       icon: '📱',
       description: 'Share a romantic thought or 24h status update',
-      actionText: 'Post +10'
+      actionText: 'Post +25'
     }
   ] as EarnCoinTask[]
 };

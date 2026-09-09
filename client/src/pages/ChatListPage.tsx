@@ -277,7 +277,6 @@ export const ChatListPage: React.FC = () => {
 
         {/* RIGHT COLUMN (Desktop Active Conversation Pane) */}
         <div
-          className="desktop-only"
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -285,7 +284,8 @@ export const ChatListPage: React.FC = () => {
             background: '#FDF2F4',
             backgroundImage: heartWallpaper,
             backgroundRepeat: 'repeat',
-            position: 'relative'
+            position: 'relative',
+            minWidth: 0
           }}
         >
           {selectedMatch ? (

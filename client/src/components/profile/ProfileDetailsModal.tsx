@@ -319,7 +319,9 @@ export const ProfileDetailsModal: React.FC = () => {
                   >
                     {activeProfile.name}, {activeProfile.age}
                   </h2>
-                  <CheckCircle2 size={20} color="var(--gold-champagne)" fill="rgba(212, 175, 55, 0.2)" />
+                  {unlockedVerificationIds.includes(activeProfile.id) && activeProfile.verified && (
+                    <CheckCircle2 size={20} color="var(--gold-champagne)" fill="rgba(212, 175, 55, 0.2)" />
+                  )}
                 </div>
 
                 <div
@@ -395,13 +397,17 @@ export const ProfileDetailsModal: React.FC = () => {
                 <div>
                   <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                     {unlockedVerificationIds.includes(activeProfile.id)
-                      ? '100% Verified Profile • Government ID & Live Selfie Authenticated'
-                      : 'Account Verification Status'}
+                      ? (activeProfile.verified
+                          ? '100% Verified Profile • Government ID & Live Selfie Authenticated'
+                          : 'Unverified Account • Verification check completed')
+                      : 'Account Verification Status (Locked)'}
                   </div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                     {unlockedVerificationIds.includes(activeProfile.id)
-                      ? 'Trust Score: 99% • Official Verified Match'
-                      : 'Check if this account is verified using 60 MIORA Coins'}
+                      ? (activeProfile.verified
+                          ? 'Trust Score: 99% • Official Verified Match'
+                          : 'Trust Score: 50% • Caution advised')
+                      : 'Pay 60 MIORA Coins to verify if this account is authentic'}
                   </div>
                 </div>
               </div>

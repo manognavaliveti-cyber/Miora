@@ -1,26 +1,28 @@
 :root {
   /* Brand Luxury Palette: Soft Pink, Blush, Rose Petal & Champagne Gold */
-  --bg-warm-ivory: #FFF5F7;
-  --bg-cream: #FCEDF2;
-  --bg-soft-blush: #FDE8EE;
-  --bg-blush-subtle: #FDF2F5;
-  --bg-rose-gray: #F7E4EB;
+  --bg-warm-ivory: #F7DADE;
+  --bg-cream: #F8D8DC;
+  --bg-soft-blush: #FCE4E8;
+  --bg-blush-subtle: #FDF0F3;
+  --bg-rose-gray: #F4CED3;
 
-  /* Surfaces & Glass */
+  /* Surfaces & Clay Cards */
   --surface-white: #FFFFFF;
-  --surface-cream: #FFF8FA;
+  --surface-cream: #FFF4F6;
+  --surface-clay: #FDE8EC;
+  --surface-clay-light: #FFF0F3;
   --surface-glass: rgba(255, 255, 255, 0.92);
   --surface-glass-subtle: rgba(255, 255, 255, 0.78);
   --surface-glass-border: rgba(244, 63, 94, 0.12);
 
-  /* Deep Berry, Romantic Rose & Coral Pinks */
+  /* Deep Burgundy, Romantic Rose & Coral Pinks */
   --wine-dark: #3F0515;
   --wine-rich: #4C0519;
-  --wine-deep: #701A31;
-  --berry-deep: #701A31;
-  --berry-primary: #BE123C;
-  --berry-raspberry: #E11D48;
-  --berry-bright: #F43F5E;
+  --wine-deep: #7A1C30;
+  --berry-deep: #6B1426;
+  --berry-primary: #8B1E3F;
+  --berry-raspberry: #B8254E;
+  --berry-bright: #E11D48;
   --rose-soft: #FB7185;
   --rose-dusty: #FDA4AF;
   --rose-petal: #FECDD3;
@@ -35,10 +37,11 @@
   --gold-gradient-subtle: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(244, 63, 94, 0.06) 100%);
 
   /* Primary Gradients */
-  --primary-gradient: linear-gradient(135deg, #EE3865 0%, #F43F5E 50%, #BE123C 100%);
-  --primary-gradient-hover: linear-gradient(135deg, #F43F5E 0%, #E11D48 50%, #9F1239 100%);
-  --primary-gradient-subtle: linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(251, 113, 133, 0.04) 100%);
-  --ambient-bg-gradient: radial-gradient(circle at 18% 12%, #FFF8FA 0%, #FDEEF3 45%, #FADBE5 100%);
+  --primary-gradient: linear-gradient(135deg, #A82046 0%, #8B1E3F 50%, #681028 100%);
+  --primary-gradient-hover: linear-gradient(135deg, #B8254E 0%, #9B1A3B 50%, #570C20 100%);
+  --primary-gradient-subtle: linear-gradient(135deg, rgba(139, 30, 63, 0.08) 0%, rgba(251, 113, 133, 0.04) 100%);
+  --ambient-bg-gradient: radial-gradient(circle at 50% 30%, #FCE4E8 0%, #F8D8DC 60%, #F4CED3 100%);
+  --vibe-card-gradient: linear-gradient(145deg, #8B1E3F 0%, #6B1426 50%, #4D0C1A 100%);
 
   /* Action Button Accents */
   --action-pass: #64748B;

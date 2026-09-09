@@ -357,25 +357,6 @@ export const SignupPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Curated Daily Stacks Pill */}
-            <div
-              style={{
-                padding: '12px 20px',
-                borderRadius: '9999px',
-                background: 'rgba(255, 255, 255, 0.94)',
-                border: '1px solid var(--border-gold)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: 'fit-content',
-                boxShadow: '0 4px 14px rgba(225, 29, 72, 0.08)'
-              }}
-            >
-              <Sparkles size={16} color="var(--gold-deep)" />
-              <span style={{ fontSize: '0.84rem', color: '#BE123C', fontWeight: 700 }}>
-                Curated daily stacks • Privacy protected • Verified real singles ✨
-              </span>
-            </div>
           </div>
 
           {/* Right Floating Card (Matching Photos 1 & 2) */}

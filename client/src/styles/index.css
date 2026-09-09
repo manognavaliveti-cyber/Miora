@@ -406,26 +406,28 @@ p, span, label, div {
 
 /* 2-Column Chat Container */
 .desktop-chat-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  background: var(--surface-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  margin: 10px 0 24px 0;
+  height: calc(100vh - 120px);
+  min-height: 600px;
+  max-height: 860px;
   width: 100%;
-  height: 100%;
-  min-height: auto;
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 767px) {
   .desktop-chat-container {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    background: var(--surface-white);
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    margin: 10px 0 30px 0;
-    height: calc(100vh - 140px);
-    min-height: 680px;
-    max-height: 860px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    border-radius: 0;
+    margin: 0;
+    border: none;
   }
 }
 
@@ -746,4 +748,149 @@ img {
 .safe-padding-bottom {
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
+
+/* ===================================================
+   DISCOVER PAGE MOCKUP NEUMORPHIC DESIGN SYSTEM
+   =================================================== */
+
+.card-neumorphic {
+  background: #FDE8EC;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    8px 8px 20px rgba(186, 73, 98, 0.08),
+    -6px -6px 16px rgba(255, 255, 255, 0.85),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  transition: all var(--transition-normal);
+}
+
+.card-neumorphic-subtle {
+  background: #FCE4E8;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    5px 5px 14px rgba(186, 73, 98, 0.06),
+    -4px -4px 12px rgba(255, 255, 255, 0.75);
+}
+
+.vibe-match-card {
+  background: linear-gradient(145deg, #7A1C30 0%, #631222 50%, #460A16 100%);
+  border-radius: 24px;
+  color: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(122, 28, 48, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.vibe-match-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Custom Range Slider */
+.custom-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #F8BBD0;
+  outline: none;
+}
+
+.custom-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #D81B60;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(216, 27, 96, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.custom-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Custom Switch Toggle */
+.custom-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.custom-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.custom-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E2B5BF;
+  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.custom-switch input:checked + .custom-switch-slider {
+  background-color: #8B1E3F;
+}
+
+.custom-switch input:checked + .custom-switch-slider:before {
+  transform: translateX(20px);
+}
+
+/* Desktop 3-Column Discover Grid */
+.desktop-discover-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr 310px;
+  gap: 24px;
+  width: 100%;
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .desktop-discover-grid {
+    grid-template-columns: 280px 1fr 280px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .desktop-discover-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
 

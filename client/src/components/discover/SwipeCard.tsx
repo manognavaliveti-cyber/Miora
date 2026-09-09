@@ -106,18 +106,18 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         position: 'absolute',
         width: '100%',
         height: '100%',
-        borderRadius: 'var(--radius-xl)',
+        borderRadius: '28px',
         overflow: 'hidden',
         boxShadow: isTopCard
-          ? '0 24px 54px rgba(76, 5, 25, 0.18)'
-          : '0 12px 32px rgba(76, 5, 25, 0.08)',
+          ? '0 18px 40px rgba(122, 28, 48, 0.22)'
+          : '0 8px 24px rgba(122, 28, 48, 0.1)',
         background: '#1A0E14',
         border: '1px solid rgba(255, 255, 255, 0.2)',
         transform: isTopCard
           ? `translate3d(${dragOffset.x}px, ${dragOffset.y}px, 0) rotate(${rotation}deg)`
           : 'scale(0.96) translateY(14px)',
         transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-        cursor: isTopCard ? 'grab' : 'default',
+        cursor: isTopCard ? (isDragging ? 'grabbing' : 'grab') : 'default',
         userSelect: 'none',
         touchAction: 'none'
       }}
@@ -315,22 +315,26 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 padding: '5px 11px',
                 borderRadius: 'var(--radius-pill)',
                 background: isVerifiedUnlocked
-                  ? 'rgba(16, 185, 129, 0.28)'
+                  ? (profile.verified ? 'rgba(16, 185, 129, 0.28)' : 'rgba(239, 68, 68, 0.25)')
                   : 'rgba(254, 240, 138, 0.25)',
                 border: isVerifiedUnlocked
-                  ? '1px solid #10B981'
+                  ? (profile.verified ? '1px solid #10B981' : '1px solid #EF4444')
                   : '1px solid rgba(253, 224, 71, 0.7)',
-                color: isVerifiedUnlocked ? '#10B981' : '#FDE047',
+                color: isVerifiedUnlocked ? (profile.verified ? '#10B981' : '#F87171') : '#FDE047',
                 fontSize: '0.74rem',
                 fontWeight: 800,
                 backdropFilter: 'blur(10px)',
-                cursor: 'pointer',
+                cursor: isVerifiedUnlocked ? 'default' : 'pointer',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
               }}
-              title={isVerifiedUnlocked ? 'Verified Authentic Profile' : 'Click to verify authenticity for 60 coins'}
+              title={isVerifiedUnlocked ? (profile.verified ? 'Verified Authentic Profile' : 'Unverified Profile') : 'Click to pay 60 coins & inspect verification status'}
             >
-              <ShieldCheck size={13} color={isVerifiedUnlocked ? '#10B981' : '#FDE047'} />
-              <span>{isVerifiedUnlocked ? '🛡️ 100% Verified' : 'Check Verified (60 🪙)'}</span>
+              <ShieldCheck size={13} color={isVerifiedUnlocked ? (profile.verified ? '#10B981' : '#F87171') : '#FDE047'} />
+              <span>
+                {isVerifiedUnlocked
+                  ? (profile.verified ? '🛡️ 100% Verified' : '⚠️ Unverified')
+                  : '🔒 Check Verified (60 🪙)'}
+              </span>
             </button>
           </div>
 
@@ -387,7 +391,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             >
               {profile.age}
             </span>
-            <CheckCircle2 size={18} color="var(--gold-champagne)" fill="rgba(212, 175, 55, 0.2)" />
+            {isVerifiedUnlocked && profile.verified && (
+              <CheckCircle2 size={18} color="var(--gold-champagne)" fill="rgba(212, 175, 55, 0.2)" />
+            )}
           </div>
 
           <div
