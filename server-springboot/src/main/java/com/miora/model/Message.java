@@ -20,6 +20,7 @@ public class Message {
     @Builder.Default
     private Boolean read = false;
     @Builder.Default
+    private String readAt = null;
     private String type = "text"; // text, gift, heart-crowned, call-log, game-invite
     private Map<String, Object> metadata;
 }

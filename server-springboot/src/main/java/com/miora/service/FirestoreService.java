@@ -716,5 +716,81 @@ public class FirestoreService {
         }
         return result;
     }
-}
+// ADMIN HELPERS CONTINUE
 
+    // ==========================================
+    // ADMIN HELPERS
+    // ==========================================
+
+    /**
+     * Return a list of all users (from cache or Firestore).
+     */
+    public java.util.List<User> getAllUsers() {
+        if (isFirestoreAvailable()) {
+            try {
+                com.google.cloud.firestore.QuerySnapshot snapshot = firestore.collection("users").get().get();
+                if (!snapshot.isEmpty()) {
+                    return snapshot.toObjects(User.class);
+                }
+            } catch (Exception e) {
+                log.warn("Error fetching all users: {}", e.getMessage());
+            }
+        }
+        return new java.util.ArrayList<>(userCache.values());
+    }
+
+    /**
+     * Return a list of all safety reports.
+     */
+    public java.util.List<SafetyReport> getAllReports() {
+        if (isFirestoreAvailable()) {
+            try {
+                com.google.cloud.firestore.QuerySnapshot snapshot = firestore.collection("safety_reports").get().get();
+                if (!snapshot.isEmpty()) {
+                    return snapshot.toObjects(SafetyReport.class);
+                }
+            } catch (Exception e) {
+                log.warn("Error fetching all reports: {}", e.getMessage());
+            }
+        }
+        return new java.util.ArrayList<>(reportCache);
+    }
+
+    /**
+     * Update an existing report (e.g., status, resolution metadata).
+     */
+    public void updateReport(SafetyReport report) {
+        // Update in cache
+        reportCache.removeIf(r -> r.getId().equals(report.getId()));
+        reportCache.add(report);
+        if (isFirestoreAvailable()) {
+            try {
+                firestore.collection("safety_reports").document(report.getId()).set(report).get();
+            } catch (Exception e) {
+                log.warn("Error updating report {}: {}", report.getId(), e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Suspend or unsuspend a user.
+     */
+    public void setUserSuspended(String userId, boolean suspended) {
+        User user = getUser(userId);
+        if (user != null) {
+            user.setSuspended(suspended);
+            saveUser(user);
+        }
+    }
+
+    /**
+     * Soft‑delete (deactivate) a user.
+     */
+    public void softDeleteUser(String userId) {
+        User user = getUser(userId);
+        if (user != null) {
+            user.setDeleted(true);
+            saveUser(user);
+        }
+    }
+}

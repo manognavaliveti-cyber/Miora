@@ -49,7 +49,7 @@ public class SafetyService {
                 .reason(reason)
                 .details(details)
                 .reportedAt(Instant.now().toString())
-                .status("UNDER_REVIEW")
+                .status(com.miora.model.ReportStatus.OPEN)
                 .build();
         firestoreService.saveReport(report);
         return report;

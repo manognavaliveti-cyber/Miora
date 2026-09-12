@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^7.6.9",
+    "@capacitor/core": "^8.5.1",
     "canvas-confetti": "^1.9.3",
     "firebase": "^12.18.0",
     "lucide-react": "^0.395.0",

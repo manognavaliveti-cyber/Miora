@@ -53,6 +53,12 @@ public class User {
     private String subscriptionPlanId; // monthly, quarterly, yearly
     private String subscriptionExpiresAt;
 
+    // Admin control fields
+    @Builder.Default
+    private Boolean suspended = false;
+    @Builder.Default
+    private Boolean deleted = false;
+
     // Swipes & Limits
     @Builder.Default
     private Integer dailySwipesRemaining = 20;

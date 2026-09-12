@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.miora.model.ReportStatus;
+import com.miora.model.ModerationAction;
 
 @Data
 @Builder
@@ -20,5 +22,10 @@ public class SafetyReport {
     private String details;
     private String reportedAt;
     @Builder.Default
-    private String status = "PENDING_REVIEW";
+    private ReportStatus status = ReportStatus.OPEN;
+    // Admin resolution metadata
+    private String resolvedAt;
+    private String resolvedByAdminUid;
+    private ModerationAction moderationAction;
+    private String resolutionNote;
 }

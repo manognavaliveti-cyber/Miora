@@ -83,11 +83,18 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
                                 .build();
                     }
 
-                    if (principal != null) {
-                        FirebaseAuthenticationToken authentication =
-                                new FirebaseAuthenticationToken(principal, idToken);
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                     if (principal != null) {
+                         // Determine authorities based on custom claim 'admin'
+                         java.util.List<org.springframework.security.core.authority.SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
+                         authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"));
+                         Object adminClaim = principal.getClaims() != null ? principal.getClaims().get("admin") : null;
+                         if (Boolean.TRUE.equals(adminClaim)) {
+                             authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN"));
+                         }
+                         FirebaseAuthenticationToken authentication =
+                                 new FirebaseAuthenticationToken(principal, idToken, authorities);
+                         SecurityContextHolder.getContext().setAuthentication(authentication);
+                     }
                 } catch (Exception e) {
                     log.error("Failed to authenticate Firebase ID token: {}", e.getMessage());
                     SecurityContextHolder.clearContext();

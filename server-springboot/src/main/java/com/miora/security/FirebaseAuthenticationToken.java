@@ -13,6 +13,7 @@ public class FirebaseAuthenticationToken extends AbstractAuthenticationToken {
     private final String credentials;
 
     public FirebaseAuthenticationToken(FirebaseUserPrincipal principal, String token) {
+        // Default constructor for backward compatibility – grants only ROLE_USER.
         super(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
         this.principal = principal;
         this.credentials = token;
