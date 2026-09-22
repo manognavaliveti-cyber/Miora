@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MIORA</string>
+    <string name="title_activity_main">MIORA</string>
+    <string name="package_name">com.miora.app</string>
+    <string name="custom_url_scheme">com.miora.app</string>
+</resources>

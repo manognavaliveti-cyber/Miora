@@ -1,0 +1,368 @@
+import React from 'react';
+import { useApp } from '../../context/AppContext';
+import {
+  Home,
+  Heart,
+  MessageCircle,
+  User,
+  Gamepad2,
+  Coins,
+  CreditCard,
+  Wallet,
+  Crown,
+  Zap,
+  Settings,
+  Bell,
+  Plus,
+  Search
+} from 'lucide-react';
+import { MainTab } from '../../types';
+import { MioraLogo } from '../common/MioraLogo';
+
+export const DesktopNav: React.FC = () => {
+  const {
+    activeTab,
+    navigateToTab,
+    matches,
+    currentUser,
+    setCurrentView,
+    openNotifDrawer,
+    unreadNotifsCount,
+    openSearchModal,
+    openCreateSheet,
+    openUpgradeModal
+  } = useApp();
+
+  const unreadMessagesCount = matches.reduce((acc, m) => acc + (m.unreadCount || 0), 0);
+
+  const tabs: { id: MainTab; label: string; icon: React.ReactNode; badge?: number }[] = [
+    {
+      id: 'home',
+      label: 'Home',
+      icon: <Home size={16} />
+    },
+    {
+      id: 'chat',
+      label: 'Chat',
+      icon: <MessageCircle size={16} />,
+      badge: unreadMessagesCount > 0 ? unreadMessagesCount : undefined
+    },
+    {
+      id: 'games',
+      label: 'Games',
+      icon: <Gamepad2 size={16} />
+    },
+    {
+      id: 'likes',
+      label: 'Likes',
+      icon: <Heart size={16} />
+    },
+    {
+      id: 'profile',
+      label: 'Profile',
+      icon: <User size={16} />
+    }
+  ];
+
+  const userPhoto =
+    currentUser.photos[0] ||
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80';
+
+  return (
+    <header
+      className="desktop-only"
+      style={{
+        width: '100%',
+        position: 'sticky',
+        top: 0,
+        zIndex: 40,
+        background: 'rgba(255, 245, 247, 0.95)',
+        backdropFilter: 'blur(24px)',
+        borderBottom: '1px solid var(--border-subtle)',
+        marginBottom: '6px'
+      }}
+    >
+      <div
+        className="app-container"
+        style={{
+          minHeight: 'auto',
+          paddingTop: '12px',
+          paddingBottom: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          boxSizing: 'border-box'
+        }}
+      >
+        {/* Brand Wordmark & Tagline: MIORA ♡ */}
+        <div
+          onClick={() => navigateToTab('home')}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'transform var(--transition-fast)' }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+        >
+          <MioraLogo size={46} showTagline={true} showWordmark={true} vertical={false} />
+        </div>
+
+      {/* Center Navigation Tabs (Discover, Feed, Matches, Messages, Rooms, Play, Profile) */}
+      <nav
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'clamp(2px, 0.4vw, 6px)',
+          background: 'var(--surface-white)',
+          padding: '4px',
+          borderRadius: 'var(--radius-pill)',
+          boxShadow: 'var(--shadow-xs)',
+          border: '1.5px solid var(--border-subtle)',
+          height: '42px',
+          boxSizing: 'border-box',
+          flexShrink: 0
+        }}
+      >
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => navigateToTab(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'clamp(3px, 0.4vw, 6px)',
+                padding: '6px clamp(8px, 0.85vw, 14px)',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                background: isActive ? 'var(--primary-gradient)' : 'transparent',
+                color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-primary)',
+                fontWeight: isActive ? 700 : 600,
+                fontSize: 'clamp(0.78rem, 0.85vw, 0.86rem)',
+                transition: 'all var(--transition-fast)',
+                position: 'relative',
+                boxShadow: isActive ? '0 4px 14px rgba(238, 56, 101, 0.32)' : 'none',
+                height: '34px',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--berry-primary)';
+                  e.currentTarget.style.background = 'var(--bg-soft-blush)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--text-secondary)';
+                  e.currentTarget.style.background = 'transparent';
+                }
+              }}
+            >
+              {React.cloneElement(tab.icon as React.ReactElement, {
+                fill: isActive ? '#FFFFFF' : 'none',
+                color: isActive ? '#FFFFFF' : 'currentColor',
+                size: 15
+              })}
+              <span>{tab.label}</span>
+
+              {tab.badge !== undefined && tab.badge > 0 && (
+                <span
+                  style={{
+                    background: isActive ? 'var(--gold-champagne)' : 'var(--primary-gradient)',
+                    color: isActive ? '#1F161A' : '#FFFFFF',
+                    fontSize: '0.65rem',
+                    fontWeight: 800,
+                    padding: '2px 5px',
+                    borderRadius: 'var(--radius-pill)'
+                  }}
+                >
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Right Controls: Search, Create, Coins Pill, Notifications, Settings, Profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(4px, 0.6vw, 8px)', flexShrink: 0 }}>
+        {/* Global Search Button */}
+        <button
+          onClick={openSearchModal}
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: 'var(--surface-white)',
+            border: '1.5px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'all var(--transition-fast)'
+          }}
+          title="Search people & posts"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--berry-primary)';
+            e.currentTarget.style.color = 'var(--berry-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border-subtle)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+        >
+          <Search size={17} />
+        </button>
+
+        {/* MIORA Real Money Wallet Pill — opens Pro / VIP plans */}
+        <div
+          onClick={openUpgradeModal}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'var(--gold-gradient-subtle)',
+            border: '1.5px solid var(--border-gold)',
+            padding: '0 14px',
+            height: '38px',
+            borderRadius: 'var(--radius-pill)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'all var(--transition-fast)',
+            flexShrink: 0,
+            whiteSpace: 'nowrap'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.04)';
+            e.currentTarget.style.borderColor = 'var(--gold-deep)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.borderColor = 'var(--border-gold)';
+          }}
+          title="Open MIORA Money Wallet"
+        >
+          <CreditCard size={16} color="var(--gold-deep)" />
+          <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--gold-deep)', whiteSpace: 'nowrap', lineHeight: 1 }}>
+            Wallet ₹{(currentUser.walletBalance || 0).toFixed(2)}
+          </span>
+        </div>
+
+        {/* Notifications Trigger */}
+        <button
+          onClick={openNotifDrawer}
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: 'var(--surface-white)',
+            border: '1.5px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            position: 'relative',
+            transition: 'all var(--transition-fast)'
+          }}
+          title="Notifications"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--berry-primary)';
+            e.currentTarget.style.color = 'var(--berry-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border-subtle)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+        >
+          <Bell size={17} />
+          {unreadNotifsCount > 0 && (
+            <span
+              style={{
+                position: 'absolute',
+                top: '6px',
+                right: '7px',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: 'var(--berry-primary)',
+                boxShadow: '0 0 6px var(--berry-primary)'
+              }}
+            />
+          )}
+        </button>
+
+        {/* Settings */}
+        <button
+          onClick={() => setCurrentView('settings')}
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: 'var(--surface-white)',
+            border: '1.5px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'all var(--transition-fast)'
+          }}
+          title="Settings & Privacy"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--berry-primary)';
+            e.currentTarget.style.color = 'var(--berry-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border-subtle)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+        >
+          <Settings size={17} />
+        </button>
+
+        {/* User Avatar */}
+        <div
+          onClick={() => navigateToTab('profile')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'var(--surface-white)',
+            border: '1.5px solid var(--border-subtle)',
+            padding: '3px 14px 3px 4px',
+            height: '38px',
+            borderRadius: 'var(--radius-pill)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'all var(--transition-fast)'
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--berry-primary)')}
+          onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
+        >
+          <img
+            src={userPhoto}
+            alt={currentUser.name}
+            style={{
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '2px solid var(--gold-champagne)'
+            }}
+          />
+          <span style={{ fontSize: '0.84rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+            {currentUser.name}
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+  );
+};
+

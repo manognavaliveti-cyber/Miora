@@ -1,0 +1,138 @@
+package com.miora.security;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+@Component
+public class FirebaseAuthFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(FirebaseAuthFilter.class);
+
+    @Autowired(required = false)
+    private FirebaseAuth firebaseAuth;
+
+    @Autowired(required = false)
+    private com.miora.service.FirestoreService firestoreService;
+
+    @Value("${firebase.dev-fallback-enabled:true}")
+    private boolean devFallbackEnabled;
+
+    @Value("${firebase.admin-email:filpflexteam@gmail.com}")
+    private String adminEmail;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            String idToken = authHeader.substring(7).trim();
+
+            if (StringUtils.hasText(idToken)) {
+                try {
+                    FirebaseUserPrincipal principal = null;
+
+                    if (firebaseAuth != null) {
+                        try {
+                            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
+                            principal = FirebaseUserPrincipal.builder()
+                                    .uid(decodedToken.getUid())
+                                    .email(decodedToken.getEmail())
+                                    .name(decodedToken.getName())
+                                    .picture(decodedToken.getPicture())
+                                    .emailVerified(decodedToken.isEmailVerified())
+                                    .claims(decodedToken.getClaims())
+                                    .build();
+                            log.debug("Successfully verified Firebase ID token for UID: {}", principal.getUid());
+                        } catch (Exception authEx) {
+                            log.debug("Live Firebase token verification failed: {}", authEx.getMessage());
+                            // When Firebase Auth service is active, invalid live tokens must be rejected
+                            if (!devFallbackEnabled) {
+                                throw authEx;
+                            }
+                        }
+                    }
+
+                    // Dev Fallback Mode: Only used for local dev testing when Firebase Admin SDK is unconfigured
+                    if (principal == null && devFallbackEnabled && firebaseAuth == null) {
+                        log.debug("Using Dev Fallback principal for Bearer token");
+                        String devUid = "user_me";
+                        String devEmail = "alex@miora.app";
+
+                        if (idToken.contains("@")) {
+                            devEmail = idToken;
+                            devUid = "user_" + idToken.replace("@", "_").replace(".", "_");
+                        }
+
+                        principal = FirebaseUserPrincipal.builder()
+                                .uid(devUid)
+                                .email(devEmail)
+                                .name("Alex Rivera")
+                                .emailVerified(true)
+                                .claims(new HashMap<>())
+                                .build();
+                    }
+
+                     if (principal != null) {
+                         // Check user account status (SUSPENDED / BANNED / DELETED) in backend
+                         if (firestoreService != null) {
+                             com.miora.model.User userDoc = firestoreService.getUser(principal.getUid());
+                             if (userDoc != null) {
+                                 boolean isSuspended = Boolean.TRUE.equals(userDoc.getSuspended()) || "SUSPENDED".equalsIgnoreCase(userDoc.getStatus());
+                                 boolean isBanned = Boolean.TRUE.equals(userDoc.getBanned()) || "BANNED".equalsIgnoreCase(userDoc.getStatus());
+                                 boolean isDeleted = Boolean.TRUE.equals(userDoc.getDeleted()) || "DELETED".equalsIgnoreCase(userDoc.getStatus());
+                                 
+                                 if (isSuspended || isBanned || isDeleted) {
+                                     log.warn("Access denied for UID: {} (suspended={}, banned={}, deleted={})", principal.getUid(), isSuspended, isBanned, isDeleted);
+                                     SecurityContextHolder.clearContext();
+                                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                     response.setContentType("application/json");
+                                     response.getWriter().write("{\"success\":false,\"message\":\"Account is suspended, banned, or deleted.\"}");
+                                     return;
+                                 }
+                             }
+                         }
+
+                         // Determine authorities based on custom claim 'admin'
+                         java.util.List<org.springframework.security.core.authority.SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
+                         authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER"));
+                         
+                         Object adminClaim = principal.getClaims() != null ? principal.getClaims().get("admin") : null;
+                         boolean isClaimAdmin = Boolean.TRUE.equals(adminClaim) || "true".equalsIgnoreCase(String.valueOf(adminClaim));
+                         boolean isEmailAdmin = adminEmail != null && principal.getEmail() != null
+                                 && adminEmail.trim().equalsIgnoreCase(principal.getEmail().trim());
+                         boolean isAdmin = isClaimAdmin || isEmailAdmin;
+                         if (isAdmin) {
+                             authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN"));
+                         }
+
+                         FirebaseAuthenticationToken authentication =
+                                 new FirebaseAuthenticationToken(principal, idToken, authorities);
+                         SecurityContextHolder.getContext().setAuthentication(authentication);
+                     }
+                } catch (Exception e) {
+                    log.error("Failed to authenticate Firebase ID token: {}", e.getMessage());
+                    SecurityContextHolder.clearContext();
+                }
+            }
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}

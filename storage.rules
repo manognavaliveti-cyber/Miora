@@ -1,0 +1,69 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/(jpeg|png|webp|gif)')
+          && request.resource.size < 10 * 1024 * 1024; // Max 10MB
+    }
+
+    function isValidVideo() {
+      return request.resource.contentType.matches('video/(mp4|quicktime|webm)')
+          && request.resource.size < 50 * 1024 * 1024; // Max 50MB
+    }
+
+    function isSafeMedia() {
+      return isValidImage() || isValidVideo();
+    }
+
+    // ==========================================
+    // 1. USER PROFILE PHOTOS & AVATARS
+    // ==========================================
+    match /users/{userId}/{allPaths=**} {
+      // Authenticated users can view profile photos
+      allow read: if isAuthenticated();
+      // Only the account owner can upload/update/delete their photos
+      allow write: if isOwner(userId) && isSafeMedia();
+    }
+
+    // ==========================================
+    // 2. FEED POST IMAGES & VIDEOS
+    // ==========================================
+    match /posts/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isSafeMedia();
+    }
+
+    // ==========================================
+    // 3. STATUS STORY MEDIA
+    // ==========================================
+    match /stories/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isSafeMedia();
+    }
+
+    // ==========================================
+    // 4. CHAT ATTACHMENTS
+    // ==========================================
+    match /chat/{matchId}/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isSafeMedia();
+    }
+
+    // ==========================================
+    // DEFAULT CATCH-ALL DENY
+    // ==========================================
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
