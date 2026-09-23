@@ -153,6 +153,7 @@ export const DiscoverPage: React.FC = () => {
         >
           {/* Main Profile Card Deck */}
           <div
+            className="discover-card-height"
             style={{
               position: 'relative',
               width: '100%',

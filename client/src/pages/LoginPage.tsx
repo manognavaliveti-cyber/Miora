@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/common/Button';
 import { Mail, Lock, Sparkles, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
@@ -55,12 +55,21 @@ export const LoginPage: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'clamp(16px, 4vw, 40px)',
+        padding: 'clamp(16px, 3vw, 32px)',
         position: 'relative',
         overflow: 'hidden',
         background: 'radial-gradient(circle at 50% 30%, #FCE4E8 0%, #F8D8DC 60%, #F4CED3 100%)'
       }}
     >
+      <style>{`
+        @media (max-width: 480px) {
+          .login-glass-card { padding: 20px 16px !important; border-radius: 22px !important; }
+          .login-glass-card h2 { font-size: 1.4rem !important; }
+        }
+        @media (max-width: 380px) {
+          .login-glass-card { padding: 16px 14px !important; }
+        }
+      `}</style>
       {/* Background Floating Glass Orbs */}
       <div
         style={{
@@ -90,12 +99,13 @@ export const LoginPage: React.FC = () => {
       />
 
       <div
+        className="login-two-col"
         style={{
           width: '100%',
-          maxWidth: '1160px',
+          maxWidth: '1100px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
-          gap: 'clamp(24px, 4vw, 48px)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+          gap: 'clamp(20px, 3vw, 40px)',
           alignItems: 'center',
           zIndex: 10
         }}
@@ -105,12 +115,12 @@ export const LoginPage: React.FC = () => {
           className="desktop-only"
           style={{
             flexDirection: 'column',
-            gap: '24px',
-            padding: 'clamp(32px, 4vw, 48px)',
+            gap: '20px',
+            padding: 'clamp(24px, 3vw, 36px)',
             background: 'rgba(255, 255, 255, 0.45)',
             backdropFilter: 'blur(28px) saturate(180%)',
             WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-            borderRadius: '32px',
+            borderRadius: '28px',
             border: '1.5px solid rgba(255, 255, 255, 0.75)',
             boxShadow: '0 20px 50px rgba(186, 73, 98, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.9)',
             position: 'relative',
@@ -144,14 +154,14 @@ export const LoginPage: React.FC = () => {
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <MioraLogo size={46} showTagline={true} showWordmark={true} vertical={false} />
+            <MioraLogo size={40} showTagline={true} showWordmark={true} vertical={false} />
           </div>
 
           <div>
             <h1
               style={{
                 fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(2.5rem, 4.2vw, 3.6rem)',
+                fontSize: 'clamp(1.9rem, 3vw, 2.8rem)',
                 fontWeight: 800,
                 color: '#3A121A',
                 letterSpacing: '-0.025em',
@@ -160,7 +170,7 @@ export const LoginPage: React.FC = () => {
             >
               Where authentic hearts reconnect.
             </h1>
-            <p style={{ fontSize: '1.15rem', color: '#6B3845', marginTop: '14px', lineHeight: 1.6, fontWeight: 500 }}>
+            <p style={{ fontSize: '0.96rem', color: '#6B3845', marginTop: '10px', lineHeight: 1.6, fontWeight: 500 }}>
               Continue your meaningful conversations, review new mutual sparks, and explore curated daily chemistry.
             </p>
           </div>
@@ -217,7 +227,7 @@ export const LoginPage: React.FC = () => {
           }}
         >
           {/* Mobile Top Header */}
-          <div className="mobile-only" style={{ width: '100%', maxWidth: '440px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="mobile-only" style={{ width: '100%', maxWidth: '400px', marginBottom: '14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button
               onClick={() => setCurrentView('welcome')}
               style={{
@@ -243,24 +253,25 @@ export const LoginPage: React.FC = () => {
 
           {/* GLASSMORPHISM CARD */}
           <div
+            className="login-glass-card"
             style={{
               width: '100%',
-              maxWidth: '440px',
-              padding: 'clamp(28px, 4vw, 42px)',
-              borderRadius: '32px',
+              maxWidth: '400px',
+              padding: 'clamp(22px, 3vw, 32px)',
+              borderRadius: '28px',
               background: 'rgba(255, 255, 255, 0.65)',
               backdropFilter: 'blur(32px) saturate(180%)',
               WebkitBackdropFilter: 'blur(32px) saturate(180%)',
               border: '1.5px solid rgba(255, 255, 255, 0.85)',
-              boxShadow: '0 24px 60px rgba(139, 30, 63, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.95)',
+              boxShadow: '0 20px 50px rgba(139, 30, 63, 0.14), inset 0 1px 2px rgba(255, 255, 255, 0.95)',
               boxSizing: 'border-box'
             }}
           >
-            <div style={{ marginBottom: '28px' }}>
+            <div style={{ marginBottom: '22px' }}>
               <h2
                 style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: '2.35rem',
+                  fontSize: 'clamp(1.6rem, 2.5vw, 1.9rem)',
                   fontWeight: 800,
                   color: '#3A121A',
                   letterSpacing: '-0.02em',
@@ -269,15 +280,15 @@ export const LoginPage: React.FC = () => {
               >
                 Sign In
               </h2>
-              <p style={{ fontSize: '1.02rem', color: '#6B3845', marginTop: '6px', fontWeight: 600 }}>
+              <p style={{ fontSize: '0.88rem', color: '#6B3845', marginTop: '4px', fontWeight: 600 }}>
                 Enter your credentials to access your account.
               </p>
             </div>
 
-            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {/* Email Glass Input */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '0.9rem', fontWeight: 800, color: '#4A1724' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4A1724' }}>
                   Email Address
                 </label>
                 <div
@@ -287,8 +298,8 @@ export const LoginPage: React.FC = () => {
                     alignItems: 'center'
                   }}
                 >
-                  <div style={{ position: 'absolute', left: '16px', color: '#8B1E3F', display: 'flex' }}>
-                    <Mail size={18} />
+                  <div style={{ position: 'absolute', left: '13px', color: '#8B1E3F', display: 'flex' }}>
+                    <Mail size={16} />
                   </div>
                   <input
                     type="email"
@@ -301,21 +312,22 @@ export const LoginPage: React.FC = () => {
                     }}
                     style={{
                       width: '100%',
-                      padding: '12px 16px 12px 46px',
-                      borderRadius: '16px',
+                      padding: '10px 14px 10px 40px',
+                      borderRadius: '14px',
                       border: '1.5px solid rgba(255, 255, 255, 0.9)',
                       background: 'rgba(255, 255, 255, 0.75)',
                       backdropFilter: 'blur(12px)',
-                      fontSize: '1.02rem',
+                      fontSize: '0.95rem',
                       fontWeight: 600,
                       color: '#3A121A',
                       outline: 'none',
                       boxShadow: '0 2px 8px rgba(186, 73, 98, 0.05)',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      boxSizing: 'border-box'
                     }}
                     onFocus={(e) => {
                       e.target.style.borderColor = '#8B1E3F';
-                      e.target.style.boxShadow = '0 0 16px rgba(139, 30, 63, 0.2)';
+                      e.target.style.boxShadow = '0 0 12px rgba(139, 30, 63, 0.18)';
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = 'rgba(255, 255, 255, 0.9)';
@@ -326,8 +338,8 @@ export const LoginPage: React.FC = () => {
               </div>
 
               {/* Password Glass Input */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '0.9rem', fontWeight: 800, color: '#4A1724' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4A1724' }}>
                   Password
                 </label>
                 <div
@@ -337,8 +349,8 @@ export const LoginPage: React.FC = () => {
                     alignItems: 'center'
                   }}
                 >
-                  <div style={{ position: 'absolute', left: '16px', color: '#8B1E3F', display: 'flex' }}>
-                    <Lock size={18} />
+                  <div style={{ position: 'absolute', left: '13px', color: '#8B1E3F', display: 'flex' }}>
+                    <Lock size={16} />
                   </div>
                   <input
                     type="password"
@@ -351,21 +363,22 @@ export const LoginPage: React.FC = () => {
                     }}
                     style={{
                       width: '100%',
-                      padding: '12px 16px 12px 46px',
-                      borderRadius: '16px',
+                      padding: '10px 14px 10px 40px',
+                      borderRadius: '14px',
                       border: '1.5px solid rgba(255, 255, 255, 0.9)',
                       background: 'rgba(255, 255, 255, 0.75)',
                       backdropFilter: 'blur(12px)',
-                      fontSize: '1.02rem',
+                      fontSize: '0.95rem',
                       fontWeight: 600,
                       color: '#3A121A',
                       outline: 'none',
                       boxShadow: '0 2px 8px rgba(186, 73, 98, 0.05)',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      boxSizing: 'border-box'
                     }}
                     onFocus={(e) => {
                       e.target.style.borderColor = '#8B1E3F';
-                      e.target.style.boxShadow = '0 0 16px rgba(139, 30, 63, 0.2)';
+                      e.target.style.boxShadow = '0 0 12px rgba(139, 30, 63, 0.18)';
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = 'rgba(255, 255, 255, 0.9)';
@@ -399,9 +412,10 @@ export const LoginPage: React.FC = () => {
                     background: 'transparent',
                     border: 'none',
                     color: '#8B1E3F',
-                    fontSize: '0.95rem',
+                    fontSize: '0.82rem',
                     fontWeight: 800,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    padding: 0
                   }}
                 >
                   Forgot Password?
@@ -414,15 +428,15 @@ export const LoginPage: React.FC = () => {
                 disabled={isLoading}
                 style={{
                   width: '100%',
-                  padding: '14px 20px',
+                  padding: '11px 18px',
                   borderRadius: '999px',
                   background: 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)',
                   border: '1.5px solid rgba(255, 255, 255, 0.3)',
                   color: '#FFFFFF',
-                  fontSize: '1.1rem',
+                  fontSize: '0.95rem',
                   fontWeight: 800,
                   cursor: isLoading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 8px 24px rgba(139, 30, 63, 0.35)',
+                  boxShadow: '0 6px 20px rgba(139, 30, 63, 0.32)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -433,24 +447,24 @@ export const LoginPage: React.FC = () => {
                 onMouseEnter={(e) => {
                   if (!isLoading) {
                     e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(139, 30, 63, 0.48)';
+                    e.currentTarget.style.boxShadow = '0 10px 26px rgba(139, 30, 63, 0.44)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isLoading) {
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(139, 30, 63, 0.35)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 30, 63, 0.32)';
                   }
                 }}
               >
                 <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
               </button>
 
               {/* Divider: ———— or ———— */}
-              <div style={{ display: 'flex', alignItems: 'center', margin: '2px 0', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', margin: '0', gap: '12px' }}>
                 <div style={{ flex: 1, height: '1px', background: 'rgba(139, 30, 63, 0.18)' }} />
-                <span style={{ fontSize: '0.9rem', color: '#7C4351', fontWeight: 600 }}>or</span>
+                <span style={{ fontSize: '0.8rem', color: '#7C4351', fontWeight: 600 }}>or</span>
                 <div style={{ flex: 1, height: '1px', background: 'rgba(139, 30, 63, 0.18)' }} />
               </div>
 
@@ -463,13 +477,13 @@ export const LoginPage: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '10px',
+                  gap: '9px',
                   background: 'rgba(255, 255, 255, 0.85)',
                   backdropFilter: 'blur(12px)',
                   border: '1.5px solid rgba(255, 255, 255, 0.9)',
                   borderRadius: '999px',
-                  padding: '13px 20px',
-                  fontSize: '1.05rem',
+                  padding: '10px 18px',
+                  fontSize: '0.92rem',
                   fontWeight: 700,
                   color: '#3A121A',
                   cursor: 'pointer',
@@ -506,7 +520,7 @@ export const LoginPage: React.FC = () => {
                 <span>Continue with Google</span>
               </button>
 
-              <p style={{ fontSize: '1rem', color: '#6B3845', fontWeight: 600 }}>
+              <p style={{ fontSize: '0.88rem', color: '#6B3845', fontWeight: 600 }}>
                   Don’t have an account?{' '}
                   <button
                     type="button"
@@ -529,8 +543,8 @@ export const LoginPage: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px',
-                    marginTop: '16px',
-                    fontSize: '0.85rem',
+                    marginTop: '10px',
+                    fontSize: '0.78rem',
                     color: '#7C4351',
                     fontWeight: 600
                   }}

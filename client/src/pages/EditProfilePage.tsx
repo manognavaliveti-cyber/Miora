@@ -50,7 +50,7 @@ export const EditProfilePage: React.FC = () => {
         animation: 'fadeIn 0.25s ease-out forwards'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
         <button
           onClick={() => setCurrentView('my-profile')}
           style={{
@@ -73,7 +73,7 @@ export const EditProfilePage: React.FC = () => {
           <span>Back to Profile</span>
         </button>
 
-        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.3rem, 4vw, 1.6rem)', fontWeight: 800, color: 'var(--text-primary)' }}>
           Edit Profile
         </h1>
         <div style={{ width: '40px' }} />
@@ -192,7 +192,7 @@ export const EditProfilePage: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '16px' }}>
+        <div className="edit-profile-actions" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <Button
             type="button"
             onClick={() => setCurrentView('my-profile')}

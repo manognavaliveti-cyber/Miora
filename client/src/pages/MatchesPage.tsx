@@ -51,7 +51,7 @@ export const MatchesPage: React.FC = () => {
         <h1
           style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(1.45rem, calc(5.2vw + 0.35rem), 2.4rem)',
+            fontSize: 'clamp(1.25rem, 5vw, 2rem)',
             minWidth: 0,
             fontWeight: 900,
             color: 'var(--text-primary)',

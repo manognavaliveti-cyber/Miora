@@ -1616,3 +1616,602 @@ input, select, textarea {
   .chat-list-page-active .mobile-chat-preview { font-size: 0.86rem; }
   .chat-list-page-active .mobile-chat-time { font-size: 0.74rem; }
 }
+
+/* ===================================================
+   RESPONSIVE UI POLISH — Desktop, Tablet, Mobile
+   =================================================== */
+
+/* Prevent any horizontal overflow globally */
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Auth pages (Login, Signup, Welcome) — centered compact layout on desktop */
+@media (min-width: 768px) {
+  /* Keep auth page cards from stretching full width on large screens */
+  .miora-signup-card {
+    max-width: 480px !important;
+  }
+
+  /* Login page form card should never exceed a comfortable reading width */
+  .login-form-card {
+    max-width: 400px !important;
+  }
+}
+
+/* Desktop: auth page outer containers should be vertically centered with a max height */
+@media (min-width: 1024px) {
+  /* Tighten the welcome page CTA block so it doesn't look like a mobile screen on desktop */
+  .welcome-cta-block {
+    max-width: 420px;
+  }
+
+  /* Signup hero panel: don't let it be too tall */
+  .miora-signup-hero {
+    max-height: 580px;
+  }
+}
+
+/* Tablet: tighten auth page outer padding */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .miora-signup-layout {
+    gap: 28px !important;
+  }
+}
+
+/* Mobile: ensure inputs don't cause horizontal scroll */
+@media (max-width: 767px) {
+  /* All inputs and buttons should respect container width */
+  input, button, select, textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Auth page grids should collapse to single column */
+  .miora-signup-layout,
+  .login-two-col-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Profile page should have no extra horizontal overflow */
+  .desktop-profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Improve button touch targets — comfortable tap without being oversized */
+@media (max-width: 767px) {
+  button {
+    min-height: 40px;
+  }
+
+  /* But don't force oversized height on icon-only buttons */
+  button[aria-label] {
+    min-height: unset;
+  }
+}
+
+/* Desktop nav: ensure it never causes horizontal scroll */
+@media (min-width: 768px) {
+  header.desktop-only {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Nav container shouldn't cause overflow on smaller desktops */
+  header.desktop-only .app-container {
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+}
+
+/* Improve card shadows on desktop for a more polished look */
+@media (min-width: 1024px) {
+  .card-luxury {
+    box-shadow: 0 8px 32px rgba(225, 29, 72, 0.07), 0 2px 8px rgba(225, 29, 72, 0.04) !important;
+  }
+
+  .card-white {
+    box-shadow: 0 6px 24px rgba(225, 29, 72, 0.06) !important;
+  }
+}
+
+/* Ensure modal containers are properly constrained on mobile */
+@media (max-width: 767px) {
+  .modal-container {
+    max-width: 96vw !important;
+    border-radius: clamp(16px, 4vw, 22px) !important;
+  }
+}
+
+/* Fix potential overflow in chat pages */
+@media (max-width: 767px) {
+  .mobile-chat-inbox {
+    max-width: 100vw !important;
+    overflow-x: hidden;
+  }
+}
+
+/* Desktop chat inbox centered width */
+@media (min-width: 1024px) {
+  .chat-list-page-active .mobile-chat-inbox {
+    max-width: 720px !important;
+  }
+}
+
+/* Profile page photo grid: responsive columns */
+@media (max-width: 400px) {
+  /* Very small phones: 2-column photo grid */
+  .profile-photo-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Discover page: card should be full width on mobile, capped on desktop */
+@media (min-width: 768px) {
+  .discover-card-container {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+
+/* DesktopNav: hide wallet text on smaller desktop viewports to prevent overflow */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .desktop-nav-wallet-label {
+    display: none !important;
+  }
+}
+
+/* Smooth scroll behavior */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Improve focus visibility for accessibility */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid #8B1E3F;
+  outline-offset: 2px;
+}
+
+/* =======================================================
+   RESPONSIVE POLISH PART 2 — Full-width page improvements
+   ======================================================= */
+
+/* ---- Login Page ---- */
+/* On desktop the two-column grid should stay centered and not stretch full-width */
+@media (min-width: 1024px) {
+  /* Login page outer wrapper: center both columns, don't let them fill 100vw */
+  .login-two-col {
+    max-width: 960px !important;
+    margin: 0 auto;
+  }
+}
+
+/* On small mobile the login card gets extra breathing room reduction */
+@media (max-width: 480px) {
+  .login-glass-card {
+    padding: 20px 16px !important;
+    border-radius: 22px !important;
+  }
+}
+@media (max-width: 360px) {
+  .login-glass-card {
+    padding: 16px 12px !important;
+  }
+}
+
+/* ---- Signup Page ---- */
+@media (max-width: 480px) {
+  .miora-signup-card {
+    padding: 18px 14px !important;
+    border-radius: 20px !important;
+  }
+}
+
+/* ---- ProfileBuildChoicePage ---- */
+@media (max-width: 480px) {
+  .miora-choice-card {
+    padding: 24px 18px !important;
+    border-radius: 24px !important;
+  }
+}
+
+/* ---- Settings Page ---- */
+/* Settings list rows: clip desc text on tiny screens */
+@media (max-width: 380px) {
+  .settings-item-desc {
+    display: none !important;
+  }
+}
+
+/* ---- MyProfilePage ---- */
+/* Profile header: stack photo + info vertically on tiny phones */
+@media (max-width: 380px) {
+  .profile-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* ---- WalletPage: promo badge shouldn't overflow card ---- */
+@media (max-width: 380px) {
+  .wallet-promo-badge {
+    right: 10px !important;
+    font-size: 0.56rem !important;
+    padding: 2px 7px !important;
+  }
+}
+
+/* ---- DiscoverPage card deck ---- */
+/* On larger phones / tablet, give the card deck a bit more height */
+@media (min-width: 480px) and (max-width: 767px) {
+  .discover-card-height {
+    height: clamp(440px, calc(100dvh - 260px), 580px) !important;
+  }
+}
+
+/* ---- MatchesPage connection grid ---- */
+/* On very small phones, show 1-column layout */
+@media (max-width: 480px) {
+  .likes-conn-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* ---- PlayPage games grid ---- */
+/* 1 column on tiny phones */
+@media (max-width: 380px) {
+  .miora-games-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Desktop app-content padding ---- */
+/* On desktop, app-content should have horizontal padding for readability */
+@media (min-width: 768px) {
+  .app-content {
+    padding: 8px clamp(16px, 2.5vw, 32px) 40px !important;
+  }
+  /* But never add padding to chat pages */
+  .app-content.chat-page-active,
+  .app-content.chat-list-page-active {
+    padding: 0 !important;
+  }
+}
+
+/* ---- DesktopNav: prevent overflow on 768-900px range ---- */
+@media (min-width: 768px) and (max-width: 900px) {
+  .desktop-nav-wallet {
+    display: none !important;
+  }
+  .desktop-nav-notif-label {
+    display: none !important;
+  }
+}
+
+/* ---- TopHeader: prevent overflow on very small phones ---- */
+@media (max-width: 360px) {
+  .top-header-wallet {
+    display: none !important;
+  }
+}
+
+/* ---- Global: images should never cause horizontal scroll ---- */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- Global: textarea should respect container ---- */
+textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ---- PlayPage Hero Banner: smaller on tablet ---- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .play-hero-banner {
+    padding: 20px 24px !important;
+    border-radius: 24px !important;
+  }
+}
+
+/* ---- Onboarding pages: center content on desktop ---- */
+@media (min-width: 768px) {
+  /* ProfileSetupPage, AddPhotosPage, DatingPreferencesPage */
+  .onboarding-container {
+    max-width: 560px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* ---- Bottom Nav: ensure labels don't get cut on tiny phones ---- */
+@media (max-width: 360px) {
+  .mobile-bottom-nav-wrapper nav button span:last-child {
+    font-size: 0.55rem !important;
+  }
+}
+
+/* ---- Global form inputs: iOS zoom prevention on mobile ---- */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* ---- Card hover effects only on devices that support hover ---- */
+@media (hover: none) {
+  .card-luxury:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+  .btn-luxury:hover {
+    transform: none !important;
+  }
+}
+
+/* ---- Spinner loader for Button component ---- */
+.spinner-loader {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Pill buttons: ensure they wrap properly on small screens ---- */
+.pill {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---- Modal overlay: fix z-index stacking on iOS ---- */
+.modal-overlay {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- Discover page: fix the outer wrapper on desktop ---- */
+@media (min-width: 768px) {
+  .app-content > div[style*="maxWidth: '420px'"],
+  .app-content > div[style*="max-width: 420px"] {
+    margin-top: 8px;
+  }
+}
+
+/* ---- EditProfilePage action buttons: stack on tiny phones ---- */
+@media (max-width: 380px) {
+  .edit-profile-actions {
+    flex-direction: column !important;
+  }
+}
+
+/* ---- ProfileBuildChoicePage: responsive title ---- */
+@media (max-width: 380px) {
+  .miora-choice-title {
+    font-size: 1.7rem !important;
+  }
+}
+
+/* ---- WelcomePage: on desktop the page shouldn't look too stretched ---- */
+@media (min-width: 1024px) {
+  .welcome-cta-block {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* =======================================================
+   FINAL RESPONSIVE POLISH — Complete across all pages
+   ======================================================= */
+
+/* ---- All page content containers: consistent max-width on desktop ---- */
+@media (min-width: 768px) {
+  /* Inner content pages (Profile, Settings, Wallet, etc.) should not stretch to full viewport */
+  .app-content > div[style*="maxWidth"] {
+    width: 100%;
+  }
+}
+
+/* ---- TermsPage / PrivacyPage: max-width on wide screens ---- */
+@media (min-width: 1200px) {
+  .terms-page-inner,
+  .privacy-page-inner {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ---- BlockedUsersPage: unblock button on very small screens ---- */
+@media (max-width: 420px) {
+  .blocked-user-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .blocked-unblock-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ---- ChatListPage desktop inbox width cap ---- */
+@media (min-width: 1024px) {
+  .chat-list-page-active .mobile-chat-inbox {
+    max-width: 700px !important;
+    border-radius: 20px !important;
+  }
+}
+
+/* ---- DatingPreferencesPage: gender grid on tiny phones ---- */
+@media (max-width: 380px) {
+  .dating-gender-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Wallet transaction rows: prevent text overflow on mobile ---- */
+@media (max-width: 380px) {
+  .wallet-txn-desc {
+    font-size: 0.82rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
+}
+
+/* ---- ProfileBuildChoicePage: button full-width on tiny phones ---- */
+@media (max-width: 380px) {
+  .miora-choice-primary,
+  .miora-choice-skip {
+    padding: 14px 16px !important;
+    font-size: 0.92rem !important;
+  }
+}
+
+/* ---- App content top padding on desktop (below sticky nav) ---- */
+@media (min-width: 768px) {
+  .app-content {
+    padding-top: 12px;
+  }
+}
+
+/* ---- BottomNav active indicator: slightly bigger tap area on phones ---- */
+@media (max-width: 767px) {
+  .mobile-bottom-nav-wrapper nav {
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---- Discover page: center the empty state card properly ---- */
+.card-neumorphic {
+  box-sizing: border-box;
+}
+
+/* ---- MatchesPage: match avatar ring size on tablet ---- */
+@media (min-width: 768px) {
+  .likes-conn-photo {
+    width: 82px !important;
+    height: 82px !important;
+  }
+}
+
+/* ---- PlayPage: category filter tabs scrollable on all screens ---- */
+.scroll-touch-x {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-touch-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- Global: no text size adjustment on orientation change (iOS) ---- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ---- Global: prevent pull-to-refresh on main app pages ---- */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* ---- Sticky elements safe area padding ---- */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Fix for iOS rubber-band scroll flash ---- */
+.app-viewport-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- Input autofill color override (WebKit/Chrome) ---- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 247, 249, 0.95) inset !important;
+  -webkit-text-fill-color: #24151D !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ---- Improve the ProfileSetupPage / AddPhotosPage on tablet ---- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .onboarding-container {
+    max-width: 600px !important;
+  }
+}
+
+/* ---- Make WalletPage pricing table responsive on tiny phones ---- */
+@media (max-width: 480px) {
+  .wallet-pricing-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---- Ensure SplashPage fills full viewport ---- */
+.splash-page-root {
+  min-height: 100dvh !important;
+}
+
+/* ---- MioraLogo word-mark never wraps ---- */
+.miora-wordmark {
+  white-space: nowrap;
+}
+
+/* ---- DesktopNav: ensure user pill doesn't overflow ---- */
+@media (min-width: 768px) and (max-width: 1060px) {
+  .desktop-nav-user-name {
+    display: none !important;
+  }
+}
+
+/* ---- Fix: action dock buttons shouldn't shrink on tablet ---- */
+.action-dock {
+  flex-shrink: 0;
+}
+
+/* ---- Fix: modal containers never exceed viewport ---- */
+.modal-container,
+.modal-container-lg,
+.modal-container-xl {
+  max-height: min(92vh, 900px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ---- Responsive typography scale ---- */
+@media (max-width: 380px) {
+  h1 { font-size: clamp(1.4rem, 7vw, 1.8rem); }
+  h2 { font-size: clamp(1.1rem, 5.5vw, 1.4rem); }
+}
+
+/* ---- Print media: hide nav + modals ---- */
+@media print {
+  .mobile-bottom-nav-wrapper,
+  .desktop-only,
+  .modal-overlay {
+    display: none !important;
+  }
+  .app-content {
+    padding: 0 !important;
+  }
+}

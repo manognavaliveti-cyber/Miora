@@ -132,6 +132,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end', flexShrink: 0, marginLeft: 'auto' }}>
         {/* Global Wallet Pill (Mandatory on EVERY Single Page) */}
         <button
+          className="top-header-wallet"
           onClick={openUpgradeModal}
           style={{
             display: 'flex',

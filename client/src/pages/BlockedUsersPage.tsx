@@ -20,7 +20,7 @@ export const BlockedUsersPage: React.FC = () => {
         animation: 'fadeIn 0.25s ease-out forwards'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
         <button
           onClick={() => setCurrentView('settings')}
           style={{
@@ -43,7 +43,7 @@ export const BlockedUsersPage: React.FC = () => {
           <span>Back to Settings</span>
         </button>
 
-        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.3rem, 4vw, 1.6rem)', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
           Blocked Profiles
         </h1>
         <div style={{ width: '40px' }} />
@@ -76,10 +76,12 @@ export const BlockedUsersPage: React.FC = () => {
                 padding: '16px 20px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                gap: '12px',
+                flexWrap: 'wrap'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1 }}>
                 <img
                   src={
                     item.profilePhoto ||

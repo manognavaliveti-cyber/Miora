@@ -178,7 +178,7 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         <div>
-          <h1 style={{ fontSize: '1.65rem', fontWeight: 900, color: '#261D20', margin: '0 0 2px 0' }}>
+          <h1 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.65rem)', fontWeight: 900, color: '#261D20', margin: '0 0 2px 0' }}>
             Settings & Safety
           </h1>
           <p style={{ fontSize: '0.82rem', color: '#7D1730', margin: 0, fontWeight: 500 }}>
@@ -243,7 +243,7 @@ export const SettingsPage: React.FC = () => {
                     <h4
                       style={{
                         fontFamily: 'var(--font-serif)',
-                        fontSize: '1.02rem',
+                        fontSize: 'clamp(0.88rem, 2.5vw, 1.02rem)',
                         fontWeight: 700,
                         color: item.danger ? '#E11D48' : 'var(--text-primary)',
                         whiteSpace: 'nowrap',
@@ -254,6 +254,7 @@ export const SettingsPage: React.FC = () => {
                       {item.label}
                     </h4>
                     <span
+                      className="settings-item-desc"
                       style={{
                         fontSize: '0.78rem',
                         color: 'var(--text-secondary)',
