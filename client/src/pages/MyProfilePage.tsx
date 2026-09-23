@@ -62,7 +62,7 @@ export const MyProfilePage: React.FC = () => {
           marginBottom: '20px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }} className="profile-header-row">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
           {/* Main Photo */}
           <div style={{ position: 'relative' }}>
             <img
@@ -181,13 +181,13 @@ export const MyProfilePage: React.FC = () => {
           borderRadius: '24px',
           border: '1.5px solid #FCE7F3',
           boxShadow: '0 8px 24px rgba(76, 5, 25, 0.05)',
-          padding: 'clamp(16px, 3vw, 20px) clamp(16px, 3vw, 22px)',
+          padding: '20px 22px',
           marginBottom: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '14px'
+          gap: '16px'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -349,7 +349,7 @@ export const MyProfilePage: React.FC = () => {
           </button>
         </div>
 
-        <div className="profile-photo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
           {currentUser.photos.map((photo, idx) => (
             <img
               key={idx}

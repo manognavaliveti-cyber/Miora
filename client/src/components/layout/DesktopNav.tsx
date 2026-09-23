@@ -79,8 +79,7 @@ export const DesktopNav: React.FC = () => {
         background: 'rgba(255, 245, 247, 0.95)',
         backdropFilter: 'blur(24px)',
         borderBottom: '1px solid var(--border-subtle)',
-        marginBottom: '6px',
-        overflow: 'hidden'
+        marginBottom: '6px'
       }}
     >
       <div
@@ -220,7 +219,6 @@ export const DesktopNav: React.FC = () => {
 
         {/* MIORA Real Money Wallet Pill — opens Pro / VIP plans */}
         <div
-          className="desktop-nav-wallet"
           onClick={openUpgradeModal}
           style={{
             display: 'flex',
@@ -248,7 +246,7 @@ export const DesktopNav: React.FC = () => {
           title="Open MIORA Money Wallet"
         >
           <CreditCard size={16} color="var(--gold-deep)" />
-          <span className="desktop-nav-wallet-label" style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--gold-deep)', whiteSpace: 'nowrap', lineHeight: 1 }}>
+          <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--gold-deep)', whiteSpace: 'nowrap', lineHeight: 1 }}>
             Wallet ₹{(currentUser.walletBalance || 0).toFixed(2)}
           </span>
         </div>
@@ -358,7 +356,7 @@ export const DesktopNav: React.FC = () => {
               border: '2px solid var(--gold-champagne)'
             }}
           />
-          <span className="desktop-nav-user-name" style={{ fontSize: '0.84rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+          <span style={{ fontSize: '0.84rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
             {currentUser.name}
           </span>
         </div>

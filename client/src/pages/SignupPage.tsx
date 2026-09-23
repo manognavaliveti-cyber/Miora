@@ -47,45 +47,36 @@ export const SignupPage: React.FC = () => {
   };
 
   const field = (error?: string): React.CSSProperties => ({
-    display:'flex', alignItems:'center', gap:8, background:'rgba(255,247,249,.94)', borderRadius:14,
-    padding:'10px 13px', border:error ? '1.5px solid #E11D48' : '1.5px solid #F3D0D9',
-    boxShadow:'inset 0 1px 0 rgba(255,255,255,.95)', transition:'all .2s ease', boxSizing:'border-box'
+    display:'flex', alignItems:'center', gap:10, background:'rgba(255,247,249,.94)', borderRadius:16,
+    padding:'13px 15px', border:error ? '1.5px solid #E11D48' : '1.5px solid #F3D0D9',
+    boxShadow:'inset 0 1px 0 rgba(255,255,255,.95)', transition:'all .2s ease'
   });
-  const input: React.CSSProperties = { flex:1, minWidth:0, background:'transparent', border:0, outline:0, fontSize:'0.93rem', color:'#24151D', fontWeight:550, fontFamily:'inherit' };
-  const label: React.CSSProperties = { display:'block', fontSize:'.75rem', fontWeight:800, color:'#5F4B55', marginBottom:5 };
+  const input: React.CSSProperties = { flex:1, minWidth:0, background:'transparent', border:0, outline:0, fontSize:'1rem', color:'#24151D', fontWeight:550, fontFamily:'inherit' };
+  const label: React.CSSProperties = { display:'block', fontSize:'.78rem', fontWeight:800, color:'#5F4B55', marginBottom:7 };
 
   return (
-    <div style={{ minHeight:'100vh', width:'100%', background:'linear-gradient(180deg,#FFF0F3,#FFE8EE 48%,#FFF7F8)', display:'flex', alignItems:'center', justifyContent:'center', padding:'clamp(16px,3vw,28px) 16px', boxSizing:'border-box', position:'relative', overflow:'hidden' }}>
+    <div style={{ minHeight:'100vh', width:'100%', background:'linear-gradient(180deg,#FFF0F3,#FFE8EE 48%,#FFF7F8)', display:'flex', alignItems:'center', justifyContent:'center', padding:'28px 16px', boxSizing:'border-box', position:'relative', overflow:'hidden' }}>
       <style>{`
         @keyframes signupIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
         .miora-signup-final{animation:signupIn .65s cubic-bezier(.2,.8,.2,1) both}
-        .miora-final-field:focus-within{border-color:#E11D48!important;box-shadow:0 0 0 3px rgba(225,29,72,.07)!important;transform:translateY(-1px)}
-        .miora-final-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(190,18,60,.26)!important}
-        .miora-final-google:hover{transform:translateY(-2px);background:#FFF8FA!important;border-color:#E8AFC0!important}
-        .miora-signup-actions button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-        @media(max-width:800px){
-          .miora-signup-actions{grid-template-columns:1fr!important}
-          .miora-signup-layout{grid-template-columns:1fr!important;max-width:520px!important}
-          .miora-signup-hero{display:none!important}
-          .miora-signup-card{max-width:100%!important;border-radius:24px!important}
-        }
-        @media(max-width:480px){
-          .miora-signup-card{padding:20px 16px!important;border-radius:20px!important}
-        }
+        .miora-final-field:focus-within{border-color:#E11D48!important;box-shadow:0 0 0 4px rgba(225,29,72,.07)!important;transform:translateY(-1px)}
+        .miora-final-primary:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(190,18,60,.28)!important}
+        .miora-final-google:hover{transform:translateY(-2px);background:#FFF8FA!important;border-color:#E8AFC0!important}.miora-signup-actions button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        @media(max-width:800px){.miora-signup-actions{grid-template-columns:1fr!important}.miora-signup-layout{grid-template-columns:1fr!important}.miora-signup-hero{display:none!important}.miora-signup-card{max-width:560px!important}}
         @media(prefers-reduced-motion:reduce){.miora-signup-final{animation:none!important}}
       `}</style>
       <div style={{ position:'absolute', width:440, height:440, borderRadius:'50%', border:'1px solid rgba(190,18,60,.12)', top:-180, left:-170 }} />
       <div style={{ position:'absolute', width:520, height:520, borderRadius:'50%', border:'1px solid rgba(190,18,60,.12)', bottom:-250, right:-200 }} />
 
-      <div className="miora-signup-layout miora-signup-final" style={{ position:'relative', zIndex:1, width:'100%', maxWidth:980, display:'grid', gridTemplateColumns:'minmax(280px,.85fr) minmax(360px,1.1fr)', gap:'clamp(20px,4vw,48px)', alignItems:'center' }}>
-        <div className="miora-signup-hero" style={{ minHeight:480, borderRadius:28, padding:'clamp(24px,3vw,36px)', background:'linear-gradient(145deg,#FFE2E9,#FFD6E1)', border:'1.5px solid #F2C4CF', boxShadow:'0 16px 50px rgba(125,23,48,.08)', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
+      <div className="miora-signup-layout miora-signup-final" style={{ position:'relative', zIndex:1, width:'100%', maxWidth:1080, display:'grid', gridTemplateColumns:'minmax(300px,.9fr) minmax(380px,1.1fr)', gap:'clamp(24px,5vw,60px)', alignItems:'center' }}>
+        <div className="miora-signup-hero" style={{ minHeight:560, borderRadius:34, padding:40, background:'linear-gradient(145deg,#FFE2E9,#FFD6E1)', border:'1.5px solid #F2C4CF', boxShadow:'0 20px 60px rgba(125,23,48,.08)', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
           <div>
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:40 }}>
               <button type="button" onClick={() => setCurrentView('welcome')} style={{ width:44,height:44,borderRadius:'50%',border:'1px solid #F0CDD5',background:'#FFF',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#6B5560' }}><ChevronLeft size={21}/></button>
               <MioraLogo size={44} showTagline={false} showWordmark vertical={false}/>
             </div>
             <div style={{ color:'#BE123C', fontSize:'.76rem', fontWeight:850, letterSpacing:'.16em' }}>CREATE YOUR ACCOUNT</div>
-            <h1 style={{ fontSize:'clamp(1.8rem,3.2vw,2.6rem)', lineHeight:1.1, margin:'10px 0', color:'#21161B', fontWeight:900 }}>Start your MIORA story.</h1>
+            <h1 style={{ fontSize:'clamp(2.2rem,4vw,3rem)', lineHeight:1.1, margin:'12px 0', color:'#21161B', fontWeight:900 }}>Start your MIORA story.</h1>
             <p style={{ color:'#765E68', lineHeight:1.7, fontSize:'1rem' }}>Create your account first. Then you can build your profile with interests, photos and dating preferences — or skip and explore MIORA right away.</p>
           </div>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
@@ -93,16 +84,16 @@ export const SignupPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="miora-signup-card" style={{ background:'rgba(255,255,255,.95)', borderRadius:28, padding:'clamp(20px,3vw,30px)', border:'1px solid rgba(244,63,94,.14)', boxShadow:'0 20px 60px rgba(125,23,48,.12)', boxSizing:'border-box' }}>
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+        <div className="miora-signup-card" style={{ background:'rgba(255,255,255,.95)', borderRadius:30, padding:'clamp(24px,4vw,36px)', border:'1px solid rgba(244,63,94,.14)', boxShadow:'0 24px 70px rgba(125,23,48,.12)', boxSizing:'border-box' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18 }}>
             <div>
-              <div style={{ fontSize:'.7rem', color:'#BE123C', fontWeight:850, letterSpacing:'.14em', textTransform:'uppercase' }}>Welcome to MIORA</div>
-              <h2 style={{ margin:'5px 0 2px', fontSize:'1.55rem', color:'#24151D', fontWeight:900 }}>Create Account</h2>
-              <p style={{ margin:0, color:'#806D76', fontSize:'.82rem' }}>Only the essentials. Build the rest when you're ready.</p>
+              <div style={{ fontSize:'.72rem', color:'#BE123C', fontWeight:850, letterSpacing:'.14em', textTransform:'uppercase' }}>Welcome to MIORA</div>
+              <h2 style={{ margin:'6px 0 3px', fontSize:'1.8rem', color:'#24151D', fontWeight:900 }}>Create Account</h2>
+              <p style={{ margin:0, color:'#806D76', fontSize:'.84rem' }}>Only the essentials. Build the rest when you're ready.</p>
             </div>
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()} style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          <form onSubmit={(e) => e.preventDefault()} style={{ display:'flex', flexDirection:'column', gap:16 }}>
             <div><label style={label}>Name</label><div className="miora-final-field" style={field(errors.name)}><User size={18} color="#B27A89"/><input value={name} onChange={e=>{setName(e.target.value);setErrors(p=>({...p,name:''}))}} placeholder="Your name" style={input}/></div>{errors.name&&<small style={{color:'#E11D48'}}>{errors.name}</small>}</div>
             <div><label style={label}>Email</label><div className="miora-final-field" style={field(errors.email)}><Mail size={18} color="#B27A89"/><input type="email" value={email} onChange={e=>{setEmail(e.target.value);setErrors(p=>({...p,email:''}))}} placeholder="you@example.com" style={input}/></div>{errors.email&&<small style={{color:'#E11D48'}}>{errors.email}</small>}</div>
             <div><label style={label}>Mobile Number</label><div className="miora-final-field" style={field(errors.mobile)}><Phone size={18} color="#B27A89"/><input type="tel" inputMode="tel" value={mobile} onChange={e=>{setMobile(e.target.value);setErrors(p=>({...p,mobile:''}))}} placeholder="+91 98765 43210" style={input}/></div>{errors.mobile&&<small style={{color:'#E11D48'}}>{errors.mobile}</small>}</div>
@@ -122,13 +113,13 @@ export const SignupPage: React.FC = () => {
             )}
 
             <div className="miora-signup-actions" style={{display:'grid',gridTemplateColumns:'1fr',gap:10}}>
-              <button className="miora-final-primary" type="button" disabled={isLoading} onClick={() => handleSignup('choice')} style={{border:0,borderRadius:999,padding:'13px 20px',background:'linear-gradient(135deg,#BE123C,#9F1239)',color:'#FFF',fontWeight:850,fontSize:'0.9rem',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:9,boxShadow:'0 10px 22px rgba(190,18,60,.22)',transition:'all .2s ease'}}>
-                <LogIn size={16}/> {isLoading ? 'Please wait…' : 'Create Account'} <ArrowRight size={16}/>
+              <button className="miora-final-primary" type="button" disabled={isLoading} onClick={() => handleSignup('choice')} style={{border:0,borderRadius:999,padding:'16px 20px',background:'linear-gradient(135deg,#BE123C,#9F1239)',color:'#FFF',fontWeight:850,fontSize:'1rem',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:9,boxShadow:'0 12px 26px rgba(190,18,60,.24)',transition:'all .2s ease'}}>
+                <LogIn size={18}/> {isLoading ? 'Please wait…' : 'Sign In'} <ArrowRight size={18}/>
               </button>
             </div>
 
             <div style={{display:'flex',alignItems:'center',gap:10}}><div style={{flex:1,height:1,background:'#EBDDE2'}}/><span style={{fontSize:'.75rem',color:'#A18C95'}}>OR</span><div style={{flex:1,height:1,background:'#EBDDE2'}}/></div>
-            <button className="miora-final-google" type="button" onClick={handleGoogleSignup} style={{border:'1.5px solid #E6D9DE',borderRadius:999,padding:'11px 18px',background:'#FFF',color:'#26313B',fontWeight:750,fontSize:'.88rem',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:10,transition:'all .2s ease'}}>
+            <button className="miora-final-google" type="button" onClick={handleGoogleSignup} style={{border:'1.5px solid #E6D9DE',borderRadius:999,padding:'13px 20px',background:'#FFF',color:'#26313B',fontWeight:750,fontSize:'.92rem',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:10,transition:'all .2s ease'}}>
               <svg width="19" height="19" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
               Continue with Google
             </button>

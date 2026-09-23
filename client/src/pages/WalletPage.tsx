@@ -64,7 +64,7 @@ export const WalletPage: React.FC = () => {
             <h1
               style={{
                 fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(1.4rem, 3.5vw, 2.2rem)',
+                fontSize: 'clamp(1.6rem, 4vw, 2.2rem)',
                 fontWeight: 800,
                 color: 'var(--text-primary)',
                 letterSpacing: '-0.02em',
@@ -110,9 +110,9 @@ export const WalletPage: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))',
-          gap: '14px',
-          marginBottom: '24px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
+          gap: '16px',
+          marginBottom: '28px'
         }}
       >
         {/* Hero Wallet Balance Card */}
@@ -195,7 +195,6 @@ export const WalletPage: React.FC = () => {
           }}
         >
           <span
-            className="wallet-promo-badge"
             style={{
               position: 'absolute',
               top: '-10px',
@@ -332,7 +331,7 @@ export const WalletPage: React.FC = () => {
           </h4>
         </div>
 
-        <div className="wallet-pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '16px' }}>
           {/* Text Chat Pricing */}
           <div style={{ padding: '16px', background: 'var(--surface-white)', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--berry-primary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>

@@ -14,7 +14,6 @@ export const SplashPage: React.FC = () => {
 
   return (
     <div
-      className="splash-page-root"
       style={{
         flex: 1,
         display: 'flex',

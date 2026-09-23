@@ -186,10 +186,10 @@ export const PlayPage: React.FC = () => {
       <div
         style={{
           position: 'relative',
-          borderRadius: 'clamp(20px, 3vw, 32px)',
+          borderRadius: '32px',
           background: 'linear-gradient(135deg, #2A0815 0%, #4C0519 40%, #701A31 80%, #9F1239 100%)',
-          padding: 'clamp(20px, 3.5vw, 36px)',
-          marginBottom: '24px',
+          padding: 'clamp(24px, 4vw, 36px)',
+          marginBottom: '32px',
           overflow: 'hidden',
           boxShadow: '0 20px 50px rgba(76, 5, 25, 0.35)',
           border: '1.5px solid rgba(244, 63, 94, 0.3)'
@@ -273,14 +273,13 @@ export const PlayPage: React.FC = () => {
                   background: 'linear-gradient(135deg, #FDE047 0%, #D4AF37 50%, #B45309 100%)',
                   color: '#1F161A',
                   border: 'none',
-                  padding: 'clamp(10px, 2vw, 12px) clamp(16px, 3vw, 24px)',
+                  padding: '12px 24px',
                   borderRadius: 'var(--radius-pill)',
                   fontWeight: 800,
-                  fontSize: 'clamp(0.82rem, 2vw, 0.92rem)',
+                  fontSize: '0.92rem',
                   cursor: 'pointer',
                   boxShadow: '0 8px 24px rgba(212, 175, 55, 0.4)',
-                  transition: 'all var(--transition-fast)',
-                  whiteSpace: 'nowrap'
+                  transition: 'all var(--transition-fast)'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'scale(1.05)';
@@ -291,7 +290,7 @@ export const PlayPage: React.FC = () => {
                   e.currentTarget.style.boxShadow = '0 8px 24px rgba(212, 175, 55, 0.4)';
                 }}
               >
-                <Shuffle size={16} />
+                <Shuffle size={17} />
                 <span>Spin Date Game 🎲</span>
               </button>
             </div>

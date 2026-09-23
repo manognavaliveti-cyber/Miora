@@ -146,7 +146,7 @@ export const DatingPreferencesPage: React.FC = () => {
           <label style={{ fontSize: '0.88rem', fontWeight: 650, color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)', display: 'block', marginBottom: '10px' }}>
             My Gender
           </label>
-          <div className="dating-gender-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: '10px' }}>
             {[
               { id: 'woman', label: 'Woman', icon: '♀' },
               { id: 'man', label: 'Man', icon: '♂' },
