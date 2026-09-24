@@ -11,7 +11,7 @@ export interface RemotePricingSettings {
   interestingGameChargeCoins?: number;
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://miora-1.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function applyCallRate(packages: Array<{ minutes: number; coins: number; savingsPercent?: number }>, baseRate: number) {
   packages.forEach((pkg) => {

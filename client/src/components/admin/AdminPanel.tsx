@@ -23,7 +23,7 @@ import {
 
 // Set VITE_API_BASE in admin-client/.env for anything other than local dev
 // (e.g. your deployed Cloud Run / Render URL + '/api/admin').
-const API_BASE = `${import.meta.env.VITE_API_URL || 'https://miora-1.onrender.com'}/api/admin`;
+const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/admin`;
 
 interface DashboardStats {
   totalUsers: number;
@@ -150,7 +150,7 @@ export const AdminPanel: React.FC<{ currentUser: AdminPanelUser; idToken: string
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
   const [paymentStats, setPaymentStats] = useState<TransactionStats | null>(null);
-  const [pricing, setPricing] = useState<PricingSettings>({ chatPerMinuteInr: 3, audioCallPerMinuteCoins: 20, videoCallPerMinuteCoins: 40, proPriceInr: 379, vipPriceInr: 789, gameChargeCoins: 39, normalGameChargeCoins: 39, interestingGameChargeCoins: 49 });
+  const [pricing, setPricing] = useState<PricingSettings>({ chatPerMinuteInr: 3, audioCallPerMinuteCoins: 20, videoCallPerMinuteCoins: 40, proPriceInr: 345, vipPriceInr: 789, gameChargeCoins: 39, normalGameChargeCoins: 39, interestingGameChargeCoins: 49 });
   const [savingPricing, setSavingPricing] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);

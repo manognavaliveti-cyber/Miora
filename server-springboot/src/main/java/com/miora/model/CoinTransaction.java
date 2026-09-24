@@ -15,7 +15,7 @@ public class CoinTransaction {
     private String type; // WALLET_TOPUP, PAID_CHAT, AUDIO_CALL, VIDEO_CALL, PREMIUM_PURCHASE, REFUND
     private Integer amount; // legacy field
     private Double walletAmount; // ₹ wallet amount credited or debited
-    private Double paymentAmountInr; // monetary price paid in INR (e.g. ₹79 for ₹150 credit, ₹379 for Premium)
+    private Double paymentAmountInr; // monetary price paid in INR (e.g. ₹79 for ₹150 credit, ₹345 for Premium)
     private Double balanceBefore;
     private Double balanceAfter;
     private Integer coins; // legacy field

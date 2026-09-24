@@ -30,9 +30,9 @@ const TAB_COPY: Record<BoostTab, { title: string; sub: string; cta: string }> = 
   }
 };
 
-// Miora subscription prices (28 days): PRO ₹499 -> ₹379, VIP ₹999 -> ₹789
+// Miora subscription prices (28 days): PRO ₹499 -> ₹345, VIP ₹999 -> ₹789
 const UPSELL = [
-  { tab: 'pro' as const, label: 'MIORA PRO', regular: 499, offer: 379, icon: <Zap size={15} /> },
+  { tab: 'pro' as const, label: 'MIORA PRO', regular: 499, offer: 345, icon: <Zap size={15} /> },
   { tab: 'vip' as const, label: 'MIORA VIP', regular: 999, offer: 789, icon: <Crown size={15} /> }
 ];
 

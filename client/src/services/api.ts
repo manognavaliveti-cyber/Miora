@@ -224,7 +224,7 @@ class ApiService {
       const profiles = getLocal<Profile[]>(STORAGE_KEYS.PROFILES, INITIAL_PROFILES);
       const targetProfile = profiles.find((p) => p.id === profileId);
 
-      const willMatch = Math.random() < 0.85 || isSuperLike;
+      const willMatch = Boolean(targetProfile?.isTestProfile) || Math.random() < 0.85 || isSuperLike;
 
       if (targetProfile && willMatch) {
         const matches = getLocal<Match[]>(STORAGE_KEYS.MATCHES, INITIAL_MATCHES);
@@ -816,7 +816,7 @@ class ApiService {
         success: true,
         data: {
           isWeekend,
-          proPriceInr: 379,
+          proPriceInr: 345,
           proRegularPriceInr: 499,
           proWalletCreditInr: 524,
           proBonusInr: 25,

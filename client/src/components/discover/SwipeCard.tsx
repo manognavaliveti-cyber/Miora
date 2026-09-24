@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Profile } from '../../types';
 import { Heart, X, MapPin } from 'lucide-react';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 
 interface SwipeCardProps {
   profile: Profile;
@@ -182,9 +183,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           borderRadius: '32px',
           overflow: 'hidden',
           boxShadow: isTopCard
-            ? '0 22px 50px rgba(92, 29, 44, 0.30)'
-            : '0 8px 24px rgba(92, 29, 44, 0.12)',
-          border: '1.5px solid rgba(255, 255, 255, 0.35)'
+            ? '0 16px 40px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.06)'
+            : '0 6px 18px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.06)'
         }}
       >
         {/* Profile Image Background */}
@@ -369,7 +370,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             cursor: 'pointer'
           }}
         >
-          {/* Name, Age */}
+          {/* Name, Age & Verified Badge */}
           <h2
             style={{
               fontSize: '1.7rem',
@@ -377,10 +378,15 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               color: '#FFFFFF',
               letterSpacing: '-0.02em',
               margin: 0,
-              lineHeight: 1.15
+              lineHeight: 1.15,
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '4px'
             }}
           >
-            {profile.name}, {profile.age}
+            <span>{profile.name}, {profile.age}</span>
+            {(profile.verified || profile.isVerified) && <VerifiedBadge size={20} />}
           </h2>
 
           {/* Profession */}

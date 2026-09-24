@@ -24,15 +24,15 @@ interface PlanDef {
   groups: { title: string; items: { title: string; sub: string }[] }[];
 }
 
-// PRO ₹499 → ₹379, VIP ₹999 → ₹789 (28 days each)
+// PRO ₹499 → ₹345, VIP ₹999 → ₹789 (28 days each)
 const PLANS: Record<PlanId, PlanDef> = {
   pro: {
     id: 'pro',
     tabLabel: 'PRO',
     name: 'MIORA PRO',
     regularInr: 499,
-    offerInr: MIORA_PRICING.subscriptionPlans.find((p) => p.id === 'gold')?.priceInr ?? 379,
-    savePercent: 24,
+    offerInr: MIORA_PRICING.subscriptionPlans.find((p) => p.id === 'gold')?.priceInr ?? 345,
+    savePercent: 31,
     walletValue: '₹524',
     bonus: '₹25 bonus',
     accent: '#FF6B94',
@@ -119,7 +119,7 @@ export const UpgradeModal: React.FC = () => {
 
   useEffect(() => {
     if (isUpgradeModalOpen) {
-      const proPrice = MIORA_PRICING.subscriptionPlans.find((p) => p.id === 'gold')?.priceInr ?? 379;
+      const proPrice = MIORA_PRICING.subscriptionPlans.find((p) => p.id === 'gold')?.priceInr ?? 345;
       const vipPrice = MIORA_PRICING.subscriptionPlans.find((p) => p.id === 'vip')?.priceInr ?? 789;
       PLANS.pro.offerInr = proPrice;
       PLANS.vip.offerInr = vipPrice;

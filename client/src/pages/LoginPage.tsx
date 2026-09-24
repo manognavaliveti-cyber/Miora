@@ -414,15 +414,17 @@ export const LoginPage: React.FC = () => {
                 disabled={isLoading}
                 style={{
                   width: '100%',
-                  padding: '14px 20px',
+                  maxWidth: '360px',
+                  margin: '0 auto',
+                  padding: '11px 18px',
                   borderRadius: '999px',
                   background: 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)',
                   border: '1.5px solid rgba(255, 255, 255, 0.3)',
                   color: '#FFFFFF',
-                  fontSize: '1.1rem',
+                  fontSize: '0.98rem',
                   fontWeight: 800,
                   cursor: isLoading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 8px 24px rgba(139, 30, 63, 0.35)',
+                  boxShadow: '0 6px 20px rgba(139, 30, 63, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -433,24 +435,24 @@ export const LoginPage: React.FC = () => {
                 onMouseEnter={(e) => {
                   if (!isLoading) {
                     e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(139, 30, 63, 0.48)';
+                    e.currentTarget.style.boxShadow = '0 10px 24px rgba(139, 30, 63, 0.42)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isLoading) {
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(139, 30, 63, 0.35)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 30, 63, 0.3)';
                   }
                 }}
               >
                 <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={17} />
               </button>
 
               {/* Divider: ———— or ———— */}
               <div style={{ display: 'flex', alignItems: 'center', margin: '2px 0', gap: '12px' }}>
                 <div style={{ flex: 1, height: '1px', background: 'rgba(139, 30, 63, 0.18)' }} />
-                <span style={{ fontSize: '0.9rem', color: '#7C4351', fontWeight: 600 }}>or</span>
+                <span style={{ fontSize: '0.85rem', color: '#7C4351', fontWeight: 600 }}>or</span>
                 <div style={{ flex: 1, height: '1px', background: 'rgba(139, 30, 63, 0.18)' }} />
               </div>
 
@@ -460,6 +462,8 @@ export const LoginPage: React.FC = () => {
                 onClick={() => googleAuth('login')}
                 style={{
                   width: '100%',
+                  maxWidth: '360px',
+                  margin: '0 auto',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -468,8 +472,8 @@ export const LoginPage: React.FC = () => {
                   backdropFilter: 'blur(12px)',
                   border: '1.5px solid rgba(255, 255, 255, 0.9)',
                   borderRadius: '999px',
-                  padding: '13px 20px',
-                  fontSize: '1.05rem',
+                  padding: '10px 18px',
+                  fontSize: '0.94rem',
                   fontWeight: 700,
                   color: '#3A121A',
                   cursor: 'pointer',

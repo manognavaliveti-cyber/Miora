@@ -48,7 +48,7 @@ export interface Profile {
   name: string;
   age: number;
   location: string;
-  distanceKm: number;
+  distanceKm?: number;
   bio: string;
   photos: string[];
   interests: string[];
@@ -71,6 +71,8 @@ export interface Profile {
   receivedGifts?: Record<string, number>;
   gamesPlayedCount?: number;
   verified?: boolean;
+  isVerified?: boolean;
+  isTestProfile?: boolean;
   isSpotlighted?: boolean;
   isBoosted?: boolean;
   boostBadge?: string;
@@ -143,6 +145,9 @@ export interface CurrentUser {
   talkTimeSecondsRemaining: number;
   receivedGifts: Record<string, number>;
   gamesWonCount: number;
+  verified?: boolean;
+  isVerified?: boolean;
+  isTestProfile?: boolean;
   
   // Monetization & Tiers
   isPremium?: boolean;

@@ -8,12 +8,12 @@ import { getStorage, FirebaseStorage } from 'firebase/storage';
  * Reads from Vite environment variables (VITE_FIREBASE_...)
  */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || ''
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBOCYZv8SxBDfuArEqVl2aF6Z9BQGOOnyk',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'miora-ea6a7.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'miora-ea6a7',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'miora-ea6a7.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '772947776861',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:772947776861:web:95abdd8814f48a647e44b4'
 };
 
 /**
@@ -28,19 +28,7 @@ export const isFirebaseConfigured = Boolean(
 // Initialize Firebase App (singleton pattern to prevent duplicate app initialization)
 let app: FirebaseApp;
 if (!getApps().length) {
-  // Use fallback dummy identifiers if env is empty during early development/setup to prevent runtime crash
-  const activeConfig = isFirebaseConfigured
-    ? firebaseConfig
-    : {
-        apiKey: 'demo-api-key',
-        authDomain: 'miora-demo.firebaseapp.com',
-        projectId: 'miora-demo',
-        storageBucket: 'miora-demo.appspot.com',
-        messagingSenderId: '123456789',
-        appId: '1:123456789:web:abcdef123456'
-      };
-
-  app = initializeApp(activeConfig);
+  app = initializeApp(firebaseConfig);
 } else {
   app = getApp();
 }

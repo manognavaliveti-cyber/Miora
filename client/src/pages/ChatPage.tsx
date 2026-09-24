@@ -5,6 +5,7 @@ import { ChatBubble } from '../components/chat/ChatBubble';
 import { MessageInput } from '../components/chat/MessageInput';
 import { ChevronLeft, Phone, Video } from 'lucide-react';
 import { markRealMessagesAsRead } from '../services/realtimeUsers';
+import { VerifiedBadge } from '../components/common/VerifiedBadge';
 
 export const ChatPage: React.FC = () => {
   const {
@@ -193,10 +194,14 @@ export const ChatPage: React.FC = () => {
                   lineHeight: 1.2,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  textOverflow: 'ellipsis',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
                 }}
               >
-                {matchProfile.name}
+                <span>{matchProfile.name}</span>
+                {(matchProfile.verified || matchProfile.isVerified) && <VerifiedBadge size={16} />}
               </h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '1px' }}>
                 <span

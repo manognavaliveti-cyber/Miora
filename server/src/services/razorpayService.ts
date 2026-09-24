@@ -15,8 +15,8 @@ export interface CoinPackage {
 // Mirrors client/src/config/pricing.ts (rechargePackages + subscriptionPlans) and
 // server-springboot's RazorpayService.java 1:1 — same ids, same prices, same credit.
 const PACKAGES: Record<string, CoinPackage> = {
-  gold: { id: 'gold', type: 'GOLD_SUBSCRIPTION', walletCreditInr: 0, priceInr: 379, name: 'MIORA Gold', icon: '⚡' },
-  pro: { id: 'gold', type: 'GOLD_SUBSCRIPTION', walletCreditInr: 0, priceInr: 379, name: 'MIORA Gold', icon: '⚡' },
+  gold: { id: 'gold', type: 'GOLD_SUBSCRIPTION', walletCreditInr: 524, priceInr: 345, name: 'MIORA Gold', icon: '⚡' },
+  pro: { id: 'gold', type: 'GOLD_SUBSCRIPTION', walletCreditInr: 524, priceInr: 345, name: 'MIORA Gold', icon: '⚡' },
   vip: { id: 'vip', type: 'VIP_SUBSCRIPTION', walletCreditInr: 1500, priceInr: 999, name: 'MIORA VIP Royalty', icon: '👑' },
 
   pack_150: { id: 'pack_150', type: 'WALLET_TOPUP', walletCreditInr: 150, priceInr: 79, name: '₹150 Wallet Credit', icon: '✨' },

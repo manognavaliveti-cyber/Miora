@@ -19,6 +19,8 @@ import {
   MessageCircle as MessageCircleIcon
 } from 'lucide-react';
 
+import { VerifiedBadge } from '../common/VerifiedBadge';
+
 export const ProfileDetailsModal: React.FC = () => {
   const {
     isProfileDetailOpen,
@@ -328,14 +330,15 @@ export const ProfileDetailsModal: React.FC = () => {
                       fontSize: '1.9rem',
                       fontWeight: 800,
                       color: 'var(--text-primary)',
-                      letterSpacing: '-0.02em'
+                      letterSpacing: '-0.02em',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}
                   >
-                    {activeProfile.name}, {activeProfile.age}
+                    <span>{activeProfile.name}, {activeProfile.age}</span>
+                    {(activeProfile.verified || activeProfile.isVerified) && <VerifiedBadge size={22} />}
                   </h2>
-                  {unlockedVerificationIds.includes(activeProfile.id) && activeProfile.verified && (
-                    <CheckCircle2 size={20} color="var(--gold-champagne)" fill="rgba(212, 175, 55, 0.2)" />
-                  )}
                 </div>
 
                 <div

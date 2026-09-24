@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Match, Profile } from '../types';
 import { markRealMessagesAsRead } from '../services/realtimeUsers';
+import { VerifiedBadge } from '../components/common/VerifiedBadge';
 
 export const ChatListPage: React.FC = () => {
   const {
@@ -157,7 +158,11 @@ export const ChatListPage: React.FC = () => {
                 </span>
                 <span className="mobile-chat-thread-body">
                   <span className="mobile-chat-thread-top">
-                    <span className="mobile-chat-name">{match.profile.name}</span><span className={`mobile-chat-status ${match.profile.online ? 'is-online' : 'is-offline'}`}>{match.profile.online ? 'Online' : 'Offline'}</span>
+                    <span className="mobile-chat-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                      <span>{match.profile.name}</span>
+                      {(match.profile.verified || match.profile.isVerified) && <VerifiedBadge size={14} />}
+                    </span>
+                    <span className={`mobile-chat-status ${match.profile.online ? 'is-online' : 'is-offline'}`}>{match.profile.online ? 'Online' : 'Offline'}</span>
                     <span className="mobile-chat-time">{match.lastMessageTime || ''}</span>
                   </span>
                   <span className="mobile-chat-thread-bottom">
@@ -309,8 +314,9 @@ export const ChatListPage: React.FC = () => {
 
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {match.profile.name}, {match.profile.age}
+                          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span>{match.profile.name}, {match.profile.age}</span>
+                            {(match.profile.verified || match.profile.isVerified) && <VerifiedBadge size={16} />}
                           </h3>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', fontSize: '0.76rem', fontWeight: 800, color: '#D97706' }}>
                             <Star size={12} fill="#F59E0B" color="#F59E0B" />
@@ -427,8 +433,9 @@ export const ChatListPage: React.FC = () => {
                     style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover' }}
                   />
                   <div>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                      {selectedMatch.profile.name}, {selectedMatch.profile.age}
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{selectedMatch.profile.name}, {selectedMatch.profile.age}</span>
+                      {(selectedMatch.profile.verified || selectedMatch.profile.isVerified) && <VerifiedBadge size={16} />}
                     </h3>
                     <span style={{ fontSize: '0.76rem', color: selectedMatch.profile.online ? '#10B981' : 'var(--text-muted)', fontWeight: 600 }}>
                       {selectedMatch.profile.online ? '● Online' : 'Offline'}

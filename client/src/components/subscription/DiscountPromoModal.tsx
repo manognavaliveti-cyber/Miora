@@ -14,7 +14,7 @@ export const DiscountPromoModal: React.FC<DiscountPromoModalProps> = ({ isOpen, 
 
   const handleGetPremium = async () => {
     onClose();
-    await subscribeToPlan('premium_379', 'inr');
+    await subscribeToPlan('pro', 'inr');
   };
 
   return (
@@ -148,7 +148,7 @@ export const DiscountPromoModal: React.FC<DiscountPromoModalProps> = ({ isOpen, 
               letterSpacing: '-0.03em'
             }}
           >
-            24% OFF
+            31% OFF
           </h2>
           <h3
             style={{
@@ -191,7 +191,7 @@ export const DiscountPromoModal: React.FC<DiscountPromoModalProps> = ({ isOpen, 
                 lineHeight: 1
               }}
             >
-              ₹379
+              ₹345
             </span>
           </div>
 
