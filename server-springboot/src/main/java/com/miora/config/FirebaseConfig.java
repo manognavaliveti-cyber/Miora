@@ -68,14 +68,17 @@ public class FirebaseConfig {
                 isFirebaseInitialized = true;
                 log.info("Firebase Admin SDK successfully initialized for project: {}", projectId);
                 return app;
-            } else if (System.getenv("GOOGLE_APPLICATION_CREDENTIALS") != null) {
+                       } else if (!devFallbackEnabled) {
+                // No service account file found. In production (dev-fallback disabled),
+                // always try Application Default Credentials — this is how Cloud Run's
+                // built-in service account authenticates, with no env var required.
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.getApplicationDefault())
                         .setProjectId(projectId)
                         .build();
                 FirebaseApp app = FirebaseApp.initializeApp(options);
                 isFirebaseInitialized = true;
-                log.info("Firebase Admin SDK initialized using GOOGLE_APPLICATION_CREDENTIALS");
+                log.info("Firebase Admin SDK initialized using Application Default Credentials");
                 return app;
             } else {
                 log.warn("No Firebase service account credentials found at '{}'. Running with Dev Fallback Mode.", serviceAccountPath);
