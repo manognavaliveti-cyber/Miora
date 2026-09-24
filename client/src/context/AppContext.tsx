@@ -1167,18 +1167,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => { walletBalanceRef.current = currentUser.walletBalance || 0; }, [currentUser.walletBalance]);
   useEffect(() => {
     if (!currentUser?.id || currentUser.id === 'user_me') return;
+    let syncTimer: ReturnType<typeof setTimeout> | null = null;
     const syncWallet = () => {
       if (document.hidden) return;
-      apiService.getWalletBalance().then((wallet) => {
-        walletBalanceRef.current = wallet.walletBalance;
-        setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
-      }).catch(() => {});
+      // Debounce: collapse rapid focus/visibility events into a single request
+      if (syncTimer) clearTimeout(syncTimer);
+      syncTimer = setTimeout(() => {
+        syncTimer = null;
+        apiService.getWalletBalance().then((wallet) => {
+          walletBalanceRef.current = wallet.walletBalance;
+          setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
+        }).catch(() => {});
+      }, 500);
     };
     window.addEventListener('focus', syncWallet);
     document.addEventListener('visibilitychange', syncWallet);
     return () => {
       window.removeEventListener('focus', syncWallet);
       document.removeEventListener('visibilitychange', syncWallet);
+      if (syncTimer) clearTimeout(syncTimer);
     };
   }, [currentUser.id]);
 
@@ -1205,10 +1212,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         walletBalanceRef.current = wallet.walletBalance;
         setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
       }).catch(() => {
-        apiService.getWalletBalance().then((wallet) => {
-          walletBalanceRef.current = wallet.walletBalance;
-          setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
-        }).catch(() => {});
+        // Debit failed (backend unreachable). Optimistic local deduction already applied above.
+        // Do NOT re-fetch wallet here — that would fire another /api/wallet call immediately
+        // and create a request cascade when the backend is flaky (→ 429).
       });
       setCurrentUser((u) => {
         const nb = Math.max(0, Math.round(((u.walletBalance || 0) - CHAT_PER_MINUTE_INR) * 100) / 100);
@@ -2307,10 +2313,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
     }).catch((err) => {
       console.warn('Wallet debit could not be persisted:', err);
-      apiService.getWalletBalance().then((wallet) => {
-        walletBalanceRef.current = wallet.walletBalance;
-        setCurrentUser((u) => ({ ...u, walletBalance: wallet.walletBalance, coinBalance: wallet.coinBalance }));
-      }).catch(() => {});
+      // Optimistic local deduction already applied — do NOT re-fetch wallet here.
+      // Re-fetching on every debit failure would cascade requests when the backend
+      // is flaky and quickly hit the rate limiter (→ 429).
     });
     setCurrentUser((u) => ({
       ...u,

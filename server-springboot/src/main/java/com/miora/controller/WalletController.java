@@ -2,13 +2,16 @@ package com.miora.controller;
 
 import com.miora.dto.*;
 import com.miora.model.CoinTransaction;
+import com.miora.model.User;
 import com.miora.security.SecurityUtils;
+import com.miora.service.FirestoreService;
 import com.miora.service.RazorpayService;
 import com.miora.service.WalletService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +21,78 @@ public class WalletController {
 
     private final WalletService walletService;
     private final RazorpayService razorpayService;
+    private final FirestoreService firestoreService;
 
-    public WalletController(WalletService walletService, RazorpayService razorpayService) {
+    public WalletController(WalletService walletService, RazorpayService razorpayService, FirestoreService firestoreService) {
         this.walletService = walletService;
         this.razorpayService = razorpayService;
+        this.firestoreService = firestoreService;
+    }
+
+    /**
+     * GET /api/wallet
+     * Returns the authenticated user's current wallet and coin balances.
+     * Frontend expects: { walletBalance: number, coinBalance: number }
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getWallet() {
+        try {
+            String userId = SecurityUtils.getCurrentUserId();
+            User user = firestoreService.getUser(userId);
+            Map<String, Object> balance = new HashMap<>();
+            balance.put("walletBalance", user != null && user.getWalletBalance() != null ? user.getWalletBalance() : 0.0);
+            balance.put("coinBalance", user != null && user.getCoinBalance() != null ? user.getCoinBalance() : 0);
+            return ResponseEntity.ok(ApiResponse.ok("Wallet balance retrieved", balance));
+        } catch (Exception e) {
+            // Return safe defaults rather than 500 — client has local fallback for balance display.
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("walletBalance", 0.0);
+            fallback.put("coinBalance", 0);
+            return ResponseEntity.ok(ApiResponse.ok("Wallet balance (fallback)", fallback));
+        }
+    }
+
+    /**
+     * POST /api/wallet/debit
+     * Debits a given INR amount from the authenticated user's wallet balance.
+     * Request body: { amount: number }
+     * Response: { walletBalance: number, coinBalance: number }
+     */
+    @PostMapping("/debit")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> debitWallet(@RequestBody Map<String, Object> body) {
+        try {
+            String userId = SecurityUtils.getCurrentUserId();
+            double amount;
+            try {
+                amount = Double.parseDouble(String.valueOf(body.get("amount")));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Invalid or missing 'amount' in request body"));
+            }
+            if (amount <= 0) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Debit amount must be greater than 0"));
+            }
+
+            User user = firestoreService.getUser(userId);
+            double currentBalance = user != null && user.getWalletBalance() != null ? user.getWalletBalance() : 0.0;
+            if (currentBalance < amount) {
+                return ResponseEntity.badRequest().body(ApiResponse.error(
+                        "Insufficient wallet balance (Required: ₹" + (int) amount + ", Available: ₹" + (int) currentBalance + ")"
+                ));
+            }
+
+            double newBalance = currentBalance - amount;
+            if (user != null) {
+                user.setWalletBalance(newBalance);
+                firestoreService.saveUser(user);
+            }
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("walletBalance", newBalance);
+            result.put("coinBalance", user != null && user.getCoinBalance() != null ? user.getCoinBalance() : 0);
+            return ResponseEntity.ok(ApiResponse.ok("Wallet debited successfully", result));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ApiResponse.error("Wallet debit failed: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/packages")

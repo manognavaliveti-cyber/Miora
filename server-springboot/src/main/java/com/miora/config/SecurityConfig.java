@@ -58,6 +58,7 @@ public class SecurityConfig {
                         // Public Health & Info
                         .requestMatchers("/api/health").permitAll()
                         .requestMatchers("/api/wallet/packages").permitAll()
+                        .requestMatchers("/api/pricing").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         // All protected API routes require authentication (or principal resolution in dev mode)

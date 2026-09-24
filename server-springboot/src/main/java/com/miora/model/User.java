@@ -112,6 +112,11 @@ public class User {
     // Push Notifications: Firebase Cloud Messaging device token (set by client after permission grant)
     private String fcmToken;
 
+    // Fields written by the realtimeUsers service to Firestore — declared here so
+    // Firestore's CustomClassMapper doesn't emit WARN on deserialization.
+    private String lastActiveAt;
+    private Boolean online;
+
     @Data
     @Builder
     @NoArgsConstructor
