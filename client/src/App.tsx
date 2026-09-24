@@ -101,7 +101,7 @@ const AppContent: React.FC = () => {
 
   if (currentView === 'admin') {
     const firebaseUser = authService.getCurrentUser();
-    const adminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'filpflexteam@gmail.com').trim().toLowerCase();
+    const adminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'flipflexteam@gmail.com').trim().toLowerCase();
     if (!firebaseUser || (firebaseUser.email || '').trim().toLowerCase() !== adminEmail) {
       return <LoginPage />;
     }

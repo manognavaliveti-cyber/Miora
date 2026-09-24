@@ -14,7 +14,7 @@ already tries by default, so there's nothing to configure on the client side.
 - Copy the **Key ID** and **Key Secret**
 
 ## 2. Get your Firebase service account key (2 min)
-- [Firebase Console](https://console.firebase.google.com) → your `miora-ea6a7` project
+- [Firebase Console](https://console.firebase.google.com) → your `winged-precinct-484016-f3` project
 - ⚙️ Project Settings → Service Accounts tab → **Generate new private key**
 - This downloads a `.json` file. Rename it to `firebase-service-account.json` and
   put it directly inside the `server/` folder (same level as `package.json`).
@@ -28,7 +28,7 @@ Open `.env` and fill in:
 ```
 RAZORPAY_KEY_ID=rzp_test_...        (from step 1)
 RAZORPAY_KEY_SECRET=...             (from step 1)
-FIREBASE_PROJECT_ID=miora-ea6a7
+FIREBASE_PROJECT_ID=winged-precinct-484016-f3
 ```
 Leave `PORT=8080` as-is.
 

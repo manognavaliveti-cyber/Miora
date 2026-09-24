@@ -35,7 +35,7 @@ export function initFirebaseAdmin(): void {
 
   admin.initializeApp({
     credential,
-    projectId: process.env.FIREBASE_PROJECT_ID || 'miora-ea6a7'
+    projectId: process.env.FIREBASE_PROJECT_ID || 'winged-precinct-484016-f3'
   });
 
   initialized = true;

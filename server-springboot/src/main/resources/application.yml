@@ -1,5 +1,14 @@
+# ===================================================================
+# MIORA Spring Boot Backend - Unified Application Configuration
+# ===================================================================
+
 server:
-  port: 8080
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
 
 spring:
   application:
@@ -7,21 +16,24 @@ spring:
   main:
     banner-mode: console
 
+# Razorpay Test / Live Credentials (Loaded from environment / .env)
+razorpay:
+  key:
+    id: ${RAZORPAY_KEY_ID:}
+    secret: ${RAZORPAY_KEY_SECRET:}
+
+# Firebase Configuration
 firebase:
   project-id: ${FIREBASE_PROJECT_ID:winged-precinct-484016-f3}
-  service-account-path: ${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}
-  # When true or auto, allows development testing even without live Firebase service account credentials
-  dev-fallback-enabled: ${FIREBASE_DEV_FALLBACK:true}
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}}
+  # When true, allows local development testing with in-memory store even without a live Firebase service account key
+  dev-fallback-enabled: ${FIREBASE_DEV_FALLBACK_ENABLED:${FIREBASE_DEV_FALLBACK:true}}
+  # Firebase admin account email for the single-link admin dashboard access
+  admin-email: ${MIORA_ADMIN_EMAIL:flipflexteam@gmail.com}
 
+# CORS Allowed Origins
 cors:
-  allowed-origins:
-    - "http://localhost:5173"
-    - "http://localhost:5174"
-    - "http://localhost:5175"
-    - "http://localhost:3000"
-    - "http://127.0.0.1:5173"
-    - "http://127.0.0.1:5174"
-    - "http://127.0.0.1:5175"
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175,https://winged-precinct-484016-f3.web.app,https://winged-precinct-484016-f3.firebaseapp.com}
 
 logging:
   level:

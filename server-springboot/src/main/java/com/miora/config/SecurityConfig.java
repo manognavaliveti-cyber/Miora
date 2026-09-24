@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final FirebaseAuthFilter firebaseAuthFilter;
     private final RateLimitingFilter rateLimitingFilter;
 
-    @Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000}")
+    @Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175,https://winged-precinct-484016-f3.web.app,https://winged-precinct-484016-f3.firebaseapp.com}")
     private List<String> allowedOrigins;
 
     public SecurityConfig(FirebaseAuthFilter firebaseAuthFilter, RateLimitingFilter rateLimitingFilter) {
@@ -83,7 +83,12 @@ public class SecurityConfig {
                     "http://localhost:5173",
                     "http://localhost:5174",
                     "http://localhost:5175",
-                    "http://localhost:3000"
+                    "http://localhost:3000",
+                    "http://127.0.0.1:5173",
+                    "http://127.0.0.1:5174",
+                    "http://127.0.0.1:5175",
+                    "https://winged-precinct-484016-f3.web.app",
+                    "https://winged-precinct-484016-f3.firebaseapp.com"
             ));
         }
 

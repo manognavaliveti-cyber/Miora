@@ -254,8 +254,8 @@ export const MyProfilePage: React.FC = () => {
           padding: '20px 22px',
           color: (currentUser.subscriptionTier && currentUser.subscriptionTier !== 'free') ? '#FFFFFF' : '#261D20',
           border: currentUser.subscriptionTier === 'vip' ? '2px solid #D4AF37' : '1.5px solid #F4C5CF',
-          marginBottom: '20px',
-          boxShadow: '0 8px 24px rgba(125, 23, 48, 0.12)',
+          marginBottom: '16px',
+          boxShadow: '0 8px 24px rgba(125, 23, 48, 0.08)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -263,7 +263,7 @@ export const MyProfilePage: React.FC = () => {
           gap: '16px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
           <div
             style={{
               width: '46px',
@@ -283,7 +283,7 @@ export const MyProfilePage: React.FC = () => {
             <Crown size={22} color={currentUser.subscriptionTier === 'vip' ? '#261D20' : currentUser.subscriptionTier === 'pro' ? '#FFFFFF' : '#A91E45'} />
           </div>
 
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '0.98rem', fontWeight: 900, color: (currentUser.subscriptionTier && currentUser.subscriptionTier !== 'free') ? '#FFFFFF' : '#261D20' }}>
                 {currentUser.subscriptionTier === 'vip' ? 'VIP ACTIVE 👑' : currentUser.subscriptionTier === 'pro' ? 'PRO ACTIVE ⚡' : 'FREE PLAN'}
@@ -299,6 +299,7 @@ export const MyProfilePage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={openUpgradeModal}
           style={{
             background: currentUser.subscriptionTier === 'vip'
@@ -308,15 +309,98 @@ export const MyProfilePage: React.FC = () => {
               : 'linear-gradient(135deg, #A91E45 0%, #C52E59 100%)',
             border: 'none',
             color: currentUser.subscriptionTier === 'vip' ? '#261D20' : currentUser.subscriptionTier === 'pro' ? '#A91E45' : '#FFFFFF',
-            padding: '8px 14px',
+            padding: '9px 18px',
             borderRadius: '999px',
             fontWeight: 800,
-            fontSize: '0.76rem',
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(125, 23, 48, 0.2)'
+            boxShadow: '0 4px 12px rgba(125, 23, 48, 0.2)',
+            transition: 'all 0.15s ease'
           }}
         >
           {(!currentUser.subscriptionTier || currentUser.subscriptionTier === 'free') ? 'Upgrade' : 'View Benefits'}
+        </button>
+      </div>
+
+      {/* 3b. Boost Your Profile Card */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #FFF0F4 0%, #FBEDEF 50%, #FFFFFF 100%)',
+          borderRadius: '24px',
+          padding: '18px 20px',
+          border: '1.5px solid #F4C5CF',
+          marginBottom: '20px',
+          boxShadow: '0 8px 24px rgba(139, 30, 63, 0.06)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '14px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
+          <div
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)',
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(139, 30, 63, 0.28)',
+              flexShrink: 0
+            }}
+          >
+            <Rocket size={22} />
+          </div>
+
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '0.98rem', fontWeight: 900, color: '#261D20' }}>
+                Boost Your Profile 🚀
+              </span>
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: '#8B1E3F',
+                  color: '#FFFFFF'
+                }}
+              >
+                10x Views
+              </span>
+            </div>
+            <p style={{ fontSize: '0.78rem', color: '#7D1730', margin: '3px 0 0', fontWeight: 600 }}>
+              Get seen first by profiles in your area with Boost & Spotlight.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={openBoostModal}
+          style={{
+            background: 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)',
+            color: '#FFFFFF',
+            border: 'none',
+            padding: '9px 18px',
+            borderRadius: '999px',
+            fontWeight: 800,
+            fontSize: '0.8rem',
+            cursor: 'pointer',
+            boxShadow: '0 4px 14px rgba(139, 30, 63, 0.28)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          <Sparkles size={14} />
+          <span>Boost Now</span>
         </button>
       </div>
 

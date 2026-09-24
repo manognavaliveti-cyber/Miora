@@ -23,7 +23,7 @@ silently trying to reach `http://localhost:8080` from your live site.
   `server-springboot/.../RazorpayService.java` now matches
   `client/src/config/pricing.ts` exactly — 1:1, same price, same credit.
 - **Wrong default Firebase project ID** in `application.properties` (was pointing
-  at an unrelated project; now defaults to `miora-ea6a7`).
+  at an unrelated project; now defaults to `winged-precinct-484016-f3`).
 - **CORS defaults** now include your live domain, not just localhost.
 
 ## What you still need to do (I can't do this part from here)
@@ -50,8 +50,8 @@ is the simplest:
   ```
   RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
   RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxx
-  FIREBASE_PROJECT_ID=miora-ea6a7
-  CORS_ALLOWED_ORIGINS=https://miora-ea6a7.web.app,https://miora-ea6a7.firebaseapp.com
+  FIREBASE_PROJECT_ID=winged-precinct-484016-f3
+  CORS_ALLOWED_ORIGINS=https://winged-precinct-484016-f3.web.app,https://winged-precinct-484016-f3.firebaseapp.com
   ```
 - Upload the service account JSON as a secret file, and set
   `FIREBASE_SERVICE_ACCOUNT_PATH` to wherever the host mounts it (Render calls

@@ -50,7 +50,7 @@ Open `http://localhost:5173`, sign in with the administrator account, and open *
 
 1. Deploy the Node/Express backend to a public HTTPS host (Cloud Run, Render, Railway, etc.).
 2. Set these backend environment variables on the host:
-   - `FIREBASE_PROJECT_ID=miora-ea6a7`
+   - `FIREBASE_PROJECT_ID=winged-precinct-484016-f3`
    - `FIREBASE_SERVICE_ACCOUNT_JSON=<service account JSON>`
    - `RAZORPAY_KEY_ID=<test/live key>`
    - `RAZORPAY_KEY_SECRET=<test/live secret>`

@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   GoogleAuthProvider,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   getAdditionalUserInfo,
@@ -119,29 +120,59 @@ export const authService = {
   },
 
   /**
-   * Initiate Google sign in or sign up using Firebase OAuth redirect.
-   * Uses signInWithRedirect to avoid Cross-Origin-Opener-Policy (COOP) popup issues in Chrome.
+   * Sign in or sign up with Google using Firebase OAuth.
+   * Uses popup as primary for immediate response, with redirect fallback.
    */
-  async signInWithGoogle(mode: 'login' | 'signup' = 'login'): Promise<void> {
+  async signInWithGoogle(mode: 'login' | 'signup' = 'login'): Promise<{ user: User; isNewUser: boolean } | null> {
     if (!isFirebaseConfigured || !auth) {
-      throw new Error('Firebase Authentication is not configured.');
+      // Mock dev mode fallback when Firebase is not configured in local environment
+      console.warn('Firebase not configured. Running dev mock Google sign-in.');
+      const mockToken = `mock_google_token_${Date.now()}`;
+      localStorage.setItem('miora_auth_token', mockToken);
+      const mockUser = {
+        uid: 'user_google_dev',
+        displayName: 'Google Explorer',
+        email: 'explorer.miora@gmail.com',
+        photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+        getIdToken: async () => mockToken
+      } as unknown as User;
+      return { user: mockUser, isNewUser: mode === 'signup' };
     }
 
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
     try {
-      if (typeof window !== 'undefined' && window.sessionStorage) {
-        sessionStorage.setItem('miora_google_auth_mode', mode);
+      const userCredential = await signInWithPopup(auth, provider);
+      const token = await userCredential.user.getIdToken();
+      localStorage.setItem('miora_auth_token', token);
+
+      const additionalUserInfo = getAdditionalUserInfo(userCredential);
+      return {
+        user: userCredential.user,
+        isNewUser: Boolean(additionalUserInfo?.isNewUser)
+      };
+    } catch (popupErr: any) {
+      // If popup was blocked by browser, try redirect flow
+      if (popupErr?.code === 'auth/popup-blocked') {
+        console.warn('Popup blocked, falling back to signInWithRedirect:', popupErr);
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+          sessionStorage.setItem('miora_google_auth_mode', mode);
+        }
+        await signInWithRedirect(auth, provider);
+        return null;
       }
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      await signInWithRedirect(auth, provider);
-    } catch (err: any) {
-      console.error('Firebase Google sign-in redirect error:', err);
-      throw err;
+      if (popupErr?.code === 'auth/popup-closed-by-user' || popupErr?.code === 'auth/cancelled-popup-request') {
+        console.info('Google sign-in popup closed by user.');
+        return null;
+      }
+      console.error('Firebase Google sign-in error:', popupErr);
+      throw popupErr;
     }
   },
 
   /**
-   * Check and retrieve result if the user is returning from a Google redirect sign-in.
+   * Check and retrieve result if the user returned from a Google redirect sign-in.
    */
   async getGoogleRedirectResult(): Promise<{ user: User; isNewUser: boolean; mode: 'login' | 'signup' } | null> {
     if (!isFirebaseConfigured || !auth) return null;
@@ -173,7 +204,7 @@ export const authService = {
       if (typeof window !== 'undefined' && window.sessionStorage) {
         sessionStorage.removeItem('miora_google_auth_mode');
       }
-      throw err;
+      return null;
     }
   },
 

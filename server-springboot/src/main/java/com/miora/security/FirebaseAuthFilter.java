@@ -32,7 +32,7 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     @Value("${firebase.dev-fallback-enabled:true}")
     private boolean devFallbackEnabled;
 
-    @Value("${firebase.admin-email:filpflexteam@gmail.com}")
+    @Value("${firebase.admin-email:flipflexteam@gmail.com}")
     private String adminEmail;
 
     @Override

@@ -1430,7 +1430,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         throw new Error('Firebase is not configured on this deployment yet — check your .env.local / build environment variables.');
       }
 
-      const configuredAdminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'filpflexteam@gmail.com').trim().toLowerCase();
+      const configuredAdminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'flipflexteam@gmail.com').trim().toLowerCase();
       const isAdmin = (firebaseUser.email || '').trim().toLowerCase() === configuredAdminEmail;
       console.info('[MIORA] Firebase sign-in OK:', firebaseUser.email, { isAdmin });
       let user: any = {};
@@ -1498,7 +1498,51 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const googleAuth = async (mode: 'login' | 'signup'): Promise<boolean> => {
     try {
       setIsLoading(true);
-      await authService.signInWithGoogle(mode);
+      const result = await authService.signInWithGoogle(mode);
+      if (!result?.user) return false;
+
+      const firebaseUser = result.user;
+      let existingUser: any = null;
+      try {
+        existingUser = await apiService.getCurrentUser();
+      } catch (e) {
+        console.warn('API get user notice:', e);
+      }
+
+      const displayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'MIORA User';
+      const email = firebaseUser.email || '';
+      const hasRealProfile = Boolean(existingUser && existingUser.id === firebaseUser.uid);
+
+      const updated = {
+        ...currentUser,
+        ...(hasRealProfile ? existingUser : {}),
+        id: firebaseUser.uid,
+        name: (hasRealProfile ? existingUser?.name : '') || displayName,
+        email: (hasRealProfile ? existingUser?.email : '') || email,
+        profileCompletion: hasRealProfile ? (existingUser?.profileCompletion || 40) : 40,
+        termsAccepted: mode === 'signup' ? true : (existingUser?.termsAccepted ?? true),
+        termsVersion: existingUser?.termsVersion || '1.0',
+        termsAcceptedAt: existingUser?.termsAcceptedAt || new Date().toISOString()
+      };
+
+      setCurrentUser(resolveWallet(updated));
+      try {
+        await apiService.updateCurrentUser(updated);
+      } catch (apiErr) {
+        console.warn('Google auth profile sync notice:', apiErr);
+      }
+
+      if (mode === 'signup' && result.isNewUser) {
+        showToast('Google account connected successfully! ✨');
+        setCurrentView('profile-build-choice');
+      } else {
+        showToast(`Welcome${displayName ? `, ${displayName}` : ''}! ✨`);
+        setCurrentView('home');
+        setActiveTab('home');
+        openDiscountModal();
+        registerForPushNotifications().catch(() => {});
+      }
+
       return true;
     } catch (err: any) {
       console.error('Google authentication error:', err);

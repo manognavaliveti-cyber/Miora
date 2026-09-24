@@ -11,7 +11,7 @@ npm run dev
 
 Open the Vite URL shown in CMD.
 
-The admin frontend is configured to use the same Firebase project as the MIORA user app: `miora-ea6a7`.
+The admin frontend is configured to use the same Firebase project as the MIORA user app: `winged-precinct-484016-f3`.
 
 ## 2. Admin Firebase account
 
@@ -38,7 +38,7 @@ npm install
 npm run dev
 ```
 
-The server needs `FIREBASE_PROJECT_ID=miora-ea6a7` and a Firebase Admin service account, either as `server/firebase-service-account.json` or `FIREBASE_SERVICE_ACCOUNT_JSON`.
+The server needs `FIREBASE_PROJECT_ID=winged-precinct-484016-f3` and a Firebase Admin service account, either as `server/firebase-service-account.json` or `FIREBASE_SERVICE_ACCOUNT_JSON`.
 
 ## 5. Important
 

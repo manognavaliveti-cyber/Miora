@@ -24,7 +24,7 @@ public class FirebaseConfig {
 
     private static final Logger log = LoggerFactory.getLogger(FirebaseConfig.class);
 
-    @Value("${firebase.project-id:miora-dating-app}")
+    @Value("${firebase.project-id:winged-precinct-484016-f3}")
     private String projectId;
 
     @Value("${firebase.service-account-path:firebase-service-account.json}")
