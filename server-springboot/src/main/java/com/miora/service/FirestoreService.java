@@ -544,7 +544,7 @@ public class FirestoreService {
                         .allowAudioCalls("matches")
                         .allowVideoCalls("matches")
                         .build())
-                .walletBalance(524.0)
+                .walletBalance(0.0)
                 .coinBalance(0)
                 .talkTimeSecondsRemaining(480)
                 .isPremium(false)

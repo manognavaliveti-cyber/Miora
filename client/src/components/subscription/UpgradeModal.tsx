@@ -60,7 +60,7 @@ const PLANS: Record<PlanId, PlanDef> = {
       {
         title: 'Stand Out',
         items: [
-          { title: 'Star User Access', sub: 'Chat with Star users.' }
+          { title: 'Advanced Filters', sub: 'Filter by lifestyle, intent & more.' }
         ]
       }
     ]
@@ -94,8 +94,7 @@ const PLANS: Record<PlanId, PlanDef> = {
         title: 'Increase Your Matches',
         items: [
           { title: 'See Who Liked You', sub: 'Know instantly when someone is interested.' },
-          { title: 'All Eligible Profiles', sub: 'Nobody is hidden from you.' },
-          { title: 'Star User Access', sub: 'Chat with Star users.' }
+          { title: 'All Eligible Profiles', sub: 'Nobody is hidden from you.' }
         ]
       }
     ]

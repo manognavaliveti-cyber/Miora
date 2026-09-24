@@ -37,7 +37,7 @@ public class User {
     @Builder.Default
     private Map<String, String> lifestyle = new HashMap<>();
     @Builder.Default
-    private Double walletBalance = 524.0;
+    private Double walletBalance = 0.0;
     @Builder.Default
     private Integer coinBalance = 0;
     @Builder.Default
