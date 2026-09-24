@@ -156,7 +156,7 @@ export const DiscoverPage: React.FC = () => {
             style={{
               position: 'relative',
               width: '100%',
-              height: 'clamp(400px, calc(100dvh - 300px), 540px)',
+              height: 'clamp(340px, calc(100dvh - 270px), 540px)',
               borderRadius: '28px',
               boxSizing: 'border-box'
             }}

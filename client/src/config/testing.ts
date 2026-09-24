@@ -4,7 +4,7 @@
 // can try chat, calls, gifts and games without paying.
 // Set to 0 before going live to turn this off completely.
 // ─────────────────────────────────────────────────────────────────────────────
-export const TEST_DEFAULT_WALLET_INR = 1000;
+export const TEST_DEFAULT_WALLET_INR = 0;
 
 /** Raises the wallet to the test amount if it is lower (no-op when test mode is off). */
 export const withTestWallet = <T extends { walletBalance?: number; coinBalance?: number }>(user: T): T => {

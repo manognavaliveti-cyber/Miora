@@ -6,7 +6,8 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   getAdditionalUserInfo,
   signOut as firebaseSignOut,
   sendPasswordResetEmail
@@ -118,28 +119,60 @@ export const authService = {
   },
 
   /**
-   * Sign in or sign up with Google using Firebase OAuth popup.
+   * Initiate Google sign in or sign up using Firebase OAuth redirect.
+   * Uses signInWithRedirect to avoid Cross-Origin-Opener-Policy (COOP) popup issues in Chrome.
    */
-  async signInWithGoogle(): Promise<{ user: User; isNewUser: boolean } | null> {
+  async signInWithGoogle(mode: 'login' | 'signup' = 'login'): Promise<void> {
     if (!isFirebaseConfigured || !auth) {
       throw new Error('Firebase Authentication is not configured.');
     }
 
     try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        sessionStorage.setItem('miora_google_auth_mode', mode);
+      }
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: 'select_account' });
-      const userCredential = await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider);
+    } catch (err: any) {
+      console.error('Firebase Google sign-in redirect error:', err);
+      throw err;
+    }
+  },
+
+  /**
+   * Check and retrieve result if the user is returning from a Google redirect sign-in.
+   */
+  async getGoogleRedirectResult(): Promise<{ user: User; isNewUser: boolean; mode: 'login' | 'signup' } | null> {
+    if (!isFirebaseConfigured || !auth) return null;
+
+    try {
+      const userCredential = await getRedirectResult(auth);
+      if (!userCredential || !userCredential.user) return null;
+
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('miora_auth_token', token);
 
       const additionalUserInfo = getAdditionalUserInfo(userCredential);
+      let mode: 'login' | 'signup' = 'login';
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        const saved = sessionStorage.getItem('miora_google_auth_mode');
+        if (saved === 'signup' || saved === 'login') {
+          mode = saved;
+        }
+        sessionStorage.removeItem('miora_google_auth_mode');
+      }
 
       return {
         user: userCredential.user,
-        isNewUser: Boolean(additionalUserInfo?.isNewUser)
+        isNewUser: Boolean(additionalUserInfo?.isNewUser),
+        mode
       };
     } catch (err: any) {
-      console.error('Firebase Google sign-in error:', err);
+      console.error('Firebase getGoogleRedirectResult error:', err);
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        sessionStorage.removeItem('miora_google_auth_mode');
+      }
       throw err;
     }
   },

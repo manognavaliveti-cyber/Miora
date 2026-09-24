@@ -287,9 +287,7 @@ export const BoostModal: React.FC = () => {
                     overflow: 'hidden',
                     border: '2.5px solid rgba(255,255,255,0.92)',
                     boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
-                    '--r': pos.r,
                     transform: `rotate(${pos.r})`,
-                    animation: `bmFloatA 4.2s ease-in-out ${pos.d} infinite`,
                     left: (pos as any).left,
                     right: (pos as any).right,
                     top: (pos as any).top,
@@ -303,7 +301,7 @@ export const BoostModal: React.FC = () => {
             ))}
 
             {/* centre icon: stopwatch (boost), star burst (spotlight / super likes) */}
-            <div className="bm-tick" style={{ position: 'absolute', left: '50%', top: '50%', width: '150px', height: '150px', marginLeft: '-75px', marginTop: '-75px', zIndex: 2, animation: 'bmTick 2.4s ease-in-out infinite', transformOrigin: '50% 60%' }}>
+            <div className="bm-tick" style={{ position: 'absolute', left: '50%', top: '50%', width: '150px', height: '150px', marginLeft: '-75px', marginTop: '-75px', zIndex: 2, transformOrigin: '50% 60%' }}>
               {activeTab === 'boost' ? (
                 <svg viewBox="0 0 200 200" width="150" height="150">
                   <defs>
@@ -473,7 +471,7 @@ export const BoostModal: React.FC = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              animation: 'bmGlow 2.6s ease-in-out infinite'
+              boxShadow: '0 10px 24px rgba(242,107,58,0.4)'
             }}
           >
             <Zap size={18} fill="#2A0F04" />

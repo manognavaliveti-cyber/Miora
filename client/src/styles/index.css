@@ -212,7 +212,7 @@ p, span, label, div {
     padding: 0 clamp(12px, 3.5vw, 16px);
     padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
     width: 100%;
-    max-width: 100vw;
+    max-width: 100%;
   }
 
   .app-content.chat-page-active {
@@ -490,8 +490,9 @@ p, span, label, div {
   .mobile-chat-search { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 12px; background: #f6f4f5; color: #8b7d83; }
   .mobile-chat-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #18181b; font-size: 0.9rem; }
   .mobile-chat-thread-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 4px 0 calc(12px + env(safe-area-inset-bottom, 0px)); }
-  .mobile-chat-thread { width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 16px; border: 0; border-bottom: 1px solid #f5eef1; background: #fff; text-align: left; cursor: pointer; box-sizing: border-box; }
-  .mobile-chat-thread:active { background: #faf7f8; }
+  .mobile-chat-thread { width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 16px; border: 0; border-bottom: 1px solid #f5eef1; background: #fff; text-align: left; cursor: pointer; box-sizing: border-box; transition: background 0.18s ease; }
+  .mobile-chat-thread:hover { background: #fff5f7; }
+  .mobile-chat-thread:active { background: #ffebee; }
   .mobile-chat-avatar-wrap { position: relative; width: 56px; height: 56px; flex: 0 0 56px; }
   .mobile-chat-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; display: block; background: #eee; }
   .mobile-chat-online { position: absolute; right: 0; bottom: 1px; width: 13px; height: 13px; border-radius: 50%; background: #22c55e; border: 2px solid #fff; box-sizing: border-box; }
@@ -813,7 +814,7 @@ p, span, label, div {
     font-size: 16px !important; /* Prevents auto-zoom on iOS safari */
   }
 
-  button, a {
+  button:not([class*="delete"]):not([class*="menu"]):not([class*="dock-btn"]):not([class*="icon"]):not([class*="close"]):not([class*="btn-icon"]), a {
     min-height: 38px;
   }
 }
@@ -1112,29 +1113,27 @@ img {
   border: 3px solid #FFFFFF;
   box-shadow: 0 12px 28px rgba(158, 27, 66, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
-.dock-btn-like::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 2px solid rgba(232, 85, 124, 0.55);
-  animation: dockHalo 2.6s ease-out infinite;
-  pointer-events: none;
-}
 .dock-btn-like:hover:not(:disabled) {
-  box-shadow: 0 16px 34px rgba(158, 27, 66, 0.52), 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 16px 34px rgba(158, 27, 66, 0.52), 0 0 0 4px rgba(232, 85, 124, 0.25);
 }
-.dock-btn-like:hover:not(:disabled) .dock-heart {
-  animation: dockHeartPop 0.5s ease;
+.dock-btn-like:active:not(:disabled) {
+  transform: scale(0.92);
 }
-@keyframes dockHalo {
-  0% { transform: scale(1); opacity: 0.7; }
-  70%, 100% { transform: scale(1.32); opacity: 0; }
-}
-@keyframes dockHeartPop {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.22); }
-  100% { transform: scale(1); }
+
+@media (max-width: 480px) {
+  .action-dock {
+    margin: 14px auto 0 auto;
+    gap: 16px;
+  }
+  .dock-btn-side {
+    width: 50px;
+    height: 50px;
+  }
+  .dock-btn-like {
+    width: 62px;
+    height: 62px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1310,6 +1309,14 @@ img {
   box-shadow: 0 10px 22px rgba(157, 23, 77, 0.25);
   white-space: nowrap;
   flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.likes-boost-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(157, 23, 77, 0.35);
+}
+.likes-boost-btn:active {
+  transform: scale(0.97);
 }
 
 .likes-liked-card {
@@ -1356,6 +1363,15 @@ img {
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.likes-liked-btn:hover {
+  background: #FFE4E8;
+  border-color: rgba(157, 23, 77, 0.35);
+  transform: translateY(-1px);
+}
+.likes-liked-btn:active {
+  transform: scale(0.97);
 }
 
 .likes-spark-head {
@@ -1519,8 +1535,8 @@ img {
 }
 
 
-/* Admin panel */
-:root {
+/* Admin panel scoped styling */
+.miora-admin-root {
   --bg-dark: #0f172a;
   --panel-bg: #1e293b;
   --accent-pink: #ec4899;
@@ -1531,32 +1547,8 @@ img {
   --danger: #ef4444;
   --warning: #f59e0b;
   --success: #10b981;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-dark);
   color: var(--text-main);
   line-height: 1.5;
-  min-height: 100vh;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  outline: none;
-  font-family: inherit;
-}
-
-input, select, textarea {
-  font-family: inherit;
-  outline: none;
 }
 
 @keyframes spin {
@@ -1608,7 +1600,9 @@ input, select, textarea {
   .chat-list-page-active .mobile-chat-search { height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 13px; background: #f6f4f5; color: #8b7d83; }
   .chat-list-page-active .mobile-chat-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #18181b; font-size: 0.94rem; }
   .chat-list-page-active .mobile-chat-thread-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 4px 0 12px; }
-  .chat-list-page-active .mobile-chat-thread { width: 100%; display: flex; align-items: center; gap: 14px; padding: 13px 24px; border: 0; border-bottom: 1px solid #f5eef1; background: #fff; text-align: left; cursor: pointer; box-sizing: border-box; }
+  .chat-list-page-active .mobile-chat-thread { width: 100%; display: flex; align-items: center; gap: 14px; padding: 13px 24px; border: 0; border-bottom: 1px solid #f5eef1; background: #fff; text-align: left; cursor: pointer; box-sizing: border-box; transition: background 0.18s ease; }
+  .chat-list-page-active .mobile-chat-thread:hover { background: #fff5f7; }
+  .chat-list-page-active .mobile-chat-thread:active { background: #ffebee; }
   .chat-list-page-active .mobile-chat-avatar-wrap { position: relative; width: 58px; height: 58px; flex: 0 0 58px; }
   .chat-list-page-active .mobile-chat-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; display: block; background: #eee; }
   .chat-list-page-active .mobile-chat-online { position: absolute; right: 0; bottom: 1px; width: 13px; height: 13px; border-radius: 50%; background: #22c55e; border: 2px solid #fff; box-sizing: border-box; }

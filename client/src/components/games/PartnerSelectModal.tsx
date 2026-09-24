@@ -96,72 +96,82 @@ export const PartnerSelectModal: React.FC<PartnerSelectModalProps> = ({ game, is
 
         {/* Matches List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '280px', overflowY: 'auto' }}>
-          {matches.map((match) => {
-            const photo =
-              match.profile.photos[0] ||
-              'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80';
-            return (
-              <div
-                key={match.id}
-                onClick={() => handleSelect(match.profile)}
-                style={{
-                  background: 'var(--surface-white)',
-                  border: '1.5px solid var(--border-subtle)',
-                  borderRadius: '20px',
-                  padding: '12px 18px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  transition: 'all var(--transition-fast)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--berry-primary)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <img
-                    src={photo}
-                    alt={match.profile.name}
-                    style={{
-                      width: '46px',
-                      height: '46px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      border: '2px solid var(--gold-champagne)'
-                    }}
-                  />
-                  <div>
-                    <div style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {match.profile.name}, {match.profile.age}
-                    </div>
-                    <span style={{ fontSize: '0.76rem', color: 'var(--gold-deep)', fontWeight: 700 }}>
-                      {match.profile.compatibility}% Vibe Match
-                    </span>
-                  </div>
-                </div>
-
-                <span
+          {matches.length > 0 ? (
+            matches.map((match) => {
+              const photo =
+                match.profile.photos[0] ||
+                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80';
+              return (
+                <div
+                  key={match.id}
+                  onClick={() => handleSelect(match.profile)}
                   style={{
-                    background: 'var(--primary-gradient)',
-                    color: '#FFFFFF',
-                    fontSize: '0.78rem',
-                    fontWeight: 800,
-                    padding: '6px 14px',
-                    borderRadius: 'var(--radius-pill)',
-                    boxShadow: 'var(--shadow-berry-glow)'
+                    background: 'var(--surface-white)',
+                    border: '1.5px solid var(--border-subtle)',
+                    borderRadius: '20px',
+                    padding: '12px 18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--berry-primary)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  Play
-                </span>
-              </div>
-            );
-          })}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img
+                      src={photo}
+                      alt={match.profile.name}
+                      style={{
+                        width: '46px',
+                        height: '46px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid var(--gold-champagne)'
+                      }}
+                    />
+                    <div>
+                      <div style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                        {match.profile.name}, {match.profile.age}
+                      </div>
+                      <span style={{ fontSize: '0.76rem', color: 'var(--gold-deep)', fontWeight: 700 }}>
+                        {match.profile.compatibility}% Vibe Match
+                      </span>
+                    </div>
+                  </div>
+
+                  <span
+                    style={{
+                      background: 'var(--primary-gradient)',
+                      color: '#FFFFFF',
+                      fontSize: '0.78rem',
+                      fontWeight: 800,
+                      padding: '6px 14px',
+                      borderRadius: 'var(--radius-pill)',
+                      boxShadow: 'var(--shadow-berry-glow)'
+                    }}
+                  >
+                    Play
+                  </span>
+                </div>
+              );
+            })
+          ) : (
+            <div style={{ textAlign: 'center', padding: '24px 12px', color: 'var(--text-secondary)' }}>
+              <Heart size={28} color="var(--berry-primary)" style={{ margin: '0 auto 8px auto' }} />
+              <p style={{ fontSize: '0.9rem', fontWeight: 700, margin: '0 0 6px 0' }}>No connections yet</p>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                Match with people on Discover to play couple games together!
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

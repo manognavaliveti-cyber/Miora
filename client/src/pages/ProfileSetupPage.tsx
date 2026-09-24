@@ -12,7 +12,7 @@ export const ProfileSetupPage: React.FC = () => {
 
   // Step 1 State
   const [name, setName] = useState(currentUser.name || 'Dev');
-  const [age, setAge] = useState(currentUser.age || 23);
+  const [age, setAge] = useState(currentUser.age > 0 ? String(currentUser.age) : '');
   const [location, setLocation] = useState(currentUser.location || 'Bangalore, India');
   const [bio, setBio] = useState(
     currentUser.bio ||
@@ -149,7 +149,8 @@ export const ProfileSetupPage: React.FC = () => {
                 min={18}
                 max={99}
                 value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="Your age"
                 required
               />
             </div>

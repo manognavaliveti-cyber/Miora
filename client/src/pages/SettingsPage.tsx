@@ -144,7 +144,7 @@ export const SettingsPage: React.FC = () => {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        padding: '16px 16px 40px 16px',
+        padding: '8px 0 40px 0',
         gap: '24px',
         width: '100%',
         maxWidth: '860px',
@@ -257,10 +257,11 @@ export const SettingsPage: React.FC = () => {
                       style={{
                         fontSize: '0.78rem',
                         color: 'var(--text-secondary)',
-                        display: 'block',
-                        whiteSpace: 'nowrap',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis'
+                        lineHeight: 1.35
                       }}
                     >
                       {item.desc}

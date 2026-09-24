@@ -329,7 +329,7 @@ export const UpgradeModal: React.FC = () => {
 
                 {showLikesBanner ? (
                   <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px', animation: 'upFloat 3.2s ease-in-out infinite' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
                       {whoLikedMeProfiles.slice(0, 3).map((w, i) => (
                         <div
                           key={w.id}
@@ -385,8 +385,7 @@ export const UpgradeModal: React.FC = () => {
                         backdropFilter: 'blur(8px)',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        animation: 'upFloat 3.2s ease-in-out infinite'
+                        justifyContent: 'center'
                       }}
                     >
                       {plan.id === 'vip' ? <Crown size={30} color={plan.accent} /> : <Heart size={28} color="#FFFFFF" fill="#FFFFFF" />}

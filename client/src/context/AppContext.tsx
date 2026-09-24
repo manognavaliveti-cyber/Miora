@@ -1056,9 +1056,59 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       setIsLoading(true);
       clearLegacyDemoData();
-      // After a refresh Firebase restores the saved login a moment later — wait for it,
-      // otherwise a blank guest profile (wrong name / wallet) gets loaded instead of yours.
-      await authService.waitForAuthReady();
+
+      // Check if the user is returning from a Firebase Google Redirect flow
+      let redirectHandled = false;
+      try {
+        const redirectResult = await authService.getGoogleRedirectResult();
+        if (redirectResult?.user) {
+          redirectHandled = true;
+          const firebaseUser = redirectResult.user;
+          const existingUser = await apiService.getCurrentUser();
+          const displayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'MIORA User';
+          const email = firebaseUser.email || '';
+          const hasRealProfile = Boolean(existingUser && existingUser.id === firebaseUser.uid);
+
+          const updated = {
+            ...currentUser,
+            ...(hasRealProfile ? existingUser : {}),
+            id: firebaseUser.uid,
+            name: (hasRealProfile ? existingUser?.name : '') || displayName,
+            email: (hasRealProfile ? existingUser?.email : '') || email,
+            profileCompletion: hasRealProfile ? (existingUser?.profileCompletion || 40) : 40,
+            termsAccepted: redirectResult.mode === 'signup' ? true : (existingUser?.termsAccepted ?? true),
+            termsVersion: existingUser?.termsVersion || '1.0',
+            termsAcceptedAt: existingUser?.termsAcceptedAt || new Date().toISOString()
+          };
+
+          setCurrentUser(resolveWallet(updated));
+          try {
+            await apiService.updateCurrentUser(updated);
+          } catch (apiErr) {
+            console.warn('Google auth profile sync notice:', apiErr);
+          }
+
+          if (redirectResult.mode === 'signup' && redirectResult.isNewUser) {
+            showToast('Google account connected successfully! ✨');
+            setCurrentView('profile-build-choice');
+          } else {
+            showToast(`Welcome${displayName ? `, ${displayName}` : ''}! ✨`);
+            setCurrentView('home');
+            setActiveTab('home');
+            openDiscountModal();
+            registerForPushNotifications().catch(() => {});
+          }
+        }
+      } catch (redirectErr) {
+        console.warn('Error checking Google redirect result:', redirectErr);
+      }
+
+      if (!redirectHandled) {
+        // After a refresh Firebase restores the saved login a moment later — wait for it,
+        // otherwise a blank guest profile (wrong name / wallet) gets loaded instead of yours.
+        await authService.waitForAuthReady();
+      }
+
       const [user, profs, matchData, blocked, txs, posts, stories, notes] = await Promise.all([
         apiService.getCurrentUser(),
         apiService.getProfiles(),
@@ -1070,7 +1120,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         apiService.getStatusNotes()
       ]);
 
-      if (user) setCurrentUser(user);
+      if (user && !redirectHandled) setCurrentUser(user);
       walletHydratedRef.current = true;
       if (profs && profs.length > 0) {
         // Keep the real, logged-in people that were already discovered — replacing the list
@@ -1448,49 +1498,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const googleAuth = async (mode: 'login' | 'signup'): Promise<boolean> => {
     try {
       setIsLoading(true);
-      const result = await authService.signInWithGoogle();
-      if (!result?.user) return false;
-
-      const firebaseUser = result.user;
-      const existingUser = await apiService.getCurrentUser();
-      const displayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'MIORA User';
-      const email = firebaseUser.email || '';
-      const hasRealProfile = Boolean(existingUser && existingUser.id === firebaseUser.uid);
-
-      const updated = {
-        ...currentUser,
-        ...(hasRealProfile ? existingUser : {}),
-        id: firebaseUser.uid,
-        name: (hasRealProfile ? existingUser?.name : '') || displayName,
-        email: (hasRealProfile ? existingUser?.email : '') || email,
-        profileCompletion: hasRealProfile ? (existingUser?.profileCompletion || 40) : 40,
-        termsAccepted: mode === 'signup' ? true : (existingUser?.termsAccepted ?? true),
-        termsVersion: existingUser?.termsVersion || '1.0',
-        termsAcceptedAt: existingUser?.termsAcceptedAt || new Date().toISOString()
-      };
-
-      setCurrentUser(resolveWallet(updated));
-      try {
-        await apiService.updateCurrentUser(updated);
-      } catch (apiErr) {
-        console.warn('Google auth profile sync notice:', apiErr);
-      }
-
-      if (mode === 'signup' && result.isNewUser) {
-        showToast('Google account connected successfully! ✨');
-        setCurrentView('profile-build-choice');
-      } else {
-        showToast(`Welcome${displayName ? `, ${displayName}` : ''}! ✨`);
-        setCurrentView('home');
-        setActiveTab('home');
-        openDiscountModal();
-        registerForPushNotifications().catch(() => {});
-      }
-
+      await authService.signInWithGoogle(mode);
       return true;
     } catch (err: any) {
       console.error('Google authentication error:', err);
-      showToast(err?.code === 'auth/popup-closed-by-user' ? 'Google sign-in was cancelled.' : 'Google sign-in failed. Please try again.');
+      showToast('Google sign-in failed. Please try again.');
       return false;
     } finally {
       setIsLoading(false);

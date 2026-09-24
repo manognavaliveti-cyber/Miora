@@ -10,7 +10,7 @@ export const EditProfilePage: React.FC = () => {
   const { currentUser, updateUserProfile, setCurrentView } = useApp();
 
   const [name, setName] = useState(currentUser.name);
-  const [age, setAge] = useState(currentUser.age);
+  const [age, setAge] = useState(currentUser.age > 0 ? String(currentUser.age) : '');
   const [location, setLocation] = useState(currentUser.location);
   const [bio, setBio] = useState(currentUser.bio);
   const [relationshipIntent, setRelationshipIntent] = useState<string>(
@@ -25,7 +25,7 @@ export const EditProfilePage: React.FC = () => {
     setIsSaving(true);
     await updateUserProfile({
       name: name.trim(),
-      age: Number(age),
+      age: age ? Number(age) : 0,
       location: location.trim(),
       bio: bio.trim(),
       relationshipIntent: relationshipIntent as any,
@@ -131,7 +131,8 @@ export const EditProfilePage: React.FC = () => {
               min={18}
               max={99}
               value={age}
-              onChange={(e) => setAge(Number(e.target.value))}
+              onChange={(e) => setAge(e.target.value)}
+              placeholder="Enter your age"
               required
             />
           </div>

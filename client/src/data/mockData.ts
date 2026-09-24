@@ -83,7 +83,7 @@ export const INITIAL_CURRENT_USER: CurrentUser = {
   id: 'user_me',
   name: 'MIORA User',
   email: '',
-  age: 18,
+  age: 0,
   gender: 'prefer-not-to-say',
   location: '',
   bio: '',

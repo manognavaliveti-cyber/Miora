@@ -379,8 +379,7 @@ export const GamePlayModal: React.FC = () => {
                 justifyContent: 'center',
                 fontSize: '3rem',
                 margin: '0 auto 16px auto',
-                boxShadow: 'var(--shadow-berry-glow)',
-                animation: 'bounceIn 0.5s ease'
+                boxShadow: 'var(--shadow-berry-glow)'
               }}
             >
               🏆

@@ -179,7 +179,7 @@ export const WalletPage: React.FC = () => {
             }}
           >
             <Plus size={16} />
-            <span>Pay ₹79 with Razorpay</span>
+            <span>Add Money / Recharge</span>
           </button>
         </div>
 
@@ -427,7 +427,7 @@ export const WalletPage: React.FC = () => {
                   justifyContent: 'space-between'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0, flex: 1, marginRight: '12px' }}>
                   <div
                     style={{
                       width: '42px',
@@ -437,23 +437,42 @@ export const WalletPage: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.3rem'
+                      fontSize: '1.3rem',
+                      flexShrink: 0
                     }}
                   >
                     {txn.icon || '💳'}
                   </div>
 
-                  <div>
-                    <div style={{ fontSize: '0.94rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                  <div style={{ minWidth: 0, flex: 1, overflow: 'hidden' }}>
+                    <div
+                      style={{
+                        fontSize: '0.94rem',
+                        fontWeight: 800,
+                        color: 'var(--text-primary)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
                       {txn.description}
                     </div>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    <span
+                      style={{
+                        fontSize: '0.78rem',
+                        color: 'var(--text-muted)',
+                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
                       {txn.timestamp} {txn.relatedUser && `• with ${txn.relatedUser}`}
                     </span>
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <span
                     style={{
                       fontSize: '1.15rem',

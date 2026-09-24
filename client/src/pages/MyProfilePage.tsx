@@ -91,7 +91,7 @@ export const MyProfilePage: React.FC = () => {
                   margin: 0
                 }}
               >
-                {currentUser.name}, {currentUser.age}
+                {currentUser.name}{currentUser.age > 0 ? `, ${currentUser.age}` : ''}
               </h2>
               <span
                 style={{
