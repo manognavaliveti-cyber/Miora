@@ -736,7 +736,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isVipDiscountModalOpen, setIsVipDiscountModalOpen] = useState<boolean>(false);
   const homeVipShownRef = useRef(false);
 
-  // The two offer pop-ups (VIP ₹999, then Premium ₹379) are shown only ONCE per login.
+  // The two offer pop-ups (VIP ₹999, then Premium ₹345) are shown only ONCE per login.
   // The flag lives in sessionStorage so it also survives page reloads / restored browser tabs,
   // and it is cleared on logout so the next login shows them again (once).
   const OFFERS_SEEN_KEY = 'miora_login_offers_seen';
@@ -1629,7 +1629,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } else if (afterSignup === 'skip') {
         setActiveTab('home');
         setCurrentView('home');
-        // Show the VIP offer first; the offer component can then continue to the ₹379 offer.
+        // Show the VIP offer first; the offer component can then continue to the ₹345 offer.
         openDiscountModal();
       } else {
         // Build Your Profile opens the first of the four profile-building screens.

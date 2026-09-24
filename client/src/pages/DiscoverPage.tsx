@@ -41,7 +41,7 @@ export const DiscoverPage: React.FC = () => {
   // Filter profiles according to the Discovery Filters the user has applied
   const filteredProfiles = profiles.filter((p) => {
     if (advancedFilters.verifiedOnly && !p.verified) return false;
-    if (p.distanceKm > (advancedFilters.maxDistanceKm || 50)) return false;
+    if ((p.distanceKm ?? 0) > (advancedFilters.maxDistanceKm || 50)) return false;
     if (p.age < (advancedFilters.minAge ?? 18) || p.age > (advancedFilters.maxAge ?? 99)) return false;
     if (p.compatibility < (advancedFilters.minCompatibility || 0)) return false;
     if (advancedFilters.relationshipIntent && p.relationshipIntent !== advancedFilters.relationshipIntent) return false;

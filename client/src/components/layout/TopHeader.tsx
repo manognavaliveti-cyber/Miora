@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { ChevronLeft, SlidersHorizontal, Settings, Search, CreditCard } from 'lucide-react';
+import { ChevronLeft, SlidersHorizontal, Settings, Search } from 'lucide-react';
 import { MioraLogo } from '../common/MioraLogo';
 
 interface TopHeaderProps {
@@ -52,9 +52,8 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: 'rgba(255, 255, 255, 0.96)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid #F4C5CF',
+        background: 'linear-gradient(135deg, #7D1730 0%, #A91E45 100%)',
+        boxShadow: '0 4px 18px rgba(125, 23, 48, 0.25)',
         position: 'sticky',
         top: 0,
         zIndex: 30,
@@ -70,7 +69,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               style={{
                 fontSize: '1.22rem',
                 fontWeight: 900,
-                color: '#261D20',
+                color: '#FFFFFF',
                 margin: 0,
                 whiteSpace: 'nowrap',
                 letterSpacing: '-0.02em'
@@ -86,25 +85,26 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              background: '#FFFFFF',
-              border: '1.5px solid #F4C5CF',
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#7D1730',
+              color: '#FFFFFF',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             }}
             aria-label="Back"
           >
-            <ChevronLeft size={19} />
+            <ChevronLeft size={19} color="#FFFFFF" />
           </button>
         ) : (
           <div
             onClick={() => navigateToTab('home')}
             style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <MioraLogo size={24} showTagline={false} showWordmark={true} vertical={false} />
+            <MioraLogo size={24} showTagline={false} showWordmark={true} vertical={false} colorScheme="light" />
           </div>
         )}
       </div>
@@ -116,7 +116,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             style={{
               fontSize: '1.1rem',
               fontWeight: 800,
-              color: '#261D20',
+              color: '#FFFFFF',
               margin: 0,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -137,19 +137,20 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '5px',
-            background: 'linear-gradient(135deg, #FBEDEF 0%, #FCE4E8 100%)',
-            border: '1.5px solid #F4C5CF',
-            padding: '5px 10px',
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.35)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            padding: '5px 11px',
             borderRadius: '9999px',
-            color: '#7D1730',
-            fontSize: '0.8rem',
+            color: '#FFFFFF',
+            fontSize: '0.82rem',
             fontWeight: 800,
             cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(125, 23, 48, 0.08)'
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
           }}
           title="MIORA Wallet & Plans"
         >
-          <CreditCard size={14} color="#A91E45" />
           <span>₹{walletBal.toFixed(0)}</span>
         </button>
 
@@ -160,19 +161,20 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             width: '34px',
             height: '34px',
             borderRadius: '50%',
-            background: '#FFFFFF',
-            border: '1.5px solid #F4C5CF',
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.35)',
+            backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#261D20',
+            color: '#FFFFFF',
             cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+            boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
           }}
           title="Search"
           aria-label="Search"
         >
-          <Search size={15} />
+          <Search size={15} color="#FFFFFF" />
         </button>
 
         {/* Preferences / Filter Button on Home */}
@@ -183,19 +185,20 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               width: '34px',
               height: '34px',
               borderRadius: '50%',
-              background: '#FFFFFF',
-              border: '1.5px solid #F4C5CF',
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.35)',
+              backdropFilter: 'blur(8px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#A91E45',
+              color: '#FFFFFF',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+              boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
             }}
             title="Dating Preferences & Filters"
             aria-label="Preferences"
           >
-            <SlidersHorizontal size={15} />
+            <SlidersHorizontal size={15} color="#FFFFFF" />
           </button>
         )}
 
@@ -207,19 +210,20 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
               width: '34px',
               height: '34px',
               borderRadius: '50%',
-              background: '#FFFFFF',
-              border: '1.5px solid #F4C5CF',
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.35)',
+              backdropFilter: 'blur(8px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#261D20',
+              color: '#FFFFFF',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+              boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
             }}
             title="Settings"
             aria-label="Settings"
           >
-            <Settings size={15} />
+            <Settings size={15} color="#FFFFFF" />
           </button>
         )}
       </div>

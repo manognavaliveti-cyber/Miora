@@ -49,9 +49,10 @@ const TAB_META: Record<
   }
 };
 
+// Miora subscription prices (28 days): PRO ₹499 -> ₹345, VIP ₹999 -> ₹789
 const UPSELL = [
-  { tab: 'pro' as const, label: 'PRO Membership', regular: 499, offer: 379, icon: <Zap size={14} />, badge: 'Save 24%' },
-  { tab: 'vip' as const, label: 'VIP Unlimited', regular: 999, offer: 789, icon: <Crown size={14} />, badge: 'Save 21%' }
+  { tab: 'pro' as const, label: 'MIORA PRO', regular: 499, offer: 345, icon: <Zap size={15} /> },
+  { tab: 'vip' as const, label: 'MIORA VIP', regular: 999, offer: 789, icon: <Crown size={15} /> }
 ];
 
 export const BoostModal: React.FC = () => {

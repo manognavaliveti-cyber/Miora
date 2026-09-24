@@ -7,7 +7,6 @@ import {
   User,
   Gamepad2,
   Coins,
-  CreditCard,
   Wallet,
   Crown,
   Zap,
@@ -245,9 +244,8 @@ export const DesktopNav: React.FC = () => {
           }}
           title="Open MIORA Money Wallet"
         >
-          <CreditCard size={16} color="var(--gold-deep)" />
           <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--gold-deep)', whiteSpace: 'nowrap', lineHeight: 1 }}>
-            Wallet ₹{(currentUser.walletBalance || 0).toFixed(2)}
+            ₹{(currentUser.walletBalance || 0).toFixed(0)}
           </span>
         </div>
 

@@ -71,7 +71,7 @@ export const WalletPage: React.FC = () => {
                 lineHeight: 1.15
               }}
             >
-              MIORA Wallet <span style={{ color: 'var(--berry-primary)' }}>💳</span>
+              MIORA Wallet
             </h1>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
               Manage your ₹ Real-Money Wallet balance for in-app chat & calling sessions.
@@ -140,21 +140,6 @@ export const WalletPage: React.FC = () => {
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                 In-app balance for MIORA chat & call sessions.
               </p>
-            </div>
-
-            <div
-              style={{
-                width: '54px',
-                height: '54px',
-                borderRadius: '18px',
-                background: 'var(--gold-gradient-subtle)',
-                border: '1.5px solid var(--border-gold)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <CreditCard size={26} color="var(--gold-deep)" />
             </div>
           </div>
 
@@ -289,7 +274,7 @@ export const WalletPage: React.FC = () => {
               ₹499
             </span>
             <span style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--gold-deep)' }}>
-              ₹379
+              ₹345
             </span>
           </div>
 

@@ -17,7 +17,7 @@ export const DEFAULT_PRICING: MioraPricingSettings = {
   chatPerMinuteInr: 3,
   audioCallPerMinuteCoins: 20,
   videoCallPerMinuteCoins: 40,
-  proPriceInr: 379,
+  proPriceInr: 345,
   vipPriceInr: 789,
   gameChargeCoins: 39,
   normalGameChargeCoins: 39,

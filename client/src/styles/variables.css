@@ -1,9 +1,9 @@
 :root {
-  /* Brand Luxury Palette: Soft Pink, Blush, Rose Petal & Champagne Gold */
-  --bg-warm-ivory: #F7DADE;
-  --bg-cream: #F8D8DC;
+  /* Brand Luxury Palette: Pure White Background, Soft Pink & Cherry Accents */
+  --bg-warm-ivory: #FFFFFF;
+  --bg-cream: #FFFFFF;
   --bg-soft-blush: #FCE4E8;
-  --bg-blush-subtle: #FDF0F3;
+  --bg-blush-subtle: #FFF8FA;
   --bg-rose-gray: #F4CED3;
 
   /* Surfaces & Clay Cards */
@@ -41,7 +41,7 @@
   --primary-gradient: linear-gradient(135deg, #A82046 0%, #8B1E3F 50%, #681028 100%);
   --primary-gradient-hover: linear-gradient(135deg, #B8254E 0%, #9B1A3B 50%, #570C20 100%);
   --primary-gradient-subtle: linear-gradient(135deg, rgba(139, 30, 63, 0.08) 0%, rgba(251, 113, 133, 0.04) 100%);
-  --ambient-bg-gradient: radial-gradient(circle at 50% 30%, #FCE4E8 0%, #F8D8DC 60%, #F4CED3 100%);
+  --ambient-bg-gradient: #FFFFFF;
   --vibe-card-gradient: linear-gradient(145deg, #8B1E3F 0%, #6B1426 50%, #4D0C1A 100%);
 
   /* Action Button Accents */

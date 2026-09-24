@@ -19,6 +19,8 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 
+import { VerifiedBadge } from '../components/common/VerifiedBadge';
+
 export const MyProfilePage: React.FC = () => {
   const {
     currentUser,
@@ -88,10 +90,14 @@ export const MyProfilePage: React.FC = () => {
                   fontSize: '1.55rem',
                   fontWeight: 800,
                   color: '#1F2937',
-                  margin: 0
+                  margin: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
                 }}
               >
-                {currentUser.name}{currentUser.age > 0 ? `, ${currentUser.age}` : ''}
+                <span>{currentUser.name}{currentUser.age > 0 ? `, ${currentUser.age}` : ''}</span>
+                {(currentUser.verified || currentUser.isVerified) && <VerifiedBadge size={20} />}
               </h2>
               <span
                 style={{
@@ -190,33 +196,14 @@ export const MyProfilePage: React.FC = () => {
           gap: '16px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '16px',
-              background: 'rgba(212, 175, 55, 0.15)',
-              border: '1.5px solid #D4AF37',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#9A7B2C',
-              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.2)'
-            }}
-          >
-            <Wallet size={26} />
-          </div>
-
-          <div>
-            <span style={{ fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9A7B2C' }}>
-              Wallet
-            </span>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '2px' }}>
-              <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#1F161A', margin: 0 }}>
-                ₹{(currentUser.walletBalance || 0).toFixed(2)}
-              </h3>
-            </div>
+        <div>
+          <span style={{ fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9A7B2C' }}>
+            Wallet Balance
+          </span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '2px' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#1F161A', margin: 0 }}>
+              ₹{(currentUser.walletBalance || 0).toFixed(2)}
+            </h3>
           </div>
         </div>
 

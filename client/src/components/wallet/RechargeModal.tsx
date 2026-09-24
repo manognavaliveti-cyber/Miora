@@ -145,21 +145,6 @@ export const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, r
         {paymentStep === 'select' && (
           <>
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <div
-                style={{
-                  width: '56px',
-                  height: '56px',
-                  borderRadius: '20px',
-                  background: 'var(--gold-gradient-subtle)',
-                  border: '1.5px solid var(--border-gold)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 10px auto'
-                }}
-              >
-                <CreditCard size={28} color="var(--gold-deep)" />
-              </div>
               <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.55rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                 MIORA ₹ Wallet Topup
               </h3>

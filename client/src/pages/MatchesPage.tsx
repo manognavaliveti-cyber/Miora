@@ -15,6 +15,7 @@ import {
   Bell
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
+import { VerifiedBadge } from '../components/common/VerifiedBadge';
 
 export const MatchesPage: React.FC = () => {
   const {
@@ -265,10 +266,13 @@ export const MatchesPage: React.FC = () => {
                         fontSize: '0.82rem',
                         fontWeight: 800,
                         color: 'var(--text-primary)',
-                        display: 'block'
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '2px'
                       }}
                     >
-                      {match.profile.name}
+                      <span>{match.profile.name}</span>
+                      {(match.profile.verified || match.profile.isVerified) && <VerifiedBadge size={14} />}
                     </span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--gold-deep)', fontWeight: 700 }}>
                       {match.profile.compatibility}% Vibe
@@ -385,10 +389,14 @@ export const MatchesPage: React.FC = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             minWidth: 0,
-                            margin: 0
+                            margin: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          {match.profile.name}, {match.profile.age}
+                          <span>{match.profile.name}, {match.profile.age}</span>
+                          {(match.profile.verified || match.profile.isVerified) && <VerifiedBadge size={16} />}
                         </h3>
                         <span
                           style={{

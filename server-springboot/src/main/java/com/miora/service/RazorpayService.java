@@ -116,9 +116,10 @@ public class RazorpayService {
             case "gold":
             case "pro":
             case "premium_379":
+            case "premium_345":
             case "premium_promo":
-                // MIORA Gold: ₹379/month, no wallet-credit bonus (matches pricing.ts: bonusCoins 0)
-                return new CoinPackage("gold", "GOLD_SUBSCRIPTION", 0.0, 0.0, 379, 499, "MIORA Gold", "⚡", true, false);
+                // MIORA Gold / PRO: ₹345/month, ₹524 wallet credit (₹499 + ₹25 bonus)
+                return new CoinPackage("gold", "GOLD_SUBSCRIPTION", 524.0, 25.0, 345, 499, "MIORA Gold", "⚡", true, false);
             case "vip":
                 // MIORA VIP Royalty: ₹999/month, +1500 wallet-credit bonus (matches pricing.ts: bonusCoins 1500)
                 return new CoinPackage("vip", "VIP_SUBSCRIPTION", 1500.0, 1500.0, 999, 999, "MIORA VIP Royalty", "👑", false, true);
