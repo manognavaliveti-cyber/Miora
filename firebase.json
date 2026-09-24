@@ -17,14 +17,7 @@
         ]
       }
     ],
-        "rewrites": [
-      {
-        "source": "/api/**",
-        "run": {
-          "serviceId": "flipflex-api",
-          "region": "asia-south1"
-        }
-      },
+    "rewrites": [
       {
         "source": "**",
         "destination": "/index.html"
