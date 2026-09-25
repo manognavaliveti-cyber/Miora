@@ -37,7 +37,7 @@ public class User {
     @Builder.Default
     private Map<String, String> lifestyle = new HashMap<>();
     @Builder.Default
-    private Double walletBalance = 524.0;
+    private Double walletBalance = 0.0;
     @Builder.Default
     private Integer coinBalance = 0;
     @Builder.Default
@@ -111,6 +111,11 @@ public class User {
 
     // Push Notifications: Firebase Cloud Messaging device token (set by client after permission grant)
     private String fcmToken;
+
+    // Fields written by the realtimeUsers service to Firestore — declared here so
+    // Firestore's CustomClassMapper doesn't emit WARN on deserialization.
+    private String lastActiveAt;
+    private Boolean online;
 
     @Data
     @Builder

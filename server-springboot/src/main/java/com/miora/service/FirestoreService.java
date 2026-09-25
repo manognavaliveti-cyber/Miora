@@ -62,6 +62,21 @@ public class FirestoreService {
                 DocumentSnapshot doc = firestore.collection("users").document(effectiveId).get().get();
                 if (doc.exists()) {
                     user = doc.toObject(User.class);
+                    // Firestore stores numbers as Long by default. If walletBalance was written
+                    // as an integer (Long), the CustomClassMapper silently maps it as null on a
+                    // Double field, which would zero out the balance. Re-read it safely.
+                    if (user != null && user.getWalletBalance() == null) {
+                        Object rawWallet = doc.get("walletBalance");
+                        if (rawWallet instanceof Number) {
+                            user.setWalletBalance(((Number) rawWallet).doubleValue());
+                        }
+                    }
+                    if (user != null && user.getCoinBalance() == null) {
+                        Object rawCoins = doc.get("coinBalance");
+                        if (rawCoins instanceof Number) {
+                            user.setCoinBalance(((Number) rawCoins).intValue());
+                        }
+                    }
                 }
             } catch (Exception e) {
                 log.warn("Error fetching user from Firestore: {}", e.getMessage());
@@ -529,7 +544,7 @@ public class FirestoreService {
                         .allowAudioCalls("matches")
                         .allowVideoCalls("matches")
                         .build())
-                .walletBalance(524.0)
+                .walletBalance(0.0)
                 .coinBalance(0)
                 .talkTimeSecondsRemaining(480)
                 .isPremium(false)

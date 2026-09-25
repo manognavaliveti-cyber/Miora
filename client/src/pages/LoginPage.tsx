@@ -24,11 +24,15 @@ export const LoginPage: React.FC = () => {
     }
 
     setIsLoading(true);
-    const result = await login(email.trim(), password);
-    setIsLoading(false);
-
-    if (!result.success) {
-      setError(result.message || 'Invalid login credentials');
+    try {
+      const result = await login(email.trim(), password);
+      if (!result.success) {
+        setError(result.message || 'Invalid login credentials');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 

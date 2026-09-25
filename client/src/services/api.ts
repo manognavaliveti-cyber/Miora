@@ -81,10 +81,21 @@ class ApiService {
         headers['Authorization'] = `Bearer ${idToken}`;
       }
 
-      const res = await fetch(`${BASE_URL}/api${endpoint}`, {
-        ...options,
-        headers
-      });
+      // Abort after 10 seconds so a cold Cloud Run start or unreachable backend
+      // never leaves the UI stuck in a loading state forever.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      let res: Response;
+      try {
+        res = await fetch(`${BASE_URL}/api${endpoint}`, {
+          ...options,
+          headers,
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (!res.ok) {
         throw new Error(`API error: ${res.status} ${res.statusText}`);
