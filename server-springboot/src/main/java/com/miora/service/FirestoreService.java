@@ -2,7 +2,7 @@ package com.miora.service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.miora.model.*; import com.miora.model.Like;
+import com.miora.model.*;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.*; import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
