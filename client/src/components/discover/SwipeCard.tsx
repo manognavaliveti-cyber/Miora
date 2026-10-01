@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Profile } from '../../types';
-import { Heart, X, MapPin, Info } from 'lucide-react';
+import { Heart, X, MapPin } from 'lucide-react';
 import { VerifiedBadge } from '../common/VerifiedBadge';
 import { useApp } from '../../context/AppContext';
 import { calculateCompatibilityScore } from '../../utils/profileUtils';
@@ -547,46 +547,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               </div>
             )}
 
-            {/* Right: Details (i) Pill Button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenDetails();
-              }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                padding: '7px 18px',
-                borderRadius: '9999px',
-                background: 'rgba(255, 255, 255, 0.22)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1.5px solid rgba(255, 255, 255, 0.45)',
-                color: '#FFFFFF',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                letterSpacing: '0.01em',
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)',
-                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                lineHeight: 1,
-                outline: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)';
-                e.currentTarget.style.transform = 'scale(1.04)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.22)';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <span>Details</span>
-              <Info size={16} strokeWidth={2.4} style={{ flexShrink: 0 }} />
-            </button>
+
           </div>
         </div>
       </div>
