@@ -82,11 +82,11 @@ export const DesktopNav: React.FC = () => {
       }}
     >
       <div
-        className="app-container"
         style={{
+          width: '100%',
+          maxWidth: '100%',
           minHeight: 'auto',
-          paddingTop: '12px',
-          paddingBottom: '12px',
+          padding: '12px 24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

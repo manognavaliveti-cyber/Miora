@@ -25,7 +25,7 @@ export const MatchesPage: React.FC = () => {
         width: '100%',
         boxSizing: 'border-box',
         padding: '16px 16px 40px 16px',
-        background: '#FAF8F6',
+        background: '#FFFFFF',
         minHeight: '100vh',
         fontFamily: "system-ui, -apple-system, sans-serif",
         animation: 'fadeIn 0.25s ease-out forwards'

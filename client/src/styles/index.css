@@ -93,25 +93,16 @@ p, span, label, div {
 
 /* Main Adaptive Full Bleed Container */
 .app-container {
-  width: 100%;
-  max-width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   box-sizing: border-box;
   background: #FFFFFF !important;
-}
-
-/* Ultra Wide Desktop (1920px+) */
-@media (min-width: 1920px) {
-  .app-container {
-    width: 100%;
-    max-width: 1440px;
-    padding: 0 32px;
-  }
 }
 
 /* Ambient Layered Background Artwork */
