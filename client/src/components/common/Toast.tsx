@@ -1,9 +1,9 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const Toast: React.FC = () => {
-  const { toastMessage, showToast } = useApp();
+  const { toastMessage } = useApp();
 
   if (!toastMessage) return null;
 
@@ -13,7 +13,7 @@ export const Toast: React.FC = () => {
         @keyframes toastSlideDownFade {
           0% {
             opacity: 0;
-            transform: translate(-50%, -24px) scale(0.92);
+            transform: translate(-50%, -20px) scale(0.94);
           }
           100% {
             opacity: 1;
@@ -28,43 +28,55 @@ export const Toast: React.FC = () => {
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 999999,
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
-          gap: '12px',
-          padding: '12px 24px',
+          gap: '10px',
+          padding: '10px 20px',
           borderRadius: '9999px',
-          background: 'rgba(255, 255, 255, 0.92)',
+          background: 'rgba(255, 255, 255, 0.96)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1.5px solid rgba(244, 63, 94, 0.25)',
-          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(244, 63, 94, 0.16)',
+          boxShadow: '0 12px 36px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(244, 63, 94, 0.15)',
           color: '#1F161A',
-          fontSize: '0.88rem',
+          fontSize: '0.86rem',
           fontWeight: 700,
-          animation: 'toastSlideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-          maxWidth: 'min(90vw, 460px)',
+          animation: 'toastSlideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          maxWidth: 'min(90vw, 440px)',
           width: 'max-content',
           boxSizing: 'border-box',
           pointerEvents: 'auto',
-          lineHeight: 1.35
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
         }}
       >
         <div
           style={{
-            width: '28px',
-            height: '28px',
+            width: '26px',
+            height: '26px',
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #F43F5E 0%, #BE123C 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)'
+            boxShadow: '0 3px 10px rgba(244, 63, 94, 0.3)'
           }}
         >
-          <Sparkles size={15} color="#FFFFFF" fill="#FFFFFF" />
+          <Sparkles size={14} color="#FFFFFF" fill="#FFFFFF" />
         </div>
-        <span style={{ flex: 1, letterSpacing: '0.01em', color: '#1F161A' }}>{toastMessage}</span>
+        <span
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            color: '#1F161A',
+            letterSpacing: '0.01em',
+            display: 'inline-block'
+          }}
+        >
+          {toastMessage}
+        </span>
       </div>
     </>
   );

@@ -274,9 +274,9 @@ export const DiscoverPage: React.FC = () => {
             position: 'fixed',
             inset: 0,
             zIndex: 10001,
-            background: 'rgba(12, 8, 11, 0.82)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -288,12 +288,12 @@ export const DiscoverPage: React.FC = () => {
             style={{
               width: '100%',
               maxWidth: '360px',
-              background: 'linear-gradient(145deg, #1F1018 0%, #0F080C 100%)',
-              border: '1.5px solid rgba(244, 63, 94, 0.35)',
+              background: '#FFFFFF',
+              border: '1.5px solid rgba(244, 63, 94, 0.25)',
               borderRadius: '28px',
               padding: '28px 24px',
               textAlign: 'center',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(244, 63, 94, 0.25)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.18), 0 0 30px rgba(244, 63, 94, 0.15)',
               position: 'relative'
             }}
           >
@@ -303,9 +303,9 @@ export const DiscoverPage: React.FC = () => {
                 position: 'absolute',
                 top: '16px',
                 right: '16px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'rgba(244, 63, 94, 0.08)',
                 border: 'none',
-                color: '#FFFFFF',
+                color: '#8F7B85',
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
@@ -328,7 +328,7 @@ export const DiscoverPage: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 16px auto',
-                boxShadow: '0 8px 24px rgba(244, 63, 94, 0.5)',
+                boxShadow: '0 8px 24px rgba(244, 63, 94, 0.35)',
                 animation: 'heartBeat 1.4s infinite ease-in-out'
               }}
             >
@@ -340,18 +340,18 @@ export const DiscoverPage: React.FC = () => {
                 fontSize: '0.75rem',
                 fontWeight: 800,
                 letterSpacing: '0.12em',
-                color: '#FDA4AF',
+                color: '#BE123C',
                 textTransform: 'uppercase'
               }}
             >
               ✨ High Vibe Match!
             </span>
 
-            <h3 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#FFFFFF', margin: '6px 0 4px 0' }}>
+            <h3 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#1F161A', margin: '6px 0 4px 0' }}>
               {topProfileComp.score}% Vibe Match
             </h3>
 
-            <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.4, margin: '8px 0 20px 0' }}>
+            <p style={{ fontSize: '0.9rem', color: '#5C4751', lineHeight: 1.4, margin: '8px 0 20px 0' }}>
               You & <strong style={{ color: '#F43F5E' }}>{topProfile.name}</strong> are seriously on the same wavelength.
             </p>
 
