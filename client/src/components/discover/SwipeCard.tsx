@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Profile } from '../../types';
-import { Heart, X, MapPin } from 'lucide-react';
+import { Heart, X, MapPin, Info } from 'lucide-react';
 import { VerifiedBadge } from '../common/VerifiedBadge';
+import { useApp } from '../../context/AppContext';
+import { calculateCompatibilityScore } from '../../utils/profileUtils';
 
 interface SwipeCardProps {
   profile: Profile;
@@ -118,7 +120,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
   // City only (e.g. "Hyderabad, India" -> "Hyderabad")
   const city = (profile.location || '').split(',')[0].trim();
-  const matchPercent = Math.max(0, Math.min(100, Math.round(profile.compatibility || 0)));
+  const { currentUser } = useApp();
+  const comp = calculateCompatibilityScore(currentUser, profile);
+  const matchPercent = comp.score;
   const ringOffset = RING_CIRCUMFERENCE * (1 - matchPercent / 100);
   const gradId = `vibeGrad-${profile.id}`;
 
@@ -152,7 +156,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         width: '100%',
         height: '100%',
         borderRadius: '32px',
-        background: '#1A0E14',
+        background: '#FFFFFF',
         transform: cardTransform,
         zIndex: zIndexVal,
         filter: brightnessVal,
@@ -203,56 +207,60 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         {/* Swipe Overlay Stamps */}
         {isTopCard && (
           <>
-            {/* LIKE Stamp */}
+            {/* LIKE Stamp (Appears on top-right during right swipe) */}
             <div
               style={{
                 position: 'absolute',
-                top: '40px',
-                left: '24px',
+                top: '36px',
+                right: '24px',
                 border: '3.5px solid #10B981',
                 color: '#10B981',
                 borderRadius: '16px',
-                padding: '6px 18px',
-                fontSize: '1.4rem',
+                padding: '8px 22px',
+                fontSize: '1.5rem',
                 fontWeight: 900,
-                transform: 'rotate(-14deg)',
+                transform: 'rotate(12deg)',
                 opacity: likeOpacity,
                 pointerEvents: 'none',
-                zIndex: 10,
-                background: 'rgba(16, 185, 129, 0.12)',
-                backdropFilter: 'blur(6px)',
+                zIndex: 20,
+                background: 'rgba(16, 185, 129, 0.18)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '8px',
+                boxShadow: '0 8px 24px rgba(16, 185, 129, 0.3)'
               }}
             >
-              <Heart size={22} fill="#10B981" /> LIKE
+              <Heart size={24} fill="#10B981" /> LIKE
             </div>
 
-            {/* PASS Stamp */}
+            {/* PASS / CROSS Stamp (Appears on top-left during left swipe) */}
             <div
               style={{
                 position: 'absolute',
-                top: '40px',
-                right: '24px',
+                top: '36px',
+                left: '24px',
                 border: '3.5px solid #F43F5E',
                 color: '#F43F5E',
                 borderRadius: '16px',
-                padding: '6px 18px',
-                fontSize: '1.4rem',
+                padding: '8px 22px',
+                fontSize: '1.5rem',
                 fontWeight: 900,
-                transform: 'rotate(14deg)',
+                transform: 'rotate(-12deg)',
                 opacity: passOpacity,
                 pointerEvents: 'none',
-                zIndex: 10,
-                background: 'rgba(244, 63, 94, 0.12)',
-                backdropFilter: 'blur(6px)',
+                zIndex: 20,
+                background: 'rgba(244, 63, 94, 0.18)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '8px',
+                boxShadow: '0 8px 24px rgba(244, 63, 94, 0.3)'
               }}
             >
-              <X size={22} strokeWidth={3} /> PASS
+              <X size={26} strokeWidth={3} /> PASS
             </div>
           </>
         )}
@@ -361,8 +369,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             bottom: 0,
             left: 0,
             right: 0,
-            padding: `40px ${CARD_PAD}px ${CARD_PAD}px ${CARD_PAD}px`,
-            background: 'linear-gradient(to top, rgba(16, 6, 12, 0.9) 0%, rgba(16, 6, 12, 0.5) 58%, rgba(0, 0, 0, 0) 100%)',
+            padding: `32px ${CARD_PAD}px ${CARD_PAD}px ${CARD_PAD}px`,
+            background: 'linear-gradient(to top, rgba(16, 6, 12, 0.92) 0%, rgba(16, 6, 12, 0.55) 60%, rgba(0, 0, 0, 0) 100%)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
@@ -373,7 +381,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Name, Age & Verified Badge */}
           <h2
             style={{
-              fontSize: '1.7rem',
+              fontSize: '1.75rem',
               fontWeight: 900,
               color: '#FFFFFF',
               letterSpacing: '-0.02em',
@@ -382,19 +390,19 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
-              gap: '4px'
+              gap: '6px'
             }}
           >
             <span>{profile.name}, {profile.age}</span>
-            {(profile.verified || profile.isVerified) && <VerifiedBadge size={20} />}
+            {(profile.verified || profile.isVerified) && <VerifiedBadge size={22} />}
           </h2>
 
-          {/* Profession */}
+          {/* Profession (if available) */}
           {profile.occupation && (
             <div
               style={{
-                fontSize: '0.85rem',
-                color: 'rgba(255, 255, 255, 0.88)',
+                fontSize: '0.88rem',
+                color: 'rgba(255, 255, 255, 0.85)',
                 fontWeight: 500,
                 margin: '3px 0 0 0',
                 lineHeight: 1.2
@@ -404,106 +412,181 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             </div>
           )}
 
-          {/* Vibe Match: pastel ring + glass pill */}
+          {/* Bottom Bar Row: Vibe Match Pill + Details (i) Button */}
           <div
             style={{
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '9px',
-              marginTop: '12px',
-              padding: '4px 15px 4px 4px',
-              borderRadius: '9999px',
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 214, 232, 0.14) 55%, rgba(226, 214, 255, 0.16) 100%)',
-              backdropFilter: 'blur(18px) saturate(160%)',
-              WebkitBackdropFilter: 'blur(18px) saturate(160%)',
-              border: '1px solid rgba(255, 255, 255, 0.45)',
-              boxShadow: '0 6px 18px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+              justifyContent: 'space-between',
+              width: '100%',
+              marginTop: '12px'
             }}
           >
-            {/* Percentage inside a pastel progress circle */}
-            <div
-              style={{
-                position: 'relative',
-                width: `${RING_SIZE}px`,
-                height: `${RING_SIZE}px`,
-                flexShrink: 0
-              }}
-            >
-              <svg
-                width={RING_SIZE}
-                height={RING_SIZE}
-                viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-                style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#FFB6D2" />
-                    <stop offset="55%" stopColor="#E7B8FF" />
-                    <stop offset="100%" stopColor="#FFD2B8" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
-                  r={RING_RADIUS}
-                  fill="none"
-                  stroke="rgba(255, 255, 255, 0.35)"
-                  strokeWidth={RING_STROKE}
-                />
-                <circle
-                  className="vibe-ring-progress"
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
-                  r={RING_RADIUS}
-                  fill="none"
-                  stroke={`url(#${gradId})`}
-                  strokeWidth={RING_STROKE}
-                  strokeLinecap="round"
-                  strokeDasharray={RING_CIRCUMFERENCE}
-                  strokeDashoffset={ringOffset}
-                  style={
-                    {
-                      '--ring-c': RING_CIRCUMFERENCE,
-                      '--ring-o': ringOffset
-                    } as React.CSSProperties
-                  }
-                />
-              </svg>
+            {/* Left: Vibe Match ring or Incomplete status */}
+            {comp.isIncomplete ? (
               <div
                 style={{
-                  position: 'absolute',
-                  inset: `${RING_STROKE + 1}px`,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #FFE6F0 0%, #F3E4FF 100%)',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#9D174D',
-                  fontSize: matchPercent >= 100 ? '0.54rem' : '0.62rem',
-                  fontWeight: 800,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1,
-                  boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.9)'
+                  gap: '6px',
+                  padding: '6px 14px',
+                  borderRadius: '9999px',
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.02em',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.16)'
                 }}
               >
-                {matchPercent}%
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
+                <span>Profile incomplete</span>
               </div>
-            </div>
+            ) : (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '4px 14px 4px 4px',
+                  borderRadius: '9999px',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 214, 232, 0.12) 55%, rgba(226, 214, 255, 0.14) 100%)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.16)'
+                }}
+              >
+                {/* Percentage inside a pastel progress circle */}
+                <div
+                  style={{
+                    position: 'relative',
+                    width: `${RING_SIZE}px`,
+                    height: `${RING_SIZE}px`,
+                    flexShrink: 0
+                  }}
+                >
+                  <svg
+                    width={RING_SIZE}
+                    height={RING_SIZE}
+                    viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+                    style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#FFB6D2" />
+                        <stop offset="55%" stopColor="#E7B8FF" />
+                        <stop offset="100%" stopColor="#FFD2B8" />
+                      </linearGradient>
+                    </defs>
+                    <circle
+                      cx={RING_SIZE / 2}
+                      cy={RING_SIZE / 2}
+                      r={RING_RADIUS}
+                      fill="none"
+                      stroke="rgba(255, 255, 255, 0.35)"
+                      strokeWidth={RING_STROKE}
+                    />
+                    <circle
+                      className="vibe-ring-progress"
+                      cx={RING_SIZE / 2}
+                      cy={RING_SIZE / 2}
+                      r={RING_RADIUS}
+                      fill="none"
+                      stroke={`url(#${gradId})`}
+                      strokeWidth={RING_STROKE}
+                      strokeLinecap="round"
+                      strokeDasharray={RING_CIRCUMFERENCE}
+                      strokeDashoffset={ringOffset}
+                      style={
+                        {
+                          '--ring-c': RING_CIRCUMFERENCE,
+                          '--ring-o': ringOffset
+                        } as React.CSSProperties
+                      }
+                    />
+                  </svg>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: `${RING_STROKE + 1}px`,
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #FFE6F0 0%, #F3E4FF 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#9D174D',
+                      fontSize: matchPercent >= 100 ? '0.54rem' : '0.62rem',
+                      fontWeight: 800,
+                      letterSpacing: '-0.02em',
+                      lineHeight: 1,
+                      boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.9)'
+                    }}
+                  >
+                    {matchPercent}%
+                  </div>
+                </div>
 
-            <span
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.08em',
+                    color: '#FFF1F7',
+                    textTransform: 'uppercase',
+                    textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
+                    lineHeight: 1
+                  }}
+                >
+                  Vibe Match
+                </span>
+              </div>
+            )}
+
+            {/* Right: Details (i) Pill Button */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenDetails();
+              }}
               style={{
-                fontSize: '0.7rem',
-                fontWeight: 800,
-                letterSpacing: '0.09em',
-                color: '#FFF1F7',
-                textTransform: 'uppercase',
-                textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
-                lineHeight: 1
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '7px 18px',
+                borderRadius: '9999px',
+                background: 'rgba(255, 255, 255, 0.22)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1.5px solid rgba(255, 255, 255, 0.45)',
+                color: '#FFFFFF',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                letterSpacing: '0.01em',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                lineHeight: 1,
+                outline: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)';
+                e.currentTarget.style.transform = 'scale(1.04)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.22)';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
-              Vibe Match
-            </span>
+              <span>Details</span>
+              <Info size={16} strokeWidth={2.4} style={{ flexShrink: 0 }} />
+            </button>
           </div>
         </div>
       </div>

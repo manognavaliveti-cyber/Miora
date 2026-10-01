@@ -23,9 +23,10 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     setIsLoading(true);
     try {
-      const result = await login(email.trim(), password);
+      const result = await login(normalizedEmail, password);
       if (!result.success) {
         setError(result.message || 'Invalid login credentials');
       }
@@ -37,12 +38,13 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleForgotPassword = async () => {
-    if (!email.trim()) {
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
       setError('Enter your email address above, then tap "Forgot Password?"');
       return;
     }
     try {
-      await authService.sendPasswordReset(email.trim());
+      await authService.sendPasswordReset(normalizedEmail);
       setError('');
       showToast('Password reset email sent. Please check your inbox (and spam folder) ✨');
     } catch (err: any) {

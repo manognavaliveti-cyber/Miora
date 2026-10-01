@@ -1,6 +1,5 @@
 package com.miora.service;
 
-import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.miora.model.*;
 import jakarta.annotation.PostConstruct;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class FirestoreService {

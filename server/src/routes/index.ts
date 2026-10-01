@@ -4,7 +4,7 @@ import { likeProfile, passProfile, getMatches } from '../controllers/matchContro
 import { getMessages, sendMessage, deleteMessage } from '../controllers/chatController';
 import { getCurrentUser, updateCurrentUser } from '../controllers/userController';
 import { blockUser, unblockUser, getBlockedUsers, reportUser } from '../controllers/safetyController';
-import { createPaymentOrder, verifyPayment } from '../controllers/paymentController';
+import { createPaymentOrder, verifyPayment, handleRazorpayWebhook } from '../controllers/paymentController';
 import {
   getDashboard,
   getUsers,
@@ -51,16 +51,16 @@ router.get('/profiles', getProfiles);
 router.get('/profiles/:id', getProfileById);
 
 // Likes & Passes
-router.post('/likes', likeProfile);
-router.post('/passes', passProfile);
+router.post('/likes', requireAuth, likeProfile);
+router.post('/passes', requireAuth, passProfile);
 
 // Matches
-router.get('/matches', getMatches);
+router.get('/matches', requireAuth, getMatches);
 
 // Messages
-router.get('/messages/:matchId', getMessages);
-router.post('/messages', sendMessage);
-router.delete('/messages/:matchId/:messageId', deleteMessage);
+router.get('/messages/:matchId', requireAuth, getMessages);
+router.post('/messages', requireAuth, sendMessage);
+router.delete('/messages/:matchId/:messageId', requireAuth, deleteMessage);
 
 // User Profile
 router.get('/user/me', getCurrentUser);
@@ -80,6 +80,8 @@ router.post('/wallet/payment/create-order', requireAuth, createPaymentOrder);
 router.post('/create-order', requireAuth, createPaymentOrder);
 router.post('/wallet/payment/verify', requireAuth, verifyPayment);
 router.post('/verify-payment', requireAuth, verifyPayment);
+router.post('/razorpay/webhook', handleRazorpayWebhook);
+router.post('/wallet/payment/webhook', handleRazorpayWebhook);
 
 // Admin Panel — every route requires a Firebase ID token with the
 // `admin: true` custom claim (see middleware/adminAuth.ts and

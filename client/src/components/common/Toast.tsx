@@ -1,48 +1,71 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Heart } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 
 export const Toast: React.FC = () => {
-  const { toastMessage } = useApp();
+  const { toastMessage, showToast } = useApp();
 
   if (!toastMessage) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: '24px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 99999,
-        background: 'rgba(30, 27, 30, 0.92)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        color: '#FFFFFF',
-        padding: '10px 16px',
-        borderRadius: 'var(--radius-pill)',
-        fontSize: '0.85rem',
-        fontWeight: 600,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-        animation: 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-        // Prevent overflow on narrow phone screens
-        maxWidth: 'calc(100vw - 32px)',
-        whiteSpace: 'normal',
-        wordBreak: 'break-word',
-        textAlign: 'center',
-        boxSizing: 'border-box'
-      }}
-    >
-      <Heart
-        size={16}
-        fill="var(--primary-pink)"
-        color="var(--primary-pink)"
-        style={{ flexShrink: 0 }}
-      />
-      <span>{toastMessage}</span>
-    </div>
+    <>
+      <style>{`
+        @keyframes toastSlideDownFade {
+          0% {
+            opacity: 0;
+            transform: translate(-50%, -24px) scale(0.92);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+          }
+        }
+      `}</style>
+      <div
+        style={{
+          position: 'fixed',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 999999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '12px 24px',
+          borderRadius: '9999px',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1.5px solid rgba(244, 63, 94, 0.25)',
+          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(244, 63, 94, 0.16)',
+          color: '#1F161A',
+          fontSize: '0.88rem',
+          fontWeight: 700,
+          animation: 'toastSlideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          maxWidth: 'min(90vw, 460px)',
+          width: 'max-content',
+          boxSizing: 'border-box',
+          pointerEvents: 'auto',
+          lineHeight: 1.35
+        }}
+      >
+        <div
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #F43F5E 0%, #BE123C 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)'
+          }}
+        >
+          <Sparkles size={15} color="#FFFFFF" fill="#FFFFFF" />
+        </div>
+        <span style={{ flex: 1, letterSpacing: '0.01em', color: '#1F161A' }}>{toastMessage}</span>
+      </div>
+    </>
   );
 };

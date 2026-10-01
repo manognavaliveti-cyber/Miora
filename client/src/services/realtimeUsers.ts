@@ -174,7 +174,8 @@ export function subscribeToRealProfiles(
         callback(list);
       },
       (err) => {
-        console.warn('[MIORA realtime] Profile subscription error:', err);
+        if ((err as any)?.code === 'permission-denied') return;
+        console.warn('[MIORA realtime] Profile subscription warning:', err?.message || err);
         if (stopped || attempts >= 6) return;
         attempts += 1;
         retryTimer = setTimeout(start, Math.min(1500 * attempts, 8000));
@@ -204,7 +205,11 @@ export function subscribeToInboundMessages(
       const msgs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as Message[];
       callback(msgs);
     },
-    (err) => console.warn('[MIORA realtime] Inbound message subscription error:', err)
+    (err) => {
+      if ((err as any)?.code !== 'permission-denied') {
+        console.warn('[MIORA realtime] Inbound message subscription error:', err?.message || err);
+      }
+    }
   );
   return unsubscribe;
 }

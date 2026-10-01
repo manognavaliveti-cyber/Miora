@@ -115,7 +115,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             <TopHeader
               title={
                 currentView === 'likes' || currentView === 'matches'
-                  ? 'Matches & Likes'
+                  ? 'Likes'
                   : currentView === 'chat-list'
                   ? 'MIORA Chats'
                   : currentView === 'feed'

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import { VerifiedBadge } from '../common/VerifiedBadge';
+import { calculateAgeFromDob, calculateCompatibilityScore } from '../../utils/profileUtils';
 
 export const ProfileDetailsModal: React.FC = () => {
   const {
@@ -69,32 +70,34 @@ export const ProfileDetailsModal: React.FC = () => {
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
+        inset: 0,
         width: '100vw',
-        height: '100vh',
-        zIndex: 50,
-        background: 'rgba(28, 18, 23, 0.65)',
-        backdropFilter: 'blur(12px)',
+        height: '100dvh',
+        zIndex: 10000,
+        background: 'rgba(12, 8, 11, 0.85)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 0,
-        animation: 'fadeIn 0.25s ease-out forwards'
+        animation: 'fadeIn 0.25s ease-out forwards',
+        overflow: 'hidden'
       }}
     >
       <div
         style={{
           width: '100%',
           maxWidth: '980px',
-          height: '100%',
-          maxHeight: '100%',
+          height: '100dvh',
+          maxHeight: '100dvh',
           background: 'var(--bg-warm-ivory)',
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
           overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch'
+          WebkitOverflowScrolling: 'touch',
+          boxSizing: 'border-box'
         }}
         className="profile-modal-responsive"
       >
@@ -108,8 +111,8 @@ export const ProfileDetailsModal: React.FC = () => {
           }
           @media (min-width: 1024px) {
             .profile-modal-responsive {
-              height: 640px !important;
-              max-height: 640px !important;
+              height: 660px !important;
+              max-height: 660px !important;
               border-radius: 32px !important;
               display: grid !important;
               grid-template-columns: 1.05fr 1fr !important;
@@ -132,7 +135,7 @@ export const ProfileDetailsModal: React.FC = () => {
           style={{
             position: 'relative',
             width: '100%',
-            height: 'clamp(320px, 48vh, 460px)',
+            height: 'clamp(320px, 45vh, 460px)',
             background: '#1C1217',
             flexShrink: 0
           }}
@@ -308,7 +311,7 @@ export const ProfileDetailsModal: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             background: 'var(--bg-warm-ivory)',
-            paddingBottom: '96px'
+            paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))'
           }}
         >
           <div
@@ -320,60 +323,83 @@ export const ProfileDetailsModal: React.FC = () => {
               flex: 1
             }}
           >
-            {/* Header: Name, Age, Vibe Score */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Header: Name, Age, Location & Match Score */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0, flex: 1 }}>
                   <h2
                     style={{
                       fontFamily: 'var(--font-serif)',
-                      fontSize: '1.9rem',
+                      fontSize: '1.85rem',
                       fontWeight: 800,
                       color: 'var(--text-primary)',
                       letterSpacing: '-0.02em',
-                      display: 'inline-flex',
+                      display: 'flex',
                       alignItems: 'center',
-                      gap: '6px'
+                      flexWrap: 'wrap',
+                      gap: '8px',
+                      margin: 0,
+                      wordBreak: 'break-word'
                     }}
                   >
-                    <span>{activeProfile.name}, {activeProfile.age}</span>
+                    <span>
+                      {activeProfile.name}
+                      {(() => {
+                        const calculatedAge = calculateAgeFromDob((activeProfile as any).dob || (activeProfile as any).dateOfBirth) || (activeProfile.age > 0 ? activeProfile.age : null);
+                        return calculatedAge ? `, ${calculatedAge}` : '';
+                      })()}
+                    </span>
                     {(activeProfile.verified || activeProfile.isVerified) && <VerifiedBadge size={22} />}
                   </h2>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '6px',
+                      color: 'var(--text-secondary)',
+                      fontSize: '0.88rem',
+                      fontWeight: 550,
+                      marginTop: '2px'
+                    }}
+                  >
+                    <MapPin size={15} color="var(--rose-soft)" style={{ flexShrink: 0 }} />
+                    <span style={{ whiteSpace: 'nowrap' }}>{activeProfile.location || 'Location hidden'}</span>
+                    {activeProfile.distanceKm !== undefined && (
+                      <>
+                        <span style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>•</span>
+                        <span style={{ whiteSpace: 'nowrap' }}>{activeProfile.distanceKm} km away</span>
+                      </>
+                    )}
+                  </div>
                 </div>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.88rem',
-                    marginTop: '4px'
-                  }}
-                >
-                  <MapPin size={15} color="var(--rose-soft)" />
-                  <span>{activeProfile.location}</span>
-                  <span>•</span>
-                  <span>{activeProfile.distanceKm} km away</span>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  background: 'var(--bg-soft-blush)',
-                  border: '1px solid var(--border-subtle)',
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-pill)',
-                  color: 'var(--berry-primary)',
-                  fontWeight: 800,
-                  fontSize: '0.85rem'
-                }}
-              >
-                <Sparkles size={14} color="var(--gold-champagne)" fill="var(--gold-champagne)" />
-                <span>{activeProfile.compatibility}% Match</span>
+                {(() => {
+                  const comp = calculateCompatibilityScore(currentUser, activeProfile);
+                  return (
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: 'var(--bg-soft-blush)',
+                        border: '1px solid var(--border-subtle)',
+                        padding: '6px 14px',
+                        borderRadius: 'var(--radius-pill)',
+                        color: 'var(--berry-primary)',
+                        fontWeight: 800,
+                        fontSize: '0.8rem',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                        marginTop: '2px'
+                      }}
+                    >
+                      <Sparkles size={14} color="var(--gold-champagne)" fill="var(--gold-champagne)" />
+                      <span>{comp.isIncomplete ? comp.label : `${comp.score}% Match`}</span>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
 

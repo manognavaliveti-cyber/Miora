@@ -16,12 +16,14 @@
 
 html, body {
   width: 100%;
-  min-height: 100%;
+  min-height: 100dvh;
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-weight: 400;
-  background-color: var(--bg-warm-ivory);
+  background-color: #FFFFFF !important;
   color: var(--text-primary);
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -68,76 +70,39 @@ p, span, label, div {
 
 #root {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--ambient-bg-gradient);
+  background: #FFFFFF !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* App Outer Viewport Wrapper */
 .app-viewport-wrapper {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
+  background: #FFFFFF !important;
+  margin: 0;
+  padding: 0;
 }
 
-/* Main Adaptive Desktop / Tablet / Mobile Container */
+/* Main Adaptive Full Bleed Container */
 .app-container {
   width: 100%;
-  min-height: 100vh;
+  max-width: 100%;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-}
-
-/* Mobile (0 - 767px) - Full bleed container */
-@media (max-width: 767px) {
-  .app-container {
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-  }
-}
-
-/* Tablet (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .app-container {
-    width: 100%;
-    max-width: 960px;
-    padding: 0 16px;
-  }
-}
-
-/* Desktop (1024px - 1279px) */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .app-container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
-  }
-}
-
-/* Desktop (1280px - 1439px) */
-@media (min-width: 1280px) and (max-width: 1439px) {
-  .app-container {
-    width: 100%;
-    max-width: 1320px;
-    padding: 0 24px;
-  }
-}
-
-/* Large Desktop (1440px - 1919px) */
-@media (min-width: 1440px) and (max-width: 1919px) {
-  .app-container {
-    width: 100%;
-    max-width: 1400px;
-    padding: 0 28px;
-  }
+  background: #FFFFFF !important;
 }
 
 /* Ultra Wide Desktop (1920px+) */

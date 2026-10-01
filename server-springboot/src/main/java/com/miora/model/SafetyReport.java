@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.miora.model.ReportStatus;
-import com.miora.model.ModerationAction;
 
 @Data
 @Builder

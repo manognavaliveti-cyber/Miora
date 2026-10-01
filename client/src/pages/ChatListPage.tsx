@@ -64,10 +64,8 @@ export const ChatListPage: React.FC = () => {
     return match.profile.name.toLowerCase().includes(q) || (match.profile.location || '').toLowerCase().includes(q);
   });
 
-  // Chat inboxes contain actual conversations only, not every possible match.
-  // A locally deleted thread stays hidden until a newer real message arrives.
+  // All active mutual matches appear in the Chats inbox list (even when no messages exist yet)
   const conversationMatches = filteredMatches
-    .filter((match) => Boolean(match.lastMessage?.trim()) || (match.unreadCount || 0) > 0)
     .filter((match) => {
       const hiddenAt = hiddenChatMap[match.id];
       if (!hiddenAt) return true;
@@ -143,7 +141,7 @@ export const ChatListPage: React.FC = () => {
         <div className="mobile-chat-thread-list">
           {mobileMatches.length > 0 ? mobileMatches.map((match) => {
             const photo = match.profile.photos[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 rx=%22150%22 fill=%22%23f8e9ee%22/%3E%3Ccircle cx=%22150%22 cy=%22115%22 r=%2250%22 fill=%22%23c08497%22/%3E%3Cpath d=%22M55 270c16-80 174-80 190 0%22 fill=%22%23c08497%22/%3E%3C/svg%3E';
-            const preview = match.lastMessage?.trim() || 'Start a conversation 👋';
+            const preview = match.lastMessage?.trim() || 'Start a conversation 💖';
             const unread = (match.unreadCount || 0) > 0;
             return (
               <button

@@ -231,11 +231,19 @@ export function subscribeToIncomingCalls(
 ) {
   if (!isFirebaseConfigured || !myUid) return () => {};
   const q = query(collection(db, 'calls'), where('calleeId', '==', myUid));
-  return onSnapshot(q, (snap) => {
-    const now = Date.now();
-    const calls = snap.docs
-      .map((d) => ({ id: d.id, ...d.data() } as SignalingCall))
-      .filter((c) => c.calleeId === myUid && c.status === 'ringing' && now - Number((c as any).createdAt || now) < 120000);
-    callback(calls);
-  }, (err) => console.warn('[MIORA call] incoming call listener error', err));
+  return onSnapshot(
+    q,
+    (snap) => {
+      const now = Date.now();
+      const calls = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() } as SignalingCall))
+        .filter((c) => c.calleeId === myUid && c.status === 'ringing' && now - Number((c as any).createdAt || now) < 120000);
+      callback(calls);
+    },
+    (err) => {
+      if ((err as any)?.code !== 'permission-denied') {
+        console.warn('[MIORA call] incoming call listener error:', err.message || err);
+      }
+    }
+  );
 }

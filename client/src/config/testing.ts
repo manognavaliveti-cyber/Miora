@@ -6,9 +6,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 export const TEST_DEFAULT_WALLET_INR = 0;
 
-/** Raises the wallet to the test amount if it is lower (no-op when test mode is off). */
+/** No free test balance — new users start with ₹0. */
 export const withTestWallet = <T extends { walletBalance?: number; coinBalance?: number }>(user: T): T => {
-  if (TEST_DEFAULT_WALLET_INR <= 0) return user;
-  if ((user.walletBalance || 0) >= TEST_DEFAULT_WALLET_INR) return user;
-  return { ...user, walletBalance: TEST_DEFAULT_WALLET_INR, coinBalance: TEST_DEFAULT_WALLET_INR };
+  return {
+    ...user,
+    walletBalance: user.walletBalance ?? 0,
+    coinBalance: user.coinBalance ?? 0
+  };
 };
+

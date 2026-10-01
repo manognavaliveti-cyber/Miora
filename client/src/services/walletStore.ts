@@ -35,10 +35,14 @@ export const saveWallet = (uid: string | undefined | null, balance: number): voi
  *  3. whatever the profile already had.
  */
 export const resolveWallet = <T extends { id?: string; walletBalance?: number; coinBalance?: number }>(user: T): T => {
-  // A server/Firebase wallet value is authoritative. Local storage is only a
-  // fallback for offline/local development when the server has not supplied one.
-  if (typeof user.walletBalance === 'number' && user.walletBalance > 0) return { ...user, coinBalance: user.walletBalance };
+  // A server/Firebase wallet value is authoritative. If present as a number, use it directly.
+  if (typeof user.walletBalance === 'number') {
+    return { ...user, coinBalance: user.walletBalance };
+  }
   const saved = readSavedWallet(user.id);
-  if (saved !== null) return { ...user, walletBalance: saved, coinBalance: saved };
-  return withTestWallet(user);
+  if (saved !== null) {
+    return { ...user, walletBalance: saved, coinBalance: saved };
+  }
+  return { ...user, walletBalance: 0, coinBalance: 0 };
 };
+

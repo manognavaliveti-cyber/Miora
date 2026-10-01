@@ -3,7 +3,8 @@ import { useApp } from '../context/AppContext';
 import { ActionButtons } from '../components/discover/ActionButtons';
 import { SwipeCard } from '../components/discover/SwipeCard';
 import { Button } from '../components/common/Button';
-import { Sparkles, SlidersHorizontal, RotateCcw, Heart } from 'lucide-react';
+import { Sparkles, SlidersHorizontal, RotateCcw, Heart, X } from 'lucide-react';
+import { calculateCompatibilityScore } from '../utils/profileUtils';
 
 export const DiscoverPage: React.FC = () => {
   const {
@@ -15,12 +16,35 @@ export const DiscoverPage: React.FC = () => {
     setCurrentView,
     refreshData,
     advancedFilters,
-    openFilterModal
+    openFilterModal,
+    currentUser,
+    openUpgradeModal,
+    showToast
   } = useApp();
 
   const [animateDeck, setAnimateDeck] = useState(false);
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | 'up' | null>(null);
+  const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const [showCrossAnim, setShowCrossAnim] = useState(false);
+  const [shownHighMatchFor, setShownHighMatchFor] = useState<string | null>(null);
+  const [isHighMatchPopupOpen, setIsHighMatchPopupOpen] = useState(false);
   const exitTimer = useRef<number | null>(null);
+
+  // Daily Swipe Limit Tracking (30 Swipes / Day)
+  const getDailySwipeCount = (): number => {
+    const today = new Date().toISOString().split('T')[0];
+    const key = `miora_daily_swipes_${currentUser?.id || 'me'}_${today}`;
+    const raw = localStorage.getItem(key);
+    return raw ? parseInt(raw, 10) : 0;
+  };
+
+  const incrementDailySwipeCount = (): number => {
+    const today = new Date().toISOString().split('T')[0];
+    const key = `miora_daily_swipes_${currentUser?.id || 'me'}_${today}`;
+    const nextCount = getDailySwipeCount() + 1;
+    localStorage.setItem(key, nextCount.toString());
+    return nextCount;
+  };
 
   // Clear any pending swipe timer on unmount
   useEffect(() => {
@@ -53,9 +77,22 @@ export const DiscoverPage: React.FC = () => {
     return true;
   });
 
-  // No unfiltered fallback here — if the person's filters are this strict,
-  // the empty state below (and its "Edit Filters" shortcut) is the honest result.
   const topProfile = filteredProfiles[0] || null;
+  const topProfileComp = topProfile ? calculateCompatibilityScore(currentUser, topProfile) : null;
+
+  // Trigger High Vibe Match Popup if calculated match > 90%
+  useEffect(() => {
+    if (
+      topProfile &&
+      topProfileComp &&
+      !topProfileComp.isIncomplete &&
+      topProfileComp.score > 90 &&
+      shownHighMatchFor !== topProfile.id
+    ) {
+      setShownHighMatchFor(topProfile.id);
+      setIsHighMatchPopupOpen(true);
+    }
+  }, [topProfile?.id, topProfileComp?.score]);
 
   const hasCustomFilters =
     advancedFilters.verifiedOnly ||
@@ -70,12 +107,32 @@ export const DiscoverPage: React.FC = () => {
     !!advancedFilters.zodiac ||
     !!advancedFilters.education;
 
-  // Single swipe entry point for both card drag and the dock buttons:
-  // fly the top card off-screen first, then commit the like/pass.
+  // Single swipe entry point for both card drag and dock buttons
   const requestSwipe = (direction: 'left' | 'right' | 'up') => {
     if (!topProfile || exitDirection) return;
+
+    // REQUIREMENT: Plans popup MUST appear ONLY after 30 swipes in a day for free users
+    if (!currentUser?.isPremium) {
+      const swipesToday = getDailySwipeCount();
+      if (swipesToday >= 30) {
+        showToast('Daily limit of 30 swipes reached! Upgrade to MIORA PRO for unlimited swipes ✨');
+        openUpgradeModal();
+        return;
+      }
+    }
+
+    incrementDailySwipeCount();
     const id = topProfile.id;
     setExitDirection(direction);
+
+    if (direction === 'right' || direction === 'up') {
+      setShowHeartAnim(true);
+      setTimeout(() => setShowHeartAnim(false), 850);
+    } else if (direction === 'left') {
+      setShowCrossAnim(true);
+      setTimeout(() => setShowCrossAnim(false), 850);
+    }
+
     exitTimer.current = window.setTimeout(() => {
       if (direction === 'right') handleLike(id, false);
       else if (direction === 'left') handlePass(id);
@@ -114,10 +171,10 @@ export const DiscoverPage: React.FC = () => {
           <Heart size={34} fill="#FFFFFF" color="#FFFFFF" />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <h3 style={{ fontSize: '1.25rem', color: '#5C1D2C', fontWeight: 800 }}>
+          <h3 style={{ fontSize: '1.25rem', color: '#E11D48', fontWeight: 800 }}>
             Curating Aesthetic Connections
           </h3>
-          <p style={{ fontSize: '0.88rem', color: '#8C5261', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.65)', marginTop: '4px' }}>
             Finding exceptional matches aligned with your lifestyle...
           </p>
         </div>
@@ -134,12 +191,194 @@ export const DiscoverPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        maxWidth: '420px',
+        maxWidth: '440px',
         margin: '0 auto',
-        padding: '4px 10px 28px 10px',
-        boxSizing: 'border-box'
+        padding: '4px 10px 24px 10px',
+        boxSizing: 'border-box',
+        position: 'relative'
       }}
     >
+      <style>{`
+        @keyframes floatUpHeart {
+          0% { opacity: 0; transform: translate(-50%, -40%) scale(0.4); }
+          40% { opacity: 1; transform: translate(-50%, -80%) scale(1.25); }
+          70% { opacity: 0.9; transform: translate(-50%, -120%) scale(1.1); }
+          100% { opacity: 0; transform: translate(-50%, -170%) scale(0.9); }
+        }
+        @keyframes floatUpCross {
+          0% { opacity: 0; transform: translate(-50%, -40%) scale(0.4); }
+          40% { opacity: 1; transform: translate(-50%, -80%) scale(1.25); }
+          70% { opacity: 0.9; transform: translate(-50%, -120%) scale(1.1); }
+          100% { opacity: 0; transform: translate(-50%, -170%) scale(0.9); }
+        }
+        .floating-like-heart {
+          animation: floatUpHeart 850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .floating-pass-cross {
+          animation: floatUpCross 850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}</style>
+
+      {/* Floating Heart Feedback Animation (Right Swipe) */}
+      {showHeartAnim && (
+        <div
+          className="floating-like-heart"
+          style={{
+            position: 'absolute',
+            top: '40%',
+            right: '25%',
+            zIndex: 99,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.85) 100%)',
+            boxShadow: '0 12px 40px rgba(16, 185, 129, 0.65)'
+          }}
+        >
+          <Heart size={42} fill="#FFFFFF" color="#FFFFFF" />
+        </div>
+      )}
+
+      {/* Floating Cross Feedback Animation (Left Swipe) */}
+      {showCrossAnim && (
+        <div
+          className="floating-pass-cross"
+          style={{
+            position: 'absolute',
+            top: '40%',
+            left: '25%',
+            zIndex: 99,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(244, 63, 94, 0.95) 0%, rgba(225, 29, 72, 0.85) 100%)',
+            boxShadow: '0 12px 40px rgba(244, 63, 94, 0.65)'
+          }}
+        >
+          <X size={44} strokeWidth={3} color="#FFFFFF" />
+        </div>
+      )}
+
+      {/* HIGH VIBE MATCH POPUP (>90%) */}
+      {isHighMatchPopupOpen && topProfile && topProfileComp && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10001,
+            background: 'rgba(12, 8, 11, 0.82)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            animation: 'fadeIn 0.25s ease-out'
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '360px',
+              background: 'linear-gradient(145deg, #1F1018 0%, #0F080C 100%)',
+              border: '1.5px solid rgba(244, 63, 94, 0.35)',
+              borderRadius: '28px',
+              padding: '28px 24px',
+              textAlign: 'center',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(244, 63, 94, 0.25)',
+              position: 'relative'
+            }}
+          >
+            <button
+              onClick={() => setIsHighMatchPopupOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: 'none',
+                color: '#FFFFFF',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            <div
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #F43F5E 0%, #BE123C 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px auto',
+                boxShadow: '0 8px 24px rgba(244, 63, 94, 0.5)',
+                animation: 'heartBeat 1.4s infinite ease-in-out'
+              }}
+            >
+              <Sparkles size={32} color="#FFFFFF" />
+            </div>
+
+            <span
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                letterSpacing: '0.12em',
+                color: '#FDA4AF',
+                textTransform: 'uppercase'
+              }}
+            >
+              ✨ High Vibe Match!
+            </span>
+
+            <h3 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#FFFFFF', margin: '6px 0 4px 0' }}>
+              {topProfileComp.score}% Vibe Match
+            </h3>
+
+            <p style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.4, margin: '8px 0 20px 0' }}>
+              You & <strong style={{ color: '#F43F5E' }}>{topProfile.name}</strong> are seriously on the same wavelength.
+            </p>
+
+            <button
+              onClick={() => {
+                setIsHighMatchPopupOpen(false);
+                openProfileDetail(topProfile);
+              }}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '12px 20px',
+                borderRadius: '9999px',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(244, 63, 94, 0.4)'
+              }}
+            >
+              Explore Profile ✨
+            </button>
+          </div>
+        </div>
+      )}
+
       {topProfile ? (
         <div
           className={animateDeck ? 'card-deck-animated' : ''}
@@ -156,7 +395,7 @@ export const DiscoverPage: React.FC = () => {
             style={{
               position: 'relative',
               width: '100%',
-              height: 'clamp(340px, calc(100dvh - 270px), 540px)',
+              height: 'clamp(360px, calc(100dvh - 230px), 560px)',
               borderRadius: '28px',
               boxSizing: 'border-box'
             }}
@@ -236,10 +475,10 @@ export const DiscoverPage: React.FC = () => {
           </div>
 
           <div>
-            <h2 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#3A121A', margin: 0 }}>
+            <h2 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
               {hasCustomFilters ? 'No Matches For These Filters' : 'All Caught Up'}
             </h2>
-            <p style={{ fontSize: '0.88rem', color: '#6B3845', marginTop: '6px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.7)', marginTop: '6px', lineHeight: 1.5 }}>
               {hasCustomFilters
                 ? 'Nobody nearby fits this combination yet. Loosen a filter or two and try again.'
                 : "You've viewed all profiles nearby. Adjust your preferences or refresh your stack!"}
@@ -268,3 +507,4 @@ export const DiscoverPage: React.FC = () => {
     </div>
   );
 };
+

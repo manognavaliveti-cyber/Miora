@@ -90,161 +90,190 @@ export const NotificationsDrawer: React.FC = () => {
         inset: 0,
         zIndex: 100,
         display: 'flex',
-        justifyContent: 'flex-end',
-        background: 'rgba(31, 22, 26, 0.65)',
-        backdropFilter: 'blur(12px)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        background: 'rgba(20, 12, 16, 0.45)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         animation: 'fadeIn 0.2s ease-out'
       }}
+      onClick={closeNotifDrawer}
     >
       <div
+        onClick={(e) => e.stopPropagation()}
         style={{
           width: '100%',
-          maxWidth: '420px',
-          height: '100%',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF5F7 100%)',
-          boxShadow: '-12px 0 40px rgba(0,0,0,0.3)',
-          borderLeft: '1.5px solid var(--border-gold)',
+          maxWidth: '460px',
+          maxHeight: '85vh',
+          background: 'rgba(255, 255, 255, 0.82)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.7)',
+          borderRadius: '24px',
+          boxShadow: '0 20px 50px rgba(136, 19, 55, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05)',
           display: 'flex',
           flexDirection: 'column',
           padding: '24px 20px',
           overflow: 'hidden',
-          animation: 'slideInRight 0.25s ease-out'
+          animation: 'scaleUp 0.25s ease-out',
+          boxSizing: 'border-box'
         }}
       >
-        {/* Top Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px solid var(--border-subtle)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Bell size={20} color="var(--berry-primary)" />
-            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-              Notifications
-            </h3>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {notifications.length > 0 && (
-              <button
-                onClick={clearAllNotifs}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'var(--text-muted)',
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title="Clear all"
-              >
-                <Trash2 size={14} />
-                <span>Clear</span>
-              </button>
-            )}
-
+        {/* Centered Top Header */}
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingBottom: '16px',
+            borderBottom: '1px solid rgba(136, 19, 55, 0.1)'
+          }}
+        >
+          {notifications.length > 0 && (
             <button
-              onClick={closeNotifDrawer}
+              onClick={clearAllNotifs}
               style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: '50%',
-                background: 'rgba(238, 56, 101, 0.08)',
+                position: 'absolute',
+                left: 0,
+                background: 'transparent',
                 border: 'none',
+                color: '#6E6266',
+                fontSize: '0.78rem',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'var(--text-secondary)'
+                gap: '4px',
+                fontWeight: 600
               }}
+              title="Clear all"
             >
-              <X size={18} />
+              <Trash2 size={14} />
+              <span>Clear</span>
             </button>
-          </div>
+          )}
+
+          {/* Centered Title */}
+          <h3
+            style={{
+              fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              color: '#1F171A',
+              margin: 0,
+              textAlign: 'center'
+            }}
+          >
+            Notifications
+          </h3>
+
+          <button
+            onClick={closeNotifDrawer}
+            style={{
+              position: 'absolute',
+              right: 0,
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: 'rgba(136, 19, 55, 0.06)',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#1F171A'
+            }}
+          >
+            <X size={18} />
+          </button>
         </div>
 
         {/* Notifications List */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 0 4px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {notifications.length > 0 ? (
             notifications.map((notif) => {
               const like = notif.type === 'profile_like' ? getLikeDisplay(notif) : null;
               return (
-              <div
-                key={notif.id}
-                onClick={() => handleItemClick(notif)}
-                style={{
-                  background: notif.read ? 'var(--surface-white)' : 'linear-gradient(135deg, rgba(238, 56, 101, 0.08) 0%, rgba(251, 113, 133, 0.04) 100%)',
-                  border: notif.read ? '1px solid var(--border-subtle)' : '1.5px solid var(--berry-primary)',
-                  borderRadius: '18px',
-                  padding: '14px',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  cursor: 'pointer',
-                  transition: 'all var(--transition-fast)'
-                }}
-              >
                 <div
+                  key={notif.id}
+                  onClick={() => handleItemClick(notif)}
                   style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '12px',
-                    background: 'var(--bg-soft-blush)',
+                    background: notif.read ? 'rgba(255, 255, 255, 0.9)' : 'linear-gradient(135deg, rgba(253, 242, 248, 0.95) 0%, rgba(252, 231, 243, 0.8) 100%)',
+                    border: notif.read ? '1px solid rgba(243, 235, 230, 0.8)' : '1px solid rgba(244, 114, 182, 0.5)',
+                    borderRadius: '18px',
+                    padding: '14px',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginTop: '2px'
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
                   }}
                 >
-                  {like ? (
-                    <div style={{ position: 'relative', width: '38px', height: '38px' }}>
-                      <div style={{ width: '38px', height: '38px', borderRadius: '50%', overflow: 'hidden', background: 'linear-gradient(135deg, #FFB6D2, #C9A6FF)' }}>
-                        {like.photo && (
-                          <img
-                            src={like.photo}
-                            alt=""
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', filter: like.blurred ? 'blur(6px) brightness(0.9)' : 'none', transform: like.blurred ? 'scale(1.25)' : 'none' }}
-                          />
-                        )}
+                  <div
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '12px',
+                      background: '#FFF0F3',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px'
+                    }}
+                  >
+                    {like ? (
+                      <div style={{ position: 'relative', width: '38px', height: '38px' }}>
+                        <div style={{ width: '38px', height: '38px', borderRadius: '50%', overflow: 'hidden', background: 'linear-gradient(135deg, #FFB6D2, #C9A6FF)' }}>
+                          {like.photo && (
+                            <img
+                              src={like.photo}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', filter: like.blurred ? 'blur(6px) brightness(0.9)' : 'none', transform: like.blurred ? 'scale(1.25)' : 'none' }}
+                            />
+                          )}
+                        </div>
+                        <span
+                          style={{
+                            position: 'absolute', right: '-4px', bottom: '-4px', width: '18px', height: '18px', borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #E8557C, #C52E59)', border: '2px solid #FFFFFF',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          <Heart size={9} color="#FFFFFF" fill="#FFFFFF" />
+                        </span>
                       </div>
-                      <span
-                        style={{
-                          position: 'absolute', right: '-4px', bottom: '-4px', width: '18px', height: '18px', borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #E8557C, #C52E59)', border: '2px solid #FFFFFF',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}
-                      >
-                        <Heart size={9} color="#FFFFFF" fill="#FFFFFF" />
-                      </span>
-                    </div>
-                  ) : (
-                    getIconForType(notif.type)
-                  )}
-                </div>
-
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {like ? like.title : notif.title}
-                    </span>
-                    {!notif.read && (
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--berry-primary)' }} />
+                    ) : (
+                      getIconForType(notif.type)
                     )}
                   </div>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.4 }}>
-                    {like ? like.message : notif.message}
-                  </p>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-                    {notif.timestamp}
-                  </span>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#1F171A' }}>
+                        {like ? like.title : notif.title}
+                      </span>
+                      {!notif.read && (
+                        <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#BE123C' }} />
+                      )}
+                    </div>
+                    <p style={{ fontSize: '0.82rem', color: '#6E6266', marginTop: '2px', lineHeight: 1.4 }}>
+                      {like ? like.message : notif.message}
+                    </p>
+                    <span style={{ fontSize: '0.7rem', color: '#9CA3AF', marginTop: '4px', display: 'block' }}>
+                      {notif.timestamp}
+                    </span>
+                  </div>
                 </div>
-              </div>
               );
             })
           ) : (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-              <Bell size={36} color="var(--border-gold)" style={{ margin: '0 auto 12px auto' }} />
-              <p style={{ fontSize: '0.92rem', fontWeight: 700 }}>No new notifications</p>
-              <p style={{ fontSize: '0.8rem', marginTop: '4px' }}>You're all caught up with your romance sparks!</p>
+            <div style={{ textAlign: 'center', padding: '50px 20px', color: '#6E6266' }}>
+              <Bell size={36} color="#F472B6" style={{ margin: '0 auto 12px auto' }} />
+              <p style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1F171A' }}>No new notifications</p>
+              <p style={{ fontSize: '0.82rem', marginTop: '4px' }}>You're all caught up with your romance sparks!</p>
             </div>
           )}
         </div>

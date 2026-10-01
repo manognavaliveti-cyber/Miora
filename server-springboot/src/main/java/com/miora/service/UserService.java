@@ -24,7 +24,26 @@ public class UserService {
     }
 
     public User getUserById(String userId) {
-        return firestoreService.getUser(userId);
+        User user = firestoreService.getUser(userId);
+        if (user == null && userId != null && !userId.trim().isEmpty()) {
+            User newUser = User.builder()
+                    .id(userId)
+                    .name("MIORA User")
+                    .email("")
+                    .coinBalance(350)
+                    .isPremium(false)
+                    .talkTimeSecondsRemaining(420)
+                    .receivedGifts(new HashMap<>())
+                    .gamesWonCount(0)
+                    .profileCompletion(40)
+                    .termsAccepted(true)
+                    .termsVersion("1.0")
+                    .createdAt(Instant.now().toString())
+                    .updatedAt(Instant.now().toString())
+                    .build();
+            return firestoreService.saveUser(newUser);
+        }
+        return user;
     }
 
     /**

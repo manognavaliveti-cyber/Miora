@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { ChevronLeft, SlidersHorizontal, Settings, Search } from 'lucide-react';
+import { ChevronLeft, SlidersHorizontal, Settings, Search, Heart } from 'lucide-react';
 import { MioraLogo } from '../common/MioraLogo';
 
 interface TopHeaderProps {
@@ -151,7 +151,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           }}
           title="MIORA Wallet & Plans"
         >
-          <span>₹{walletBal.toFixed(0)}</span>
+          <span>₹ {walletBal.toFixed(0)}</span>
         </button>
 
         {/* Global Search Button */}

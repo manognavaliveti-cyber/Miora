@@ -8,12 +8,12 @@ import { getStorage, FirebaseStorage } from 'firebase/storage';
  * Reads from Vite environment variables (VITE_FIREBASE_...)
  */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBOCYZv8SxBDfuArEqVl2aF6Z9BQGOOnyk',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'miora-ea6a7.firebaseapp.com',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'miora-ea6a7',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'miora-ea6a7.firebasestorage.app',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '772947776861',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:772947776861:web:95abdd8814f48a647e44b4'
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBSgK-LoHzUqNA7oXJS9wPTFVF9nnRcZf8',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'winged-precinct-484016-f3.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'winged-precinct-484016-f3',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'winged-precinct-484016-f3.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '62279605444',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:62279605444:web:9993b4ff4e5ac32abdfd91'
 };
 
 /**

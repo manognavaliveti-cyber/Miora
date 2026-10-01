@@ -163,7 +163,12 @@ class ApiService {
   }
 
   async getWalletBalance(): Promise<{ walletBalance: number; coinBalance: number }> {
-    return this.fetchApi<{ walletBalance: number; coinBalance: number }>('/wallet');
+    try {
+      return await this.fetchApi<{ walletBalance: number; coinBalance: number }>('/wallet');
+    } catch {
+      const user = this.buildFirebaseFallbackUser();
+      return { walletBalance: user.walletBalance || 0, coinBalance: user.coinBalance || 0 };
+    }
   }
 
   async debitWallet(amount: number): Promise<{ walletBalance: number; coinBalance: number }> {
@@ -449,6 +454,9 @@ class ApiService {
 
   // 7. Wallet & Razorpay Payment Integration
   async getTransactions(): Promise<CoinTransaction[]> {
+    if (this.isBackendAvailable === false) {
+      return getLocal<CoinTransaction[]>(STORAGE_KEYS.TRANSACTIONS, INITIAL_TRANSACTIONS);
+    }
     try {
       return await this.fetchApi<CoinTransaction[]>('/wallet/transactions');
     } catch {
@@ -503,11 +511,7 @@ class ApiService {
 
   // 8. Feed & Status Stories & Notes & Follows
   async getFeedPosts(): Promise<FeedPost[]> {
-    try {
-      return await this.fetchApi<FeedPost[]>('/feed/posts');
-    } catch {
-      return getLocal<FeedPost[]>(STORAGE_KEYS.FEED_POSTS, INITIAL_FEED_POSTS);
-    }
+    return getLocal<FeedPost[]>(STORAGE_KEYS.FEED_POSTS, INITIAL_FEED_POSTS);
   }
 
   async createFeedPost(content: string, imageUrl?: string, location?: string, tags?: string[]): Promise<FeedPost> {
@@ -649,11 +653,7 @@ class ApiService {
   }
 
   async getStatusStories(): Promise<StatusStory[]> {
-    try {
-      return await this.fetchApi<StatusStory[]>('/feed/stories');
-    } catch {
-      return getLocal<StatusStory[]>(STORAGE_KEYS.STATUS_STORIES, INITIAL_STATUS_STORIES);
-    }
+    return getLocal<StatusStory[]>(STORAGE_KEYS.STATUS_STORIES, INITIAL_STATUS_STORIES);
   }
 
   async createStatusStory(text: string, mediaUrl?: string): Promise<StatusStory> {
@@ -697,28 +697,24 @@ class ApiService {
 
   // 9. Status Notes (24h Ephemeral Thoughts)
   async getStatusNotes(): Promise<any[]> {
-    try {
-      return await this.fetchApi<any[]>('/user/status-notes');
-    } catch {
-      return [
-        {
-          id: 'sn_1',
-          userId: 'prof_1',
-          userName: 'Priya',
-          userPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80',
-          noteText: 'Listening to Cigarettes After Sex 🎧',
-          emoji: '🎵'
-        },
-        {
-          id: 'sn_2',
-          userId: 'prof_2',
-          userName: 'Ananya',
-          userPhoto: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80',
-          noteText: 'Looking for coffee recommendations in Hyderabad ☕',
-          emoji: '☕'
-        }
-      ];
-    }
+    return [
+      {
+        id: 'sn_1',
+        userId: 'prof_1',
+        userName: 'Priya',
+        userPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80',
+        noteText: 'Listening to Cigarettes After Sex 🎧',
+        emoji: '🎵'
+      },
+      {
+        id: 'sn_2',
+        userId: 'prof_2',
+        userName: 'Ananya',
+        userPhoto: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80',
+        noteText: 'Looking for coffee recommendations in Hyderabad ☕',
+        emoji: '☕'
+      }
+    ];
   }
 
   async setStatusNote(text: string, emoji?: string): Promise<any> {
