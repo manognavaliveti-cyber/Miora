@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { MIORA_PRICING, PowerUpPackage } from '../../config/pricing';
-import { X, Zap, Clock, Crown, Rocket, ArrowRight } from 'lucide-react';
-
-const FALLBACK_PHOTOS = [
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80'
-];
+import { X, Zap, Rocket, Crown, ArrowRight, Sparkles } from 'lucide-react';
 
 const UPSELL = [
-  { tab: 'pro' as const, label: 'MIORA PRO', regular: 499, offer: 345, icon: <Zap size={15} /> },
-  { tab: 'vip' as const, label: 'MIORA VIP', regular: 999, offer: 789, icon: <Crown size={15} /> }
+  { tab: 'pro' as const, label: 'MIORA PRO', regular: 499, offer: 345 },
+  { tab: 'vip' as const, label: 'MIORA VIP', regular: 999, offer: 789 }
 ];
 
 export const BoostModal: React.FC = () => {
@@ -20,7 +13,6 @@ export const BoostModal: React.FC = () => {
     isBoostModalOpen,
     closeBoostModal,
     currentUser,
-    profiles,
     walletBalance,
     activateBoost,
     buyPowerUp,
@@ -29,14 +21,14 @@ export const BoostModal: React.FC = () => {
   } = useApp();
 
   const packages: PowerUpPackage[] = MIORA_PRICING.powerUps.boost.packages;
-  const defaultPkg = packages.find((p) => p.popular) || packages[0];
-  const [selectedId, setSelectedId] = useState<string>(defaultPkg?.id || '');
+  const defaultPkg = packages.find((p) => p.popular) || packages[1] || packages[0];
+  const [selectedId, setSelectedId] = useState<string>(defaultPkg?.id || 'boost_2h');
   const [isActivating, setIsActivating] = useState<boolean>(false);
 
   useEffect(() => {
     if (isBoostModalOpen) {
-      const def = packages.find((p) => p.popular) || packages[0];
-      setSelectedId(def?.id || '');
+      const def = packages.find((p) => p.popular) || packages[1] || packages[0];
+      setSelectedId(def?.id || 'boost_2h');
     }
   }, [isBoostModalOpen]);
 
@@ -45,46 +37,6 @@ export const BoostModal: React.FC = () => {
   const selectedPkg = packages.find((p) => p.id === selectedId) || defaultPkg;
   const isBoostActive = !!currentUser.boostActiveUntil && new Date(currentUser.boostActiveUntil).getTime() > Date.now();
   const tokens = currentUser.boostsCount || 0;
-
-  const photos = [
-    ...(currentUser.photos && currentUser.photos[0] ? [currentUser.photos[0]] : []),
-    ...profiles.slice(0, 4).map((p) => p.photos[0]).filter(Boolean)
-  ];
-  const heroPhotos = [0, 1, 2, 3].map((i) => photos[i] || FALLBACK_PHOTOS[i]);
-
-  const durationHours = (p: PowerUpPackage) =>
-    p.durationHours || (p.durationMinutes ? p.durationMinutes / 60 : 0);
-
-  const unitBoostPerHour = (() => {
-    const first = packages[0];
-    const h = durationHours(first);
-    return h > 0 ? first.coinPrice / h : 0;
-  })();
-
-  const cardLabel = (p: PowerUpPackage, i: number) => {
-    if (p.popular) return 'Most Popular';
-    if (p.bestValue) return 'Best Value';
-    return i === 0 ? 'Quick' : 'Standard';
-  };
-
-  const cardBig = (p: PowerUpPackage) => {
-    if (p.durationMinutes) return { n: `${p.durationMinutes}`, unit: 'Minutes' };
-    return { n: `${p.durationHours}`, unit: 'Hours' };
-  };
-
-  const cardSub = (p: PowerUpPackage) => {
-    const h = durationHours(p);
-    return h > 0 ? `₹${(p.coinPrice / h).toFixed(0)}/hr` : '';
-  };
-
-  const cardDiscount = (p: PowerUpPackage) => {
-    const h = durationHours(p);
-    if (h > 0 && unitBoostPerHour > 0) {
-      const d = Math.round((1 - p.coinPrice / h / unitBoostPerHour) * 100);
-      return d > 0 ? d : 0;
-    }
-    return 0;
-  };
 
   const handleBuy = async () => {
     const price = selectedPkg.coinPrice;
@@ -115,19 +67,29 @@ export const BoostModal: React.FC = () => {
     openUpgradeFor({ tab, reason: 'boost' });
   };
 
+  // Button text generation matching selected package
+  const getButtonText = () => {
+    if (isActivating) return 'Processing...';
+    if (selectedPkg.durationMinutes) {
+      return `Get ${selectedPkg.durationMinutes} Minutes Boost • ₹${selectedPkg.coinPrice}`;
+    }
+    const hrs = selectedPkg.durationHours || 2;
+    return `Get ${hrs} ${hrs === 1 ? 'Hour' : 'Hours'} Boost • ₹${selectedPkg.coinPrice}`;
+  };
+
   return (
     <div
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: 'rgba(38, 10, 20, 0.72)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        background: 'rgba(20, 10, 15, 0.65)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'clamp(8px, 2vw, 16px)',
+        padding: 'clamp(10px, 2.5vw, 20px)',
         boxSizing: 'border-box',
         animation: 'fadeIn 0.2s ease-out'
       }}
@@ -138,233 +100,525 @@ export const BoostModal: React.FC = () => {
       <div
         style={{
           width: '100%',
-          maxWidth: '480px',
-          maxHeight: 'min(94dvh, 780px)',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF8FA 60%, #FFF2F6 100%)',
-          color: '#261D20',
-          borderRadius: '28px',
-          boxShadow: '0 24px 60px rgba(125, 23, 48, 0.28), 0 0 0 1px rgba(244, 197, 207, 0.6)',
+          maxWidth: '440px',
+          maxHeight: 'min(94dvh, 760px)',
+          background: '#FFFFFF',
+          color: '#1F171A',
+          borderRadius: '32px',
+          boxShadow: '0 24px 60px rgba(125, 23, 48, 0.22), 0 0 0 1px rgba(244, 197, 207, 0.5)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
           position: 'relative',
+          padding: '24px 20px 20px 20px',
+          boxSizing: 'border-box',
           animation: 'scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
       >
-        {/* Header */}
+        {/* Modal Top Header */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '16px 18px 14px 18px',
-            borderBottom: '1px solid rgba(244, 197, 207, 0.45)',
-            background: '#FFFFFF',
+            marginBottom: '20px',
             flexShrink: 0
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #A82046 0%, #8B1E3F 100%)',
+                width: '44px',
+                height: '44px',
+                borderRadius: '16px',
+                background: '#FDF0F3',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#FFFFFF'
+                color: '#9E2A4B'
               }}
             >
-              <Rocket size={18} />
+              <Rocket size={22} color="#9E2A4B" />
             </div>
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#261D20', lineHeight: 1.2 }}>
+              <h2
+                style={{
+                  fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+                  fontSize: '1.42rem',
+                  fontWeight: 800,
+                  color: '#1F171A',
+                  margin: 0,
+                  lineHeight: 1.15
+                }}
+              >
                 Boost Your Profile
               </h2>
-              <span style={{ fontSize: '0.74rem', color: '#7D1730', fontWeight: 600 }}>
-                ⚡ Up to 10× more visibility
+              <span
+                style={{
+                  fontSize: '0.81rem',
+                  color: '#BE1846',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  marginTop: '2px'
+                }}
+              >
+                <Zap size={13} fill="#BE1846" color="#BE1846" /> Up to 10× more visibility
               </span>
             </div>
           </div>
+
           <button
             onClick={closeBoostModal}
             aria-label="Close"
             style={{
-              width: '34px',
-              height: '34px',
+              width: '36px',
+              height: '36px',
               borderRadius: '50%',
-              border: '1px solid #F4C5CF',
-              background: '#FFFFFF',
-              color: '#5C4751',
+              border: 'none',
+              background: '#F7F4F6',
+              color: '#6B7280',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'background 0.2s ease'
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#E5E7EB')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#F7F4F6')}
           >
-            <X size={17} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Scrollable Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-
-          {/* Hero card */}
+        {/* Scrollable Main Content Body */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            paddingRight: '2px'
+          }}
+        >
+          {/* Hero Banner Card */}
           <div
             style={{
-              borderRadius: '22px',
-              background: 'linear-gradient(145deg, #FFF0F4 0%, #FBEDEF 60%, #FCE4E8 100%)',
-              border: '1.5px solid #F4C5CF',
-              padding: '18px 16px',
-              textAlign: 'center'
+              borderRadius: '24px',
+              background: 'linear-gradient(135deg, #FFF5F7 0%, #FFEBF0 50%, #FFDFE7 100%)',
+              border: '1.5px solid rgba(244, 114, 182, 0.25)',
+              padding: '24px 20px',
+              position: 'relative',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              boxShadow: '0 8px 24px rgba(244, 114, 182, 0.08)'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
-              <div style={{ position: 'relative', display: 'inline-flex' }}>
-                <div
-                  style={{
-                    width: '64px', height: '64px', borderRadius: '50%',
-                    overflow: 'hidden', border: '3px solid #8B1E3F',
-                    boxShadow: '0 6px 18px rgba(139, 30, 63, 0.25)'
-                  }}
-                >
-                  <img src={heroPhotos[0]} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div
-                  style={{
-                    position: 'absolute', bottom: '-4px', right: '-4px',
-                    width: '26px', height: '26px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #8B1E3F 0%, #D4AF37 100%)',
-                    color: '#FFFFFF', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', border: '2px solid #FFFFFF'
-                  }}
-                >
-                  <Rocket size={13} />
-                </div>
-              </div>
-            </div>
-
-            <h3 style={{ margin: '0 0 6px 0', fontSize: '1.3rem', fontWeight: 900, color: '#261D20' }}>
-              Get 10× More Profile Views
-            </h3>
-            <p style={{ margin: 0, fontSize: '0.84rem', color: '#5C4751', lineHeight: 1.45, fontWeight: 500 }}>
-              Jump to the top of Discover for everyone near you. Get seen first, match faster.
-            </p>
-
-            {isBoostActive && (
-              <div
+            {/* Left Content */}
+            <div style={{ flex: 1, paddingRight: '12px', zIndex: 2 }}>
+              <h3
                 style={{
-                  marginTop: '10px',
-                  display: 'inline-flex', alignItems: 'center', gap: '6px',
-                  padding: '5px 14px', borderRadius: '9999px',
-                  background: 'rgba(139, 30, 63, 0.1)', border: '1px solid #8B1E3F',
-                  color: '#8B1E3F', fontSize: '0.78rem', fontWeight: 800
+                  fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  color: '#1F171A',
+                  margin: 0,
+                  lineHeight: 1.15
                 }}
               >
-                <Clock size={13} /> Boost Active Now
+                Get <span style={{ color: '#BE1846', fontWeight: 900 }}>10×</span> More Profile Views
+              </h3>
+              <p
+                style={{
+                  fontSize: '0.84rem',
+                  color: '#6B7280',
+                  margin: '10px 0 0 0',
+                  lineHeight: 1.45,
+                  fontWeight: 500
+                }}
+              >
+                Jump to the top of Discover for everyone near you. Get seen first, match faster.
+              </p>
+            </div>
+
+            {/* Right Card Graphic Illustration (SVG) */}
+            <div
+              style={{
+                width: '105px',
+                height: '105px',
+                position: 'relative',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {/* Soft Pink Background Glow & Sparkles */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '-10px',
+                  background: 'radial-gradient(circle, rgba(244, 114, 182, 0.35) 0%, transparent 70%)',
+                  borderRadius: '50%'
+                }}
+              />
+              <span style={{ position: 'absolute', top: '2px', right: '4px', fontSize: '1rem' }}>💖</span>
+              <span style={{ position: 'absolute', bottom: '12px', left: '-2px', fontSize: '0.9rem' }}>💕</span>
+
+              {/* White Profile Card Vector */}
+              <div
+                style={{
+                  width: '68px',
+                  height: '84px',
+                  background: '#FFFFFF',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 24px rgba(158, 42, 75, 0.18)',
+                  padding: '8px',
+                  boxSizing: 'border-box',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transform: 'rotate(-6deg)',
+                  position: 'relative',
+                  border: '1px solid rgba(244, 197, 207, 0.6)'
+                }}
+              >
+                <div
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #F472B6 0%, #BE1846 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FFFFFF'
+                  }}
+                >
+                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#801B38' }} />
+                </div>
+                <div style={{ width: '80%', height: '4px', background: '#FCE7F1', borderRadius: '9999px' }} />
+                <div style={{ width: '50%', height: '4px', background: '#FCE7F1', borderRadius: '9999px' }} />
               </div>
-            )}
+
+              {/* Upward Growth Pink Arrow */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '-4px',
+                  width: '32px',
+                  height: '48px',
+                  color: '#F43F5E',
+                  transform: 'rotate(12deg)'
+                }}
+              >
+                <svg viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+                  <path d="M4 32 C10 24, 14 16, 20 4 M12 4 L20 4 L20 12" stroke="#F43F5E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              {/* Deep Rose Rocket Emblem Badge */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '2px',
+                  right: '2px',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #BE1846 0%, #801B38 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFFFFF',
+                  boxShadow: '0 4px 12px rgba(190, 24, 70, 0.4)',
+                  border: '2px solid #FFFFFF'
+                }}
+              >
+                <Rocket size={16} fill="#FFFFFF" color="#FFFFFF" style={{ transform: 'rotate(45deg)' }} />
+              </div>
+            </div>
           </div>
 
-          {/* Package cards */}
-          <div>
-            <div style={{ fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8B1E3F', marginBottom: '8px' }}>
-              Choose Package
+          {/* Active Boost Alert Pill (If boost is running) */}
+          {isBoostActive && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                borderRadius: '9999px',
+                background: '#FCE7F1',
+                border: '1px solid #9E2A4B',
+                color: '#9E2A4B',
+                fontSize: '0.82rem',
+                fontWeight: 800
+              }}
+            >
+              <Zap size={15} fill="#9E2A4B" />
+              <span>Boost Active Now! Your profile is currently receiving 10× visibility.</span>
             </div>
+          )}
+
+          {/* Package Selection Section: "👑 Choose Package" */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <span style={{ fontSize: '1.25rem' }}>👑</span>
+              <h4
+                style={{
+                  fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+                  fontSize: '1.35rem',
+                  fontWeight: 800,
+                  color: '#1F171A',
+                  margin: 0
+                }}
+              >
+                Choose Package
+              </h4>
+            </div>
+
+            {/* 3 Package Cards Grid */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${packages.length}, minmax(0, 1fr))`,
+                gridTemplateColumns: 'repeat(3, 1fr)',
                 gap: '10px'
               }}
             >
-              {packages.map((p, i) => {
-                const isSel = p.id === selectedId;
-                const big = cardBig(p);
-                const sub = cardSub(p);
-                const disc = cardDiscount(p);
+              {/* Option 1: Quick (30 Minutes) */}
+              <div
+                onClick={() => setSelectedId('boost_30m')}
+                role="button"
+                tabIndex={0}
+                style={{
+                  borderRadius: '24px',
+                  border: selectedId === 'boost_30m' ? '2px solid #9E2A4B' : '1.5px solid #F3E8EE',
+                  background: selectedId === 'boost_30m' ? 'linear-gradient(180deg, #FFF9FA 0%, #FFFFFF 100%)' : '#FFFFFF',
+                  padding: '16px 8px 14px 8px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  position: 'relative',
+                  boxShadow: selectedId === 'boost_30m' ? '0 8px 24px rgba(158, 42, 75, 0.12)' : 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span
+                  style={{
+                    background: '#FCE7F1',
+                    color: '#9E2A4B',
+                    padding: '3px 12px',
+                    borderRadius: '9999px',
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  QUICK
+                </span>
+                <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1F171A', margin: '12px 0 0 0', lineHeight: 1 }}>
+                  30
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#6B7280', fontWeight: 500, margin: '2px 0 10px 0' }}>
+                  Minutes
+                </div>
+                <div style={{ width: '40px', height: '1px', background: '#F3E8EE', margin: '0 auto 10px auto' }} />
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#9E2A4B' }}>₹100</div>
+                <div style={{ fontSize: '0.72rem', color: '#9CA3AF', fontWeight: 500, marginTop: '2px' }}>₹200/hr</div>
+                <div style={{ height: '22px', marginTop: '10px' }} />
+              </div>
 
-                return (
-                  <div
-                    key={p.id}
-                    onClick={() => setSelectedId(p.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedId(p.id); } }}
+              {/* Option 2: Most Popular (2 Hours) */}
+              <div
+                onClick={() => setSelectedId('boost_2h')}
+                role="button"
+                tabIndex={0}
+                style={{
+                  borderRadius: '24px',
+                  border: selectedId === 'boost_2h' ? '2px solid #9E2A4B' : '1.5px solid #F3E8EE',
+                  background: selectedId === 'boost_2h' ? 'linear-gradient(180deg, #FFF9FA 0%, #FFFFFF 100%)' : '#FFFFFF',
+                  padding: '16px 6px 14px 6px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  position: 'relative',
+                  boxShadow: selectedId === 'boost_2h' ? '0 8px 24px rgba(158, 42, 75, 0.12)' : 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span
+                  style={{
+                    background: '#9E2A4B',
+                    color: '#FFFFFF',
+                    padding: '4px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.64rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.03em',
+                    whiteSpace: 'nowrap',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px'
+                  }}
+                >
+                  ✦ MOST POPULAR ✦
+                </span>
+                <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1F171A', margin: '12px 0 0 0', lineHeight: 1 }}>
+                  2
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#6B7280', fontWeight: 500, margin: '2px 0 10px 0' }}>
+                  Hours
+                </div>
+                <div style={{ width: '40px', height: '1px', background: '#F3E8EE', margin: '0 auto 10px auto' }} />
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#9E2A4B' }}>₹250</div>
+                <div style={{ fontSize: '0.72rem', color: '#9CA3AF', fontWeight: 500, marginTop: '2px' }}>₹125/hr</div>
+                <div style={{ marginTop: '10px' }}>
+                  <span
                     style={{
-                      borderRadius: '20px',
-                      overflow: 'hidden',
-                      border: isSel ? '2px solid #8B1E3F' : '1.5px solid #F4C5CF',
-                      background: isSel ? 'linear-gradient(180deg, #FFF4F6 0%, #FFFFFF 100%)' : '#FFFFFF',
-                      boxShadow: isSel ? '0 8px 24px rgba(139, 30, 63, 0.16)' : '0 2px 6px rgba(0,0,0,0.03)',
-                      display: 'flex', flexDirection: 'column', cursor: 'pointer',
-                      transition: 'all 0.2s ease', outline: 'none', userSelect: 'none'
+                      background: '#FCE7F1',
+                      color: '#9E2A4B',
+                      padding: '3px 10px',
+                      borderRadius: '9999px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    <div
-                      style={{
-                        padding: '5px 4px', textAlign: 'center',
-                        fontSize: '0.68rem', fontWeight: 800,
-                        background: isSel ? 'linear-gradient(135deg, #8B1E3F 0%, #681028 100%)' : 'rgba(244, 197, 207, 0.35)',
-                        color: isSel ? '#FFFFFF' : '#7D1730',
-                        letterSpacing: '0.02em', textTransform: 'uppercase'
-                      }}
-                    >
-                      {cardLabel(p, i)}
-                    </div>
+                    Save 38%
+                  </span>
+                </div>
+              </div>
 
-                    <div style={{ padding: '14px 8px 12px 8px', textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#261D20', lineHeight: 1 }}>{big.n}</div>
-                      <div style={{ fontSize: '0.76rem', color: '#5C4751', fontWeight: 700, marginBottom: '6px' }}>{big.unit}</div>
-                      <div style={{ fontSize: '1.05rem', fontWeight: 900, color: isSel ? '#8B1E3F' : '#261D20' }}>₹{p.coinPrice}</div>
-                      <div style={{ fontSize: '0.68rem', color: '#8F7B85', minHeight: '14px', fontWeight: 600 }}>{sub}</div>
-                      <div style={{ minHeight: '22px', marginTop: '6px' }}>
-                        {disc > 0 && (
-                          <span style={{ padding: '2px 8px', borderRadius: '9999px', fontSize: '0.68rem', fontWeight: 800, background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0' }}>
-                            Save {disc}%
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Option 3: Best Value (24 Hours) */}
+              <div
+                onClick={() => setSelectedId('boost_24h')}
+                role="button"
+                tabIndex={0}
+                style={{
+                  borderRadius: '24px',
+                  border: selectedId === 'boost_24h' ? '2px solid #9E2A4B' : '1.5px solid #F3E8EE',
+                  background: selectedId === 'boost_24h' ? 'linear-gradient(180deg, #FFF9FA 0%, #FFFFFF 100%)' : '#FFFFFF',
+                  padding: '16px 8px 14px 8px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  position: 'relative',
+                  boxShadow: selectedId === 'boost_24h' ? '0 8px 24px rgba(158, 42, 75, 0.12)' : 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span
+                  style={{
+                    background: '#FCE7F1',
+                    color: '#9E2A4B',
+                    padding: '3px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  BEST VALUE
+                </span>
+                <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1F171A', margin: '12px 0 0 0', lineHeight: 1 }}>
+                  24
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#6B7280', fontWeight: 500, margin: '2px 0 10px 0' }}>
+                  Hours
+                </div>
+                <div style={{ width: '40px', height: '1px', background: '#F3E8EE', margin: '0 auto 10px auto' }} />
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#9E2A4B' }}>₹600</div>
+                <div style={{ fontSize: '0.72rem', color: '#9CA3AF', fontWeight: 500, marginTop: '2px' }}>₹25/hr</div>
+                <div style={{ marginTop: '10px' }}>
+                  <span
+                    style={{
+                      background: '#D1FAE5',
+                      color: '#047857',
+                      padding: '3px 10px',
+                      borderRadius: '9999px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Save 88%
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Plans upsell */}
+          {/* "∞ OR GO UNLIMITED WITH PLANS" Card Box */}
           <div
             style={{
-              background: '#FFFFFF', borderRadius: '20px',
-              border: '1.5px solid #FCE7F3', padding: '12px 14px',
-              display: 'flex', flexDirection: 'column', gap: '8px'
+              background: '#FFFDFE',
+              borderRadius: '20px',
+              border: '1.5px solid #FCE7F1',
+              padding: '16px 14px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9A7B2C' }}>
-                Or Go Unlimited With Plans
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '1.1rem', color: '#9E2A4B', fontWeight: 800, lineHeight: 1 }}>∞</span>
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.06em',
+                  color: '#9E2A4B',
+                  textTransform: 'uppercase'
+                }}
+              >
+                OR GO UNLIMITED WITH PLANS
               </span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               {UPSELL.map((u) => (
                 <button
                   key={u.tab}
                   type="button"
                   onClick={() => openPlans(u.tab)}
                   style={{
-                    border: '1px solid #F4C5CF', borderRadius: '14px', padding: '10px 8px',
-                    background: 'linear-gradient(135deg, #FFFDFE 0%, #FFF8FA 100%)',
-                    color: '#261D20', cursor: 'pointer', display: 'flex',
-                    flexDirection: 'column', alignItems: 'center', gap: '2px', transition: 'all 0.15s ease'
+                    border: '1px solid #FCE7F1',
+                    borderRadius: '16px',
+                    padding: '12px 10px',
+                    background: '#FFFFFF',
+                    color: '#1F171A',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.15s ease'
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#F472B6')}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#FCE7F1')}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.76rem', fontWeight: 800, color: '#8B1E3F' }}>
-                    {u.icon} {u.label}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', fontWeight: 800, color: '#1F171A' }}>
+                    <Crown size={15} color="#9E2A4B" /> {u.label}
                   </span>
-                  <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#5C4751' }}>
-                    <span style={{ textDecoration: 'line-through', opacity: 0.55, marginRight: '4px' }}>₹{u.regular}</span>
-                    <span style={{ color: '#059669', fontWeight: 800 }}>₹{u.offer}</span>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#6B7280' }}>
+                    <span style={{ textDecoration: 'line-through', color: '#9CA3AF', marginRight: '4px', fontSize: '0.78rem' }}>₹{u.regular}</span>
+                    <span style={{ color: '#BE1846', fontWeight: 800, fontSize: '0.88rem' }}>₹{u.offer}</span>
                   </span>
                 </button>
               ))}
@@ -372,14 +626,14 @@ export const BoostModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Modal Bottom Action Button */}
         <div
           style={{
             flexShrink: 0,
-            padding: '12px 18px calc(14px + env(safe-area-inset-bottom, 0px)) 18px',
-            background: '#FFFFFF',
-            borderTop: '1px solid rgba(244, 197, 207, 0.45)',
-            display: 'flex', flexDirection: 'column', gap: '8px'
+            paddingTop: '14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
           }}
         >
           {tokens > 0 && !isBoostActive && (
@@ -388,9 +642,16 @@ export const BoostModal: React.FC = () => {
               onClick={handleActivateToken}
               disabled={isActivating}
               style={{
-                width: '100%', border: '1.5px solid #8B1E3F', borderRadius: '9999px',
-                padding: '11px', background: '#FBEDEF', color: '#8B1E3F',
-                fontSize: '0.88rem', fontWeight: 800, cursor: 'pointer'
+                width: '100%',
+                border: '1.5px solid #9E2A4B',
+                borderRadius: '9999px',
+                padding: '12px',
+                background: '#FCE7F1',
+                color: '#9E2A4B',
+                fontSize: '0.88rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                marginBottom: '4px'
               }}
             >
               Activate Free Token ({tokens} Available)
@@ -402,22 +663,32 @@ export const BoostModal: React.FC = () => {
             onClick={handleBuy}
             disabled={isActivating}
             style={{
-              width: '100%', border: 'none', borderRadius: '9999px',
-              padding: '14px 20px',
-              background: 'linear-gradient(135deg, #A82046 0%, #8B1E3F 50%, #681028 100%)',
-              color: '#FFFFFF', fontSize: '0.96rem', fontWeight: 900,
+              width: '100%',
+              height: '54px',
+              border: 'none',
+              borderRadius: '9999px',
+              background: 'linear-gradient(135deg, #A31D45 0%, #801B38 100%)',
+              color: '#FFFFFF',
+              fontSize: '0.96rem',
+              fontWeight: 800,
               cursor: isActivating ? 'wait' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              boxShadow: '0 8px 24px rgba(139, 30, 63, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              boxShadow: '0 8px 24px rgba(163, 29, 69, 0.35)',
               transition: 'all 0.2s ease'
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.015)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            <Zap size={17} fill="#FFFFFF" />
-            <span>{isActivating ? 'Processing...' : `Get ${selectedPkg?.name} · ₹${selectedPkg?.coinPrice}`}</span>
-            <ArrowRight size={16} />
+            <Zap size={18} fill="#FFFFFF" color="#FFFFFF" />
+            <span>{getButtonText()}</span>
+            <ArrowRight size={18} strokeWidth={2.5} />
           </button>
         </div>
       </div>
     </div>
   );
 };
+
