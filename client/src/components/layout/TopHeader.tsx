@@ -45,10 +45,51 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   const isHome = currentView === 'discover' || currentView === 'home';
   const walletBal = currentUser.walletBalance || 0;
 
+  // Compute page heading title according to MIORA global header guidelines
+  const getDisplayHeading = () => {
+    if (title) return title;
+    switch (currentView) {
+      case 'home':
+      case 'discover':
+        return 'HOME';
+      case 'chat-list':
+      case 'chat':
+        return 'CHATS';
+      case 'likes':
+        return 'LIKES';
+      case 'matches':
+        return 'MATCHES';
+      case 'my-profile':
+        return 'PROFILE';
+      case 'games':
+      case 'play':
+        return 'GAMES';
+      case 'notifications':
+        return 'NOTIFICATIONS';
+      case 'feed':
+        return 'FEED';
+      case 'rooms':
+        return 'ROOMS';
+      case 'wallet':
+        return 'WALLET';
+      case 'edit-profile':
+        return 'EDIT PROFILE';
+      case 'settings':
+        return 'SETTINGS';
+      case 'blocked-users':
+        return 'BLOCKED PROFILES';
+      default:
+        return 'MIORA';
+    }
+  };
+
+  const displayHeading = getDisplayHeading();
+
   return (
     <header
       style={{
-        padding: '10px 14px',
+        height: '56px',
+        padding: '0 14px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -57,28 +98,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         position: 'sticky',
         top: 0,
         zIndex: 30,
-        gap: '8px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        width: '100%'
       }}
     >
-      {/* Left side: MIORA Chats title on Chat List, MIORA Logo elsewhere, or Back Button on subpages */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, minWidth: 0 }}>
-        {currentView === 'chat-list' && !showBack ? (
-          <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
-            <h1
-              style={{
-                fontSize: '1.22rem',
-                fontWeight: 900,
-                color: '#FFFFFF',
-                margin: 0,
-                whiteSpace: 'nowrap',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              MIORA Chats
-            </h1>
-          </div>
-        ) : showBack ? (
+      {/* Left side: Back Button on subpages, or MIORA Logo on main pages */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', zIndex: 2, position: 'relative', flexShrink: 0 }}>
+        {showBack ? (
           <button
             onClick={handleBack}
             style={{
@@ -109,27 +135,54 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         )}
       </div>
 
-      {/* Center: Title if subpage. Chat list title is rendered on the left to avoid duplicate headings. */}
-      {!isHome && title && currentView !== 'chat-list' && (
-        <div style={{ textAlign: 'center', flex: 1, minWidth: 0, overflow: 'hidden' }}>
-          <h1
-            style={{
-              fontSize: '1.1rem',
-              fontWeight: 800,
-              color: '#FFFFFF',
-              margin: 0,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}
-          >
-            {title}
-          </h1>
-        </div>
-      )}
+      {/* Center: Horizontally and vertically centered page heading (relative to the entire header/viewport width) */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1,
+          pointerEvents: 'none',
+          textAlign: 'center',
+          maxWidth: 'calc(100% - 170px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '1.12rem',
+            fontWeight: 900,
+            color: '#FFFFFF',
+            margin: 0,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            pointerEvents: 'auto',
+            lineHeight: 1.2
+          }}
+        >
+          {displayHeading}
+        </h1>
+      </div>
 
-      {/* Right side: Wallet Pill (on EVERY Page) + Search + Preferences/Settings */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end', flexShrink: 0, marginLeft: 'auto' }}>
+      {/* Right side: Wallet Pill + Search + Preferences/Settings */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          justifyContent: 'flex-end',
+          marginLeft: 'auto',
+          zIndex: 2,
+          position: 'relative',
+          flexShrink: 0
+        }}
+      >
         {/* Global Wallet Pill (Mandatory on EVERY Single Page) */}
         <button
           onClick={openUpgradeModal}

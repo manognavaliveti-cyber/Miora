@@ -91,22 +91,27 @@ export const DesktopNav: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'row',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          position: 'relative'
         }}
       >
         {/* Brand Wordmark & Tagline: MIORA ♡ */}
         <div
           onClick={() => navigateToTab('home')}
-          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'transform var(--transition-fast)' }}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'transform var(--transition-fast)', zIndex: 2, position: 'relative' }}
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         >
           <MioraLogo size={46} showTagline={true} showWordmark={true} vertical={false} />
         </div>
 
-      {/* Center Navigation Tabs (Discover, Feed, Matches, Messages, Rooms, Play, Profile) */}
+      {/* Center Navigation Tabs (Discover, Feed, Matches, Messages, Rooms, Play, Profile) - Perfectly Centered */}
       <nav
         style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 2,
           display: 'flex',
           alignItems: 'center',
           gap: 'clamp(2px, 0.4vw, 6px)',
@@ -185,7 +190,7 @@ export const DesktopNav: React.FC = () => {
       </nav>
 
       {/* Right Controls: Search, Create, Coins Pill, Notifications, Settings, Profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(4px, 0.6vw, 8px)', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(4px, 0.6vw, 8px)', flexShrink: 0, zIndex: 2, position: 'relative' }}>
         {/* Global Search Button */}
         <button
           onClick={openSearchModal}
