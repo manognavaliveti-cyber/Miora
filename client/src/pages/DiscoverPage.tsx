@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { calculateCompatibilityScore } from '../utils/profileUtils';
 import { EditorialProfileView } from '../components/discover/EditorialProfileView';
+import { VibeMatchModal } from '../components/matches/VibeMatchModal';
 import { Profile } from '../types';
 
 export const DiscoverPage: React.FC = () => {
@@ -22,6 +23,9 @@ export const DiscoverPage: React.FC = () => {
   const [showCrossAnim, setShowCrossAnim] = useState(false);
   const [shownHighMatchFor, setShownHighMatchFor] = useState<string | null>(null);
   const [upgradeShownThisSession, setUpgradeShownThisSession] = useState(false);
+  const [vibeMatchProfile, setVibeMatchProfile] = useState<Profile | null>(null);
+  const [vibeMatchScore, setVibeMatchScore] = useState(0);
+  const [showVibeMatchModal, setShowVibeMatchModal] = useState(false);
   const exitTimer = useRef<number | null>(null);
 
   const FREE_DAILY_LIMIT = 30;
@@ -106,6 +110,15 @@ export const DiscoverPage: React.FC = () => {
     }
     incrementDailySwipeCount();
     const id = topProfile.id;
+
+    // Capture vibe score before the profile is swiped away
+    const comp = calculateCompatibilityScore(currentUser, topProfile);
+    const isHighVibe = !comp.isIncomplete && comp.score >= 90 && (direction === 'right' || direction === 'up');
+    if (isHighVibe) {
+      setVibeMatchProfile({ ...topProfile });
+      setVibeMatchScore(comp.score);
+    }
+
     setExitDirection(direction);
     if (direction === 'right' || direction === 'up') {
       setShowHeartAnim(true);
@@ -120,6 +133,11 @@ export const DiscoverPage: React.FC = () => {
       else handleLike(id, true);
       setExitDirection(null);
       exitTimer.current = null;
+
+      // Show vibe match modal after the card exits for 90%+ matches
+      if (isHighVibe) {
+        setTimeout(() => setShowVibeMatchModal(true), 200);
+      }
     }, 360);
   };
 
@@ -223,8 +241,9 @@ export const DiscoverPage: React.FC = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           width: 100%;
+          height: 100%;
           height: 100%;
           min-height: 0;
           box-sizing: border-box;
@@ -341,6 +360,31 @@ export const DiscoverPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Vibe Match Modal — shown for 90%+ compatibility matches */}
+      {vibeMatchProfile && (
+        <VibeMatchModal
+          isOpen={showVibeMatchModal}
+          currentUserPhoto={
+            currentUser.photos?.[0] ||
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
+          }
+          currentUserName={currentUser.name || 'You'}
+          matchedProfile={vibeMatchProfile}
+          vibeScore={vibeMatchScore}
+          onStartChat={() => {
+            setShowVibeMatchModal(false);
+            if (vibeMatchProfile.isRealUser) {
+              startDirectMessage(vibeMatchProfile);
+            }
+            setVibeMatchProfile(null);
+          }}
+          onDismiss={() => {
+            setShowVibeMatchModal(false);
+            setVibeMatchProfile(null);
+          }}
+        />
+      )}
     </>
   );
 };
