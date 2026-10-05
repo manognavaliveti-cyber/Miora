@@ -147,6 +147,7 @@ export const MioraLogo: React.FC<MioraLogoProps> = ({
 
           {showTagline && (
             <span
+              className="miora-logo-tagline"
               style={{
                 fontFamily: 'var(--font-primary)',
                 fontSize: taglineFontSize,

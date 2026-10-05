@@ -164,12 +164,29 @@ p, span, label, div {
     max-width: 100%;
   }
 
+  .app-content.discover-page-active {
+    padding: 0 !important;
+    height: calc(100dvh - 60px) !important;
+    max-height: calc(100dvh - 60px) !important;
+    overflow: hidden !important;
+  }
+
   .app-content.chat-page-active {
     padding: 0 !important;
     padding-bottom: 0 !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
     overflow: hidden !important;
+  }
+
+  @media (max-width: 767px) {
+    .app-content.discover-page-active {
+      padding: 0 !important;
+      padding-bottom: 0 !important;
+      height: calc(100dvh - 58px - 64px - env(safe-area-inset-bottom, 0px)) !important;
+      max-height: calc(100dvh - 58px - 64px - env(safe-area-inset-bottom, 0px)) !important;
+      overflow: hidden !important;
+    }
   }
 
   .desktop-chat-container {

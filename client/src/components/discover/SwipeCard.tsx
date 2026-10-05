@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Profile } from '../../types';
-import { Heart, X, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { VerifiedBadge } from '../common/VerifiedBadge';
 import { useApp } from '../../context/AppContext';
 import { calculateCompatibilityScore } from '../../utils/profileUtils';
@@ -109,14 +109,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     profile.photos[photoIndex] ||
     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80';
 
-  // Stamp opacities
+  // No stamp overlays — feedback is handled by the center popup in DiscoverPage
   const isExiting = isTopCard && !!exitDirection;
-  const likeOpacity = isExiting
-    ? (exitDirection === 'right' ? 1 : 0)
-    : Math.min(Math.max(dragOffset.x / 80, 0), 1);
-  const passOpacity = isExiting
-    ? (exitDirection === 'left' ? 1 : 0)
-    : Math.min(Math.max(-dragOffset.x / 80, 0), 1);
 
   // City only (e.g. "Hyderabad, India" -> "Hyderabad")
   const city = (profile.location || '').split(',')[0].trim();
@@ -187,9 +181,9 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           borderRadius: '32px',
           overflow: 'hidden',
           boxShadow: isTopCard
-            ? '0 16px 40px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.06)'
-            : '0 6px 18px rgba(0, 0, 0, 0.08)',
-          border: '1px solid rgba(0, 0, 0, 0.06)'
+            ? '0 20px 56px rgba(0, 0, 0, 0.22), 0 6px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,255,0.08)'
+            : '0 8px 20px rgba(0, 0, 0, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.06)'
         }}
       >
         {/* Profile Image Background */}
@@ -204,66 +198,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           }}
         />
 
-        {/* Swipe Overlay Stamps */}
-        {isTopCard && (
-          <>
-            {/* LIKE Stamp (Appears on top-right during right swipe) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '36px',
-                right: '24px',
-                border: '3.5px solid #10B981',
-                color: '#10B981',
-                borderRadius: '16px',
-                padding: '8px 22px',
-                fontSize: '1.5rem',
-                fontWeight: 900,
-                transform: 'rotate(12deg)',
-                opacity: likeOpacity,
-                pointerEvents: 'none',
-                zIndex: 20,
-                background: 'rgba(16, 185, 129, 0.18)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 8px 24px rgba(16, 185, 129, 0.3)'
-              }}
-            >
-              <Heart size={24} fill="#10B981" /> LIKE
-            </div>
-
-            {/* PASS / CROSS Stamp (Appears on top-left during left swipe) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '36px',
-                left: '24px',
-                border: '3.5px solid #F43F5E',
-                color: '#F43F5E',
-                borderRadius: '16px',
-                padding: '8px 22px',
-                fontSize: '1.5rem',
-                fontWeight: 900,
-                transform: 'rotate(-12deg)',
-                opacity: passOpacity,
-                pointerEvents: 'none',
-                zIndex: 20,
-                background: 'rgba(244, 63, 94, 0.18)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 8px 24px rgba(244, 63, 94, 0.3)'
-              }}
-            >
-              <X size={26} strokeWidth={3} /> PASS
-            </div>
-          </>
-        )}
+        {/* No drag stamps — clean card surface */}
 
         {/* Soft top scrim so the location text blends into the photo without a box */}
         <div
@@ -272,8 +207,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             top: 0,
             left: 0,
             right: 0,
-            height: '110px',
-            background: 'linear-gradient(to bottom, rgba(16, 6, 12, 0.42) 0%, rgba(16, 6, 12, 0) 100%)',
+            height: '130px',
+            background: 'linear-gradient(to bottom, rgba(8, 3, 6, 0.55) 0%, rgba(8, 3, 6, 0) 100%)',
             pointerEvents: 'none',
             zIndex: 3
           }}
@@ -369,8 +304,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
             bottom: 0,
             left: 0,
             right: 0,
-            padding: `32px ${CARD_PAD}px ${CARD_PAD}px ${CARD_PAD}px`,
-            background: 'linear-gradient(to top, rgba(16, 6, 12, 0.92) 0%, rgba(16, 6, 12, 0.55) 60%, rgba(0, 0, 0, 0) 100%)',
+            padding: `30px ${CARD_PAD}px 16px ${CARD_PAD}px`,
+            background: 'linear-gradient(to top, rgba(10, 4, 8, 0.96) 0%, rgba(10, 4, 8, 0.72) 50%, rgba(0, 0, 0, 0) 100%)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
@@ -381,16 +316,17 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {/* Name, Age & Verified Badge */}
           <h2
             style={{
-              fontSize: '1.75rem',
+              fontSize: '1.6rem',
               fontWeight: 900,
               color: '#FFFFFF',
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.03em',
               margin: 0,
-              lineHeight: 1.15,
+              lineHeight: 1.1,
               display: 'flex',
               alignItems: 'center',
               flexWrap: 'wrap',
-              gap: '6px'
+              gap: '7px',
+              textShadow: '0 2px 12px rgba(0,0,0,0.4)'
             }}
           >
             <span>{profile.name}, {profile.age}</span>
@@ -401,25 +337,35 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           {profile.occupation && (
             <div
               style={{
-                fontSize: '0.88rem',
-                color: 'rgba(255, 255, 255, 0.85)',
+                fontSize: '0.9rem',
+                color: 'rgba(255, 255, 255, 0.8)',
                 fontWeight: 500,
-                margin: '3px 0 0 0',
-                lineHeight: 1.2
+                margin: '4px 0 0 0',
+                lineHeight: 1.2,
+                letterSpacing: '0.01em'
               }}
             >
               {profile.occupation}
             </div>
           )}
 
-          {/* Bottom Bar Row: Vibe Match Pill + Details (i) Button */}
+          {/* Divider line */}
+          <div
+            style={{
+              width: '100%',
+              height: '1px',
+              background: 'rgba(255,255,255,0.12)',
+              margin: '12px 0 10px 0'
+            }}
+          />
+
+          {/* Bottom Bar Row: Vibe Match Pill */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              width: '100%',
-              marginTop: '12px'
+              width: '100%'
             }}
           >
             {/* Left: Vibe Match ring or Incomplete status */}

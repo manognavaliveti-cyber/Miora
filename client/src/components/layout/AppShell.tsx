@@ -147,7 +147,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         )}
 
         {/* Dynamic Page Content */}
-        <main className={`app-content ${isChat ? 'chat-page-active' : currentView === 'chat-list' ? 'chat-list-page-active' : ''}`}>{children}</main>
+        <main className={`app-content ${isChat ? 'chat-page-active' : currentView === 'chat-list' ? 'chat-list-page-active' : ''} ${currentView === 'home' || currentView === 'discover' ? 'discover-page-active' : ''}`}>{children}</main>
 
         {/* Global Modals & Fullscreen Overlays */}
         <MutualMatchModal />

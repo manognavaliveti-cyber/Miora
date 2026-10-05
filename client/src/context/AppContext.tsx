@@ -1395,6 +1395,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [activeCall?.status]);
 
   const refreshData = async () => {
+    // Clear the local pass/like history so the full profile deck is restored
+    localStorage.removeItem('miora_passes');
+    localStorage.removeItem('miora_likes');
+    // Clear all daily swipe counters so limit resets on manual refresh
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith('miora_daily_swipes_'))
+      .forEach((k) => localStorage.removeItem(k));
     await loadInitialData();
   };
 
@@ -1721,14 +1728,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Swiping & Matching
   const handleLike = async (profileId: string, isSuperLike = false) => {
-    // 1. Check free swipe limits
-    if (!currentUser.isPremium && (currentUser.dailySwipesRemaining ?? 20) <= 0) {
-      showToast('Daily swipe limit reached! Upgrade to MIORA Gold for Unlimited Swipes 🚀');
-      openUpgradeModal();
-      return;
-    }
-
-    // 2. Check super like limits
+    // Swipe limit is enforced in DiscoverPage before calling this function.
+    // Only check super-like quota here.
     if (isSuperLike && !currentUser.isPremium && (currentUser.superLikesRemaining ?? 1) <= 0) {
       showToast('Out of Super Likes! Get more or upgrade to VIP ⭐');
       openBoostModal();
@@ -1740,12 +1741,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     setProfiles((prev) => prev.filter((p) => p.id !== profileId));
 
-    // Decrement swipe counter if not premium
-    if (!currentUser.isPremium) {
+    if (!currentUser.isPremium && isSuperLike) {
       setCurrentUser((prev) => ({
         ...prev,
-        dailySwipesRemaining: Math.max(0, (prev.dailySwipesRemaining ?? 20) - 1),
-        superLikesRemaining: isSuperLike ? Math.max(0, (prev.superLikesRemaining ?? 1) - 1) : prev.superLikesRemaining
+        superLikesRemaining: Math.max(0, (prev.superLikesRemaining ?? 1) - 1)
       }));
     }
 
@@ -1780,21 +1779,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const handlePass = async (profileId: string) => {
-    // Check free swipe limits
-    if (!currentUser.isPremium && (currentUser.dailySwipesRemaining ?? 20) <= 0) {
-      showToast('Daily swipe limit reached! Upgrade to MIORA Gold for Unlimited Swipes 🚀');
-      openUpgradeModal();
-      return;
-    }
-
+    // Swipe limit is enforced in DiscoverPage before calling this function.
     setProfiles((prev) => prev.filter((p) => p.id !== profileId));
-
-    if (!currentUser.isPremium) {
-      setCurrentUser((prev) => ({
-        ...prev,
-        dailySwipesRemaining: Math.max(0, (prev.dailySwipesRemaining ?? 20) - 1)
-      }));
-    }
 
     try {
       await apiService.passProfile(profileId);
