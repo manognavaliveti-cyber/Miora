@@ -26,6 +26,7 @@ export const DiscoverPage: React.FC = () => {
   const [vibeMatchProfile, setVibeMatchProfile] = useState<Profile | null>(null);
   const [vibeMatchScore, setVibeMatchScore] = useState(0);
   const [showVibeMatchModal, setShowVibeMatchModal] = useState(false);
+  const [swipeCount, setSwipeCount] = useState(0);
   const exitTimer = useRef<number | null>(null);
 
   const FREE_DAILY_LIMIT = 30;
@@ -138,6 +139,7 @@ export const DiscoverPage: React.FC = () => {
       if (isHighVibe) {
         setTimeout(() => setShowVibeMatchModal(true), 200);
       }
+      setSwipeCount(prev => prev + 1);
     }, 360);
   };
 
@@ -299,6 +301,7 @@ export const DiscoverPage: React.FC = () => {
           <EditorialProfileView
             key={topProfile.id}
             profile={topProfile}
+            stackIndex={swipeCount}
             onSwipe={requestSwipe}
             onMessage={() => {
               if (topProfile.isRealUser) startDirectMessage(topProfile);

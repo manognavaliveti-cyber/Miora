@@ -3,7 +3,7 @@ import { Profile } from '../../types';
 import {
   Heart, X, Sparkles, MapPin, Briefcase, GraduationCap,
   Check, MessageCircle, Ruler, Wine, Cigarette, Dumbbell,
-  Star, Target, ShieldCheck, ChevronDown
+  Star, Target, ShieldCheck, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { VerifiedBadge } from '../common/VerifiedBadge';
 import { calculateCompatibilityScore, calculateAgeFromDob } from '../../utils/profileUtils';
@@ -26,6 +26,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
   onSwipe,
   onMessage,
   isTopCard = true,
+  stackIndex = 0,
   exitDirection = null,
   isModalView = false,
   onClose
@@ -34,11 +35,15 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
   const [photoIndex, setPhotoIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [isExpanded, setIsExpanded] = useState<boolean>(isModalView);
+  const [fullscreenPhotoUrl, setFullscreenPhotoUrl] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const startPos = useRef({ x: 0, y: 0 });
   const dragLockedRef = useRef<'swipe' | 'scroll' | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const lastToggleTime = useRef(0);
+  const [stickyStartOffset, setStickyStartOffset] = useState(380);
 
   const photos = profile.photos && profile.photos.length > 0
     ? profile.photos
@@ -68,6 +73,12 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
       scrollContainerRef.current.scrollTop = 0;
     }
   }, [profile.id, isModalView]);
+
+  useEffect(() => {
+    if (isExpanded && viewportRef.current) {
+      setStickyStartOffset(viewportRef.current.offsetHeight);
+    }
+  }, [isExpanded, profile.id]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollY(e.currentTarget.scrollTop);
@@ -127,6 +138,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
       onSwipe('up');
     } else if (isTap) {
       // Tap on card photo -> expand to details view 100% reliably!
+      lastToggleTime.current = Date.now();
       setIsExpanded(true);
     }
 
@@ -171,6 +183,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
     } else if (dragOffset.y < -110) {
       onSwipe('up');
     } else if (isTap) {
+      lastToggleTime.current = Date.now();
       setIsExpanded(true);
     }
 
@@ -179,7 +192,8 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
   };
 
   // Scroll Interpolation Values
-  const scrollProgress = Math.min(1, Math.max(0, scrollY / 150));
+  const textShrinkProgress = Math.min(1, Math.max(0, (scrollY - (stickyStartOffset - 150)) / 150));
+  const cardProgress = Math.min(1, Math.max(0, scrollY / (stickyStartOffset || 350)));
   const isExiting = isTopCard && !!exitDirection;
   const rotation = isTopCard ? dragOffset.x * 0.08 : 0;
 
@@ -197,9 +211,12 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
     opacityVal = 0;
   }
 
+  const isRedTheme = (stackIndex || 0) % 2 !== 0;
+  const themeClass = isExpanded ? (isRedTheme ? 'theme-expanded-red' : 'theme-expanded-black') : 'theme-unexpanded';
+
   return (
     <div
-      className="editorial-profile-root"
+      className={`editorial-profile-root ${themeClass}`}
       style={{
         width: '100%',
         height: '100%',
@@ -207,13 +224,53 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
-        background: '#FFFFFF',
         userSelect: 'none'
       }}
     >
       <style>{`
         .editorial-profile-root {
           --editorial-max-w: 520px;
+          --bg-color: #FFFFFF;
+          --text-primary: #1F161A;
+          --text-secondary: #8B1E3F;
+          --text-tertiary: #7A5565;
+          --card-bg: #FFFFFF;
+          --card-border: rgba(244, 63, 94, 0.12);
+          --pill-bg: #FFF5F7;
+          --pill-text: #5C2E3E;
+          --pill-border: rgba(139, 30, 63, 0.12);
+          --title-gradient: linear-gradient(135deg, #1A040B 0%, #4D091A 45%, #8B1E3F 100%);
+          --header-bg: #FFFFFF;
+          background: var(--bg-color);
+          transition: background 0.4s ease;
+        }
+
+        .editorial-profile-root.theme-expanded-black {
+          background: linear-gradient(to bottom, #0C0407 0%, #22050E 50%, #0C0407 100%);
+          --text-primary: #FFFFFF;
+          --text-secondary: #FFB3C6;
+          --text-tertiary: #FF8DA1;
+          --card-bg: rgba(25, 10, 15, 0.5);
+          --card-border: rgba(225, 29, 72, 0.25);
+          --pill-bg: rgba(225, 29, 72, 0.15);
+          --pill-text: #FFB3C6;
+          --pill-border: rgba(225, 29, 72, 0.3);
+          --title-gradient: linear-gradient(135deg, #FFFFFF 0%, #FFB3C6 45%, #E11D48 100%);
+          --header-bg: #0C0407;
+        }
+
+        .editorial-profile-root.theme-expanded-red {
+          background: linear-gradient(to bottom, #5C0E20 0%, #881337 50%, #5C0E20 100%);
+          --text-primary: #FFFFFF;
+          --text-secondary: #FFD1DB;
+          --text-tertiary: #FFB3C6;
+          --card-bg: rgba(255, 255, 255, 0.12);
+          --card-border: rgba(255, 255, 255, 0.25);
+          --pill-bg: rgba(255, 255, 255, 0.15);
+          --pill-text: #FFFFFF;
+          --pill-border: rgba(255, 255, 255, 0.3);
+          --title-gradient: linear-gradient(135deg, #FFFFFF 0%, #FFD1DB 100%);
+          --header-bg: #5C0E20;
         }
 
         /* ─── UNEXPANDED STACK VIEW ─── */
@@ -282,19 +339,19 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
         .expanded-hero-viewport {
           width: 100%;
           max-width: var(--editorial-max-w);
-          min-height: 100%;
+          min-height: 90vh; /* changed to a larger viewport-relative unit to push details down */
           display: flex;
           flex-direction: column;
-          justify-content: flex-start;
+          justify-content: center; /* Center the card and text vertically */
           align-items: center;
-          padding: 12px 16px 20px 16px;
+          padding: 20px 16px 40px 16px;
           box-sizing: border-box;
           flex-shrink: 0;
         }
 
         .expanded-card-frame {
           width: 100%;
-          height: clamp(230px, 44vh, 360px);
+          height: clamp(320px, 52vh, 460px); /* Increased size to look premium and large */
           border-radius: 26px;
           position: relative;
           overflow: hidden;
@@ -302,7 +359,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           box-shadow: 0 14px 40px rgba(139, 30, 63, 0.14);
           border: 1px solid rgba(244, 63, 94, 0.14);
           flex-shrink: 0;
-          margin-bottom: 16px;
+          margin-bottom: 24px;
         }
 
         /* Identity Block below card in expanded initial frame — Large text size that shrinks on scroll */
@@ -321,17 +378,17 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
 
         .editorial-name-title {
           font-family: var(--font-primary);
-          font-size: clamp(2.1rem, 4.8vh, 2.8rem);
+          font-size: clamp(3.4rem, 8vh, 4.5rem);
           font-weight: 900;
           line-height: 1.1;
           letter-spacing: 0.01em;
-          color: #1F161A;
+          color: var(--text-primary);
           margin: 0;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-          background: linear-gradient(135deg, #1A040B 0%, #4D091A 45%, #8B1E3F 100%);
+          background: var(--title-gradient);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
@@ -341,7 +398,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           font-weight: 800;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: #8B1E3F;
+          color: var(--text-secondary);
           margin-top: 6px;
           line-height: 1.2;
           display: flex;
@@ -355,7 +412,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           font-weight: 700;
           letter-spacing: 0.06em;
           text-transform: uppercase;
-          color: #7A5565;
+          color: var(--text-tertiary);
           margin-top: 4px;
           line-height: 1.2;
         }
@@ -389,6 +446,30 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           background: #FFF1F4;
         }
         .editorial-btn-pass:active {
+          transform: scale(0.94);
+        }
+
+        .editorial-btn-detail {
+          width: clamp(54px, 13vw, 64px);
+          height: clamp(54px, 13vw, 64px);
+          border-radius: 50%;
+          background: var(--card-bg);
+          border: 1px solid var(--card-border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-primary);
+          cursor: pointer;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .editorial-btn-detail:hover {
+          transform: scale(1.08);
+          background: rgba(255, 255, 255, 0.1);
+        }
+        .editorial-btn-detail:active {
           transform: scale(0.94);
         }
 
@@ -442,11 +523,11 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           width: 100%;
           max-width: var(--editorial-max-w);
           z-index: 40;
-          background: rgba(255, 255, 255, 0.95);
+          background: var(--card-bg);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(244, 63, 94, 0.12);
-          box-shadow: 0 4px 16px rgba(139, 30, 63, 0.05);
+          border-bottom: 1px solid var(--card-border);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
           padding: 8px 16px;
           display: flex;
           align-items: center;
@@ -468,10 +549,12 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
         }
 
         .editorial-section-card {
-          background: #FFFFFF;
+          background: var(--card-bg);
           border-radius: 22px;
-          border: 1px solid rgba(244, 63, 94, 0.12);
-          box-shadow: 0 8px 24px rgba(139, 30, 63, 0.05);
+          border: 1px solid var(--card-border);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
           padding: 18px;
           box-sizing: border-box;
         }
@@ -481,7 +564,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           font-weight: 800;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #8B1E3F;
+          color: var(--text-secondary);
           margin-bottom: 10px;
           display: flex;
           align-items: center;
@@ -496,9 +579,9 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
           border-radius: 9999px;
           font-size: 0.76rem;
           font-weight: 600;
-          color: #5C2E3E;
-          background: #FFF5F7;
-          border: 1px solid rgba(139, 30, 63, 0.12);
+          color: var(--pill-text);
+          background: var(--pill-bg);
+          border: 1px solid var(--pill-border);
         }
 
         .editorial-pill-mutual {
@@ -545,7 +628,10 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
             onMouseMove={handleCardMouseMove}
             onMouseUp={handleCardMouseUp}
             onMouseLeave={handleCardMouseUp}
-            onClick={() => setIsExpanded(true)}
+            onClick={() => {
+              lastToggleTime.current = Date.now();
+              setIsExpanded(true);
+            }}
           >
             <img
               src={photos[photoIndex]}
@@ -751,171 +837,63 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
             >
               <Heart size={32} fill="#FFFFFF" color="#FFFFFF" />
             </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                lastToggleTime.current = Date.now();
+                setIsExpanded(true);
+              }}
+              className="editorial-btn-detail"
+              title="Details"
+              aria-label="Details"
+            >
+              <ChevronUp size={28} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
       ) : (
-        /* ─── MODE B: EXPANDED DETAILED VIEW (Image 2 Style) ─── */
         <>
-          {/* Sticky Header when user scrolls down */}
-          <div
-            className="editorial-sticky-header"
-            style={{
-              opacity: scrollProgress,
-              transform: `translateY(${Math.max(-12, (1 - scrollProgress) * -12)}px)`,
-              pointerEvents: scrollProgress > 0.35 ? 'auto' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img
-                src={photos[0]}
-                alt={profile.name}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '1.5px solid #E11D48'
-                }}
-              />
-              <div>
-                <div style={{
-                  fontSize: '0.92rem',
-                  fontWeight: 800,
-                  color: '#1F161A',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}>
-                  <span>{profile.name}</span>
-                  {calcAge ? <span style={{ color: '#8B1E3F' }}>, {calcAge}</span> : null}
-                  {(profile.verified || profile.isVerified) && <VerifiedBadge size={15} />}
-                </div>
-                {city && (
-                  <div style={{ fontSize: '0.7rem', color: '#7A5565', fontWeight: 600, textTransform: 'uppercase' }}>
-                    {city} {profile.occupation ? `· ${profile.occupation}` : ''}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {/* Collapse Button */}
-              <button
-                onClick={() => {
-                  if (isModalView && onClose) onClose();
-                  else setIsExpanded(false);
-                }}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  background: '#FFF5F7',
-                  border: '1px solid rgba(139, 30, 63, 0.15)',
-                  color: '#8B1E3F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-                title="Collapse profile"
-              >
-                <ChevronDown size={18} />
-              </button>
-
-              <button
-                onClick={() => onSwipe('left')}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: '50%',
-                  background: '#FFFFFF',
-                  border: '1.5px solid rgba(225, 29, 72, 0.25)',
-                  color: '#E11D48',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-              >
-                <X size={16} strokeWidth={2.5} />
-              </button>
-
-              <button
-                onClick={() => onSwipe('right')}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #881337 0%, #E11D48 100%)',
-                  border: 'none',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 3px 12px rgba(190, 18, 60, 0.35)'
-                }}
-              >
-                <Heart size={16} fill="#FFFFFF" color="#FFFFFF" />
-              </button>
-            </div>
-          </div>
-
           {/* Scroll Container */}
           <div
             className="editorial-scroll-container"
             ref={scrollContainerRef}
             onScroll={handleScroll}
           >
-            {/* INITIAL FRAME VIEWPORT: Photo Card + Large Name/City details block fit together initially */}
-            <div className="expanded-hero-viewport">
-              {/* Photo Card */}
-              <div className="expanded-card-frame">
+            {/* PHOTO CARD */}
+            <div className="expanded-hero-viewport" ref={viewportRef} style={{ minHeight: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: 0 }}>
+              <div 
+                className="expanded-card-frame"
+                style={{
+                  transform: `scale(${1 - cardProgress * 0.15}) translateY(${cardProgress * -60}px)`,
+                  opacity: 1 - cardProgress * 1.2,
+                  transformOrigin: 'top center',
+                  marginBottom: 32
+                }}
+              >
                 <img
                   src={photos[photoIndex]}
                   alt={profile.name}
+                  onClick={() => {
+                    if (Date.now() - lastToggleTime.current > 400) {
+                      setIsExpanded(false);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    display: 'block'
-                  }}
-                />
-
-                {/* Back / Collapse Button on top-left of card */}
-                <button
-                  onClick={() => {
-                    if (isModalView && onClose) onClose();
-                    else setIsExpanded(false);
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: 12,
-                    left: 12,
-                    zIndex: 8,
-                    width: 34,
-                    height: 34,
-                    borderRadius: '50%',
-                    background: 'rgba(0, 0, 0, 0.45)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    color: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    display: 'block',
                     cursor: 'pointer'
                   }}
-                  title="Collapse"
-                >
-                  <ChevronDown size={20} />
-                </button>
+                />
 
                 {/* Photo Progress Indicators */}
                 {totalPhotos > 1 && (
                   <div style={{
                     position: 'absolute',
                     top: 10,
-                    left: 56,
+                    left: 12,
                     right: 12,
                     display: 'flex',
                     gap: 4,
@@ -937,41 +915,186 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Identity & Details Block directly below card in frame — Large initial text that visibly shrinks on scroll */}
-              <div
-                className="editorial-identity-block"
-                style={{
-                  opacity: Math.max(0, 1 - scrollProgress * 1.3),
-                  transform: `scale(${Math.max(0.65, 1 - scrollProgress * 0.35)}) translateY(-${scrollProgress * 16}px)`
-                }}
-              >
-                <h1 className="editorial-name-title">
-                  <span>{profile.name}</span>
+            {/* STICKY IDENTITY HEADER */}
+            <div
+              className="editorial-identity-block"
+              style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 50,
+                background: textShrinkProgress > 0 ? 'var(--header-bg)' : 'transparent',
+                backdropFilter: 'none',
+                WebkitBackdropFilter: 'none',
+                borderBottom: textShrinkProgress > 0.5 ? '1px solid var(--card-border)' : '1px solid transparent',
+                paddingTop: `calc(12px + ${Math.max(0, 1 - textShrinkProgress)} * 5vh)`,
+                paddingBottom: `calc(12px + ${Math.max(0, 1 - textShrinkProgress)} * 25vh)`,
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                transition: 'background 0.2s, border 0.2s',
+                minHeight: 60
+              }}
+            >
+              {/* Left side: Collapse button (visible when scrolled) */}
+              <div style={{ 
+                position: 'absolute',
+                left: 16,
+                opacity: Math.min(1, textShrinkProgress * 1.5),
+                pointerEvents: textShrinkProgress > 0.1 ? 'auto' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'opacity 0.4s'
+              }}>
+                <button
+                  onClick={() => {
+                    if (isModalView && onClose) onClose();
+                    else setIsExpanded(false);
+                  }}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: '50%',
+                    background: 'var(--pill-bg)',
+                    border: '1px solid var(--card-border)',
+                    color: 'var(--text-secondary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <ChevronDown size={20} />
+                </button>
+              </div>
+
+              {/* Center: Text block smoothly shrinking */}
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                transform: `scale(${Math.max(0.40, 1 - textShrinkProgress * 0.60)})`,
+                transformOrigin: 'center center',
+                paddingLeft: `calc(16px + ${textShrinkProgress} * 75px)`,
+                paddingRight: `calc(16px + ${textShrinkProgress} * 170px)`,
+                width: '100%',
+                boxSizing: 'border-box'
+              }}>
+                <h1 
+                  className="editorial-name-title" 
+                  style={{ 
+                    justifyContent: 'center',
+                    margin: 0,
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <span style={{ 
+                    whiteSpace: 'nowrap', 
+                    display: 'block'
+                  }}>{profile.name}</span>
                   {(profile.verified || profile.isVerified) && (
                     <VerifiedBadge size={26} />
                   )}
                 </h1>
 
-                <div className="editorial-meta-sub">
+                <div 
+                  className="editorial-meta-sub"
+                  style={{
+                    justifyContent: 'center',
+                    marginTop: 4,
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   {calcAge ? <span>{calcAge} YEARS</span> : null}
                   {calcAge && city ? <span>·</span> : null}
                   {city ? <span>{city}</span> : null}
-                  {profile.distanceKm !== undefined && (
-                    <span style={{ color: '#A0687A', fontWeight: 600 }}>· {profile.distanceKm} KM AWAY</span>
-                  )}
                 </div>
 
-                {profile.occupation && (
-                  <div className="editorial-occ-sub">
-                    {profile.occupation}
-                  </div>
-                )}
+                {/* Extra info fades out on scroll */}
+                <div style={{ 
+                  opacity: Math.max(0, 1 - textShrinkProgress * 3),
+                  maxHeight: textShrinkProgress > 0.33 ? 0 : 50,
+                  overflow: 'hidden',
+                  transition: 'max-height 0.3s',
+                  width: '100%',
+                  textAlign: 'center'
+                }}>
+                  {(profile.occupation || profile.distanceKm !== undefined) && (
+                    <div style={{ textAlign: 'center', marginTop: 12 }}>
+                      {profile.occupation && (
+                        <div className="editorial-occ-sub" style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {profile.occupation}
+                        </div>
+                      )}
+                      {profile.distanceKm !== undefined && (
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#A0687A', marginTop: 4 }}>
+                          · {profile.distanceKm} KM AWAY ·
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right side: Action Buttons (visible when scrolled) */}
+              <div style={{ 
+                position: 'absolute',
+                right: 16,
+                opacity: Math.min(1, textShrinkProgress * 1.5),
+                pointerEvents: textShrinkProgress > 0.1 ? 'auto' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                transition: 'opacity 0.4s'
+              }}>
+                <button
+                  onClick={() => onSwipe('left')}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: 'var(--card-bg)',
+                    border: '1.5px solid var(--card-border)',
+                    color: '#E11D48',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <X size={18} strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={() => onSwipe('right')}
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #881337 0%, #E11D48 100%)',
+                    border: 'none',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 3px 12px rgba(190, 18, 60, 0.35)'
+                  }}
+                >
+                  <Heart size={18} fill="#FFFFFF" color="#FFFFFF" />
+                </button>
               </div>
             </div>
 
             {/* DETAILS STREAM */}
-            <div className="editorial-details-stream">
+            <div className="editorial-details-stream" style={{ minHeight: '80vh', paddingBottom: '40px' }}>
+
               {/* Bio Section */}
               {profile.bio && (
                 <div className="editorial-section-card">
@@ -982,7 +1105,7 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
                   <p style={{
                     margin: 0,
                     fontSize: '0.92rem',
-                    color: '#2A171F',
+                    color: 'var(--text-primary)',
                     lineHeight: 1.65,
                     fontFamily: 'var(--font-primary)'
                   }}>
@@ -1095,6 +1218,8 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
                         alt={`${profile.name} gallery ${idx + 1}`}
                         className="editorial-photo-item"
                         loading="lazy"
+                        onClick={() => setFullscreenPhotoUrl(photoUrl)}
+                        style={{ cursor: 'pointer' }}
                       />
                     ))}
                   </div>
@@ -1127,12 +1252,12 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
                       <ShieldCheck size={20} />
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#1F161A' }}>
+                      <div style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                         {(profile.verified || profile.isVerified)
                           ? 'Verified MIORA Profile'
                           : 'Verification Pending'}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: '#7A5565', marginTop: 1 }}>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', marginTop: 1 }}>
                         {(profile.verified || profile.isVerified)
                           ? 'Identity & live selfie authenticated'
                           : 'Not yet authenticated'}
@@ -1195,6 +1320,60 @@ export const EditorialProfileView: React.FC<EditorialProfileViewProps> = ({
             </div>
           </div>
         </>
+      )}
+
+      {/* Lightbox for Fullscreen Photo */}
+      {fullscreenPhotoUrl && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'zoom-out'
+          }}
+          onClick={() => setFullscreenPhotoUrl(null)}
+        >
+          <img
+            src={fullscreenPhotoUrl}
+            alt="Fullscreen"
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain'
+            }}
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setFullscreenPhotoUrl(null);
+            }}
+            style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#FFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              zIndex: 101
+            }}
+          >
+            <X size={24} />
+          </button>
+        </div>
       )}
     </div>
   );

@@ -1,76 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
-import { MIORA_PRICING, PowerUpPackage } from '../../config/pricing';
-import { Zap } from 'lucide-react';
+const fs = require('fs');
+let code = fs.readFileSync('src/components/subscription/BoostModal.tsx', 'utf8');
 
-export const BoostModal: React.FC = () => {
-  const {
-    isBoostModalOpen,
-    closeBoostModal,
-    currentUser,
-    walletBalance,
-    activateBoost,
-    buyPowerUp,
-    openWalletPackModal
-  } = useApp();
+const startStr = "return (";
+const endStr = "  );\n};\n";
 
-  const packages: PowerUpPackage[] = MIORA_PRICING.powerUps.boost.packages;
-  const defaultPkg = packages.find((p) => p.popular) || packages[1] || packages[0];
-  const [selectedId, setSelectedId] = useState<string>(defaultPkg?.id || 'boost_2h');
-  const [isActivating, setIsActivating] = useState<boolean>(false);
+const startIndex = code.indexOf(startStr);
+const endIndex = code.lastIndexOf(endStr);
 
-  useEffect(() => {
-    if (isBoostModalOpen) {
-      const def = packages.find((p) => p.popular) || packages[1] || packages[0];
-      setSelectedId(def?.id || 'boost_2h');
-    }
-  }, [isBoostModalOpen]);
-
-  if (!isBoostModalOpen) return null;
-
-  const selectedPkg = packages.find((p) => p.id === selectedId) || defaultPkg;
-  const isBoostActive = !!currentUser.boostActiveUntil && new Date(currentUser.boostActiveUntil).getTime() > Date.now();
-  const tokens = currentUser.boostsCount || 0;
-
-  const handleBuy = async () => {
-    const price = selectedPkg.coinPrice;
-    if ((walletBalance || 0) < price) {
-      closeBoostModal();
-      openWalletPackModal(`You need ₹${price} in your wallet to buy ${selectedPkg.name}.`, price);
-      return;
-    }
-    setIsActivating(true);
-    try {
-      await buyPowerUp(selectedPkg);
-    } finally {
-      setIsActivating(false);
-    }
-  };
-
-  const handleActivateToken = async () => {
-    setIsActivating(true);
-    try {
-      await activateBoost();
-    } finally {
-      setIsActivating(false);
-    }
-  };
-
-  // When clicking 'Select' we buy the selected one, or activate if they have tokens
-  const handleSelect = async () => {
-    if (tokens > 0 && !isBoostActive) {
-       await handleActivateToken();
-    } else {
-       await handleBuy();
-    }
-  };
-
-  return (
+if (startIndex !== -1 && endIndex !== -1) {
+  const newCode = code.substring(0, startIndex) + `return (
     <div
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 99999, // Increased to appear above bottom nav
+        zIndex: 9999,
         background: 'rgba(0, 0, 0, 0.6)',
         display: 'flex',
         flexDirection: 'column',
@@ -91,13 +34,13 @@ export const BoostModal: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          padding: '16px 24px 40px 24px',
+          padding: '16px 24px 32px 24px',
           boxSizing: 'border-box',
           boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
           animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
       >
-        <style>{`
+        <style>{\`
           @keyframes slideUp {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
@@ -105,7 +48,7 @@ export const BoostModal: React.FC = () => {
           .boost-carousel-hide-scrollbar::-webkit-scrollbar {
             display: none;
           }
-        `}</style>
+        \`}</style>
         
         {/* Top Pill Indicator */}
         <div 
@@ -300,9 +243,14 @@ export const BoostModal: React.FC = () => {
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         >
-          {isActivating ? 'Processing...' : (tokens > 0 && !isBoostActive ? `Activate Token (${tokens})` : 'Select Package')}
+          {isActivating ? 'Processing...' : (tokens > 0 && !isBoostActive ? \`Activate Token (\${tokens})\` : 'Select Package')}
         </button>
       </div>
     </div>
-  );
-};
+` + code.substring(endIndex);
+  
+  fs.writeFileSync('src/components/subscription/BoostModal.tsx', newCode, 'utf8');
+  console.log('Success');
+} else {
+  console.log('Markers not found');
+}

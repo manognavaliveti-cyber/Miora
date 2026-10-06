@@ -120,72 +120,134 @@ export const ChatListPage: React.FC = () => {
       }}
     >
       {/* MOBILE INBOX: Instagram/WhatsApp-style conversation list */}
-      <div className="mobile-chat-inbox" aria-label="Messages">
-        <div className="mobile-chat-inbox-header">
-          <div>
-            <h2>Messages</h2>
-            <p>{mobileUnreadCount > 0 ? `${mobileUnreadCount} unread message${mobileUnreadCount === 1 ? '' : 's'}` : 'Your conversations'}</p>
+      {/* MOBILE EXPERT DIRECTORY (Connecto Style) */}
+      <div className="mobile-chat-inbox" aria-label="Experts Directory" style={{ background: 'linear-gradient(180deg, #FDEBF0 0%, #EBF0FF 100%)', padding: '16px', overflowY: 'auto' }}>
+        
+        {/* Banner */}
+        <div style={{
+          background: 'linear-gradient(90deg, #EAD6EE 0%, #A0B5EB 100%)',
+          borderRadius: '16px',
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ fontWeight: 800, color: '#1F2937', fontSize: '1.05rem', maxWidth: '60%', lineHeight: 1.3 }}>
+            Connect & Make Friends<br/>
+            <span style={{ color: '#4F46E5' }}>@ ₹5/min only!</span>
           </div>
-          <div className="mobile-chat-search">
-            <Search size={17} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search"
-              aria-label="Search conversations"
-            />
-          </div>
+          <button style={{
+            background: 'linear-gradient(90deg, #EF4444 0%, #DC2626 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            padding: '8px 14px',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 10px rgba(220, 38, 38, 0.3)'
+          }}>
+            Random Call <Sparkles size={14} />
+          </button>
         </div>
 
-        <div className="mobile-chat-thread-list">
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1F171A', margin: '0 0 16px 0', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
+          Chats
+        </h2>
+
+        {/* Expert Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '20px' }}>
           {mobileMatches.length > 0 ? mobileMatches.map((match) => {
-            const photo = match.profile.photos[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 rx=%22150%22 fill=%22%23f8e9ee%22/%3E%3Ccircle cx=%22150%22 cy=%22115%22 r=%2250%22 fill=%22%23c08497%22/%3E%3Cpath d=%22M55 270c16-80 174-80 190 0%22 fill=%22%23c08497%22/%3E%3C/svg%3E';
-            const preview = match.lastMessage?.trim() || 'Start a conversation 💖';
-            const unread = (match.unreadCount || 0) > 0;
+            const photo = match.profile.photos[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 rx=%22150%22 fill=%22%23f8e9ee%22/%3E%3C/svg%3E';
+            
             return (
-              <button
+              <div
                 key={match.id}
-                type="button"
-                className={`mobile-chat-thread ${unread ? 'is-unread' : ''}`}
                 onClick={() => handleStartChat(match)}
+                style={{
+                  background: '#FFFFFF',
+                  borderRadius: '20px',
+                  padding: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  border: '1.5px solid #FDF0F3',
+                  boxShadow: '0 8px 24px rgba(158, 42, 75, 0.04)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
               >
-                <span className="mobile-chat-avatar-wrap">
-                  <img src={photo} alt={match.profile.name} className="mobile-chat-avatar" />
-                  {match.profile.online && <span className="mobile-chat-online" />}
-                </span>
-                <span className="mobile-chat-thread-body">
-                  <span className="mobile-chat-thread-top">
-                    <span className="mobile-chat-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                      <span>{match.profile.name}</span>
-                      {(match.profile.verified || match.profile.isVerified) && <VerifiedBadge size={14} />}
+                {/* Left: Avatar with Online indicator */}
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <img 
+                    src={photo} 
+                    alt={match.profile.name} 
+                    style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #FDF0F3' }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '2px',
+                    right: '2px',
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    background: '#10B981',
+                    border: '2.5px solid #FFFFFF'
+                  }} />
+                </div>
+
+                {/* Middle: Details */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontWeight: 800, fontSize: '1.15rem', color: '#1F171A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {match.profile.name}
                     </span>
-                    <span className={`mobile-chat-status ${match.profile.online ? 'is-online' : 'is-offline'}`}>{match.profile.online ? 'Online' : 'Offline'}</span>
-                    <span className="mobile-chat-time">{match.lastMessageTime || ''}</span>
-                  </span>
-                  <span className="mobile-chat-thread-bottom">
-                    <span className="mobile-chat-preview">{preview}</span>
-                    {unread && <span className="mobile-chat-unread-dot" aria-label={`${match.unreadCount} unread message${match.unreadCount === 1 ? '' : 's'}`} />}
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      className="mobile-chat-thread-menu"
-                      aria-label={`Delete chat with ${match.profile.name}`}
-                      title="Delete chat"
-                      onClick={(event) => { event.stopPropagation(); handleDeleteChat(match); }}
-                      onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); handleDeleteChat(match); } }}
-                    >
-                      <MoreVertical size={18} />
+                    <span style={{ fontSize: '1rem', color: '#6B7280', fontWeight: 500 }}>
+                      {match.profile.age} Y
                     </span>
-                  </span>
-                </span>
-              </button>
+                  </div>
+                  
+                  <div style={{ fontSize: '0.9rem', color: '#6B7280', marginTop: '2px' }}>
+                    {match.profile.location || 'Mumbai, IN'}
+                  </div>
+                  
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#9E2A4B', marginTop: '6px' }}>
+                    ₹5<span style={{ fontSize: '0.85rem', color: '#9CA3AF', fontWeight: 600 }}>/min</span>
+                  </div>
+                </div>
+
+                {/* Right: Call Button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleStartCall(match.profile); }}
+                  style={{
+                    flexShrink: 0,
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #A31D45 0%, #801B38 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 6px 16px rgba(163, 29, 69, 0.25)',
+                    transition: 'transform 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </button>
+              </div>
             );
           }) : (
-            <div className="mobile-chat-empty">
-              <MessageCircle size={34} />
-              <strong>No conversations yet</strong>
-              <span>When someone messages you, their chat will appear here.</span>
+            <div className="mobile-chat-empty" style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF' }}>
+              <div style={{ fontSize: '1rem', fontWeight: 600 }}>No experts found</div>
             </div>
           )}
         </div>

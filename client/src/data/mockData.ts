@@ -532,9 +532,91 @@ export const SYNTHETIC_TEST_PROFILES: Profile[] = [
 
 export const INITIAL_PROFILES: Profile[] = [...SYNTHETIC_TEST_PROFILES];
 
-export const INITIAL_MATCHES: Match[] = [];
+export const INITIAL_MATCHES: Match[] = [
+  {
+    id: 'match_test_1',
+    profileId: SYNTHETIC_TEST_PROFILES[0].id,
+    profile: SYNTHETIC_TEST_PROFILES[0], // Ananya
+    matchedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    lastMessage: 'Hi there! Feel free to call me if you need advice.',
+    lastMessageTime: '10:00 AM',
+    unreadCount: 1
+  },
+  {
+    id: 'match_test_2',
+    profileId: SYNTHETIC_TEST_PROFILES[1].id,
+    profile: SYNTHETIC_TEST_PROFILES[1], // Rohan
+    matchedAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+    lastMessage: 'Looking forward to our session.',
+    lastMessageTime: 'Yesterday',
+    unreadCount: 0
+  },
+  {
+    id: 'match_test_3',
+    profileId: SYNTHETIC_TEST_PROFILES[2].id,
+    profile: SYNTHETIC_TEST_PROFILES[2], 
+    matchedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+    lastMessage: '',
+    lastMessageTime: '',
+    unreadCount: 0
+  },
+  {
+    id: 'match_test_4',
+    profileId: SYNTHETIC_TEST_PROFILES[3].id,
+    profile: SYNTHETIC_TEST_PROFILES[3], 
+    matchedAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+    lastMessage: '',
+    lastMessageTime: '',
+    unreadCount: 0
+  }
+];
 
-export const INITIAL_MESSAGES: Record<string, Message[]> = {};
+export const INITIAL_MESSAGES: Record<string, Message[]> = {
+  'match_test_1': [
+    {
+      id: 'msg_1',
+      matchId: 'match_test_1',
+      senderId: SYNTHETIC_TEST_PROFILES[0].id,
+      text: 'Hello! I noticed you were looking for some relationship advice.',
+      timestamp: new Date(Date.now() - 1000 * 60 * 65).toISOString(),
+      read: true
+    },
+    {
+      id: 'msg_2',
+      matchId: 'match_test_1',
+      senderId: SYNTHETIC_TEST_PROFILES[0].id,
+      text: 'Hi there! Feel free to call me if you need advice.',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+      read: false
+    }
+  ],
+  'match_test_2': [
+    {
+      id: 'msg_3',
+      matchId: 'match_test_2',
+      senderId: SYNTHETIC_TEST_PROFILES[1].id,
+      text: 'Hey, I specialize in career coaching.',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 13).toISOString(),
+      read: true
+    },
+    {
+      id: 'msg_4',
+      matchId: 'match_test_2',
+      senderId: 'user_me', // The current user
+      text: 'That sounds perfect. Can we connect later?',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12.5).toISOString(),
+      read: true
+    },
+    {
+      id: 'msg_5',
+      matchId: 'match_test_2',
+      senderId: SYNTHETIC_TEST_PROFILES[1].id,
+      text: 'Looking forward to our session.',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+      read: true
+    }
+  ]
+};
 
 
 
